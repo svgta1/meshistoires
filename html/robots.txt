@@ -1,3 +1,0 @@
-Sitemap: https://api access/v1/sitemap/index
-User-agent: *
-Allow: /
