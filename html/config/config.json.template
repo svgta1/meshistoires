@@ -1,0 +1,12 @@
+{
+  "api": {
+    "uri": "/api",
+    "version": "/v1"
+  },
+  "default": {
+    "menu": "/accueil",
+    "admin": "https://admin access"
+  },
+  "updateH": 1,
+  "version": "v1.0"
+}

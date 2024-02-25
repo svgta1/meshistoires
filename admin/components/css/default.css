@@ -1,0 +1,397 @@
+:root {
+	--backcolor: rgba(252, 252, 252, 0.8);
+	--blue: rgba(27, 80, 145, 1);
+	--blue09: rgba(27, 80, 145, 0.9);
+	--blue08: rgba(27, 80, 145, 0.8);
+	--blue07: rgba(27, 80, 145, 0.7);
+	--blue06: rgba(27, 80, 145, 0.6);
+	--blue05: rgba(27, 80, 145, 0.5);
+	--blue04: rgba(27, 80, 145, 0.4);
+	--blue03: rgba(27, 80, 145, 0.3);
+	--blue02: rgba(27, 80, 145, 0.2);
+	--blue01: rgba(27, 80, 145, 0.1);
+	--green: rgba(39, 157, 159, 1);
+	--green09: rgba(39, 157, 159, 0.9);
+	--green08: rgba(39, 157, 159, 0.8);
+	--green07: rgba(39, 157, 159, 0.7);
+	--green06: rgba(39, 157, 159, 0.6);
+	--green05: rgba(39, 157, 159, 0.5);
+	--green04: rgba(39, 157, 159, 0.4);
+	--green03: rgba(39, 157, 1595, 0.3);
+	--green02: rgba(39, 157, 159, 0.2);
+	--green01: rgba(39, 157, 159, 0.1);
+	--orange: rgba(255, 167, 79, 1);
+	--orange09: rgba(255, 167, 79, 0.9);
+	--orange08: rgba(255, 167, 79, 0.8);
+	--orange07: rgba(255, 167, 79, 0.7);
+	--orange06: rgba(255, 167, 79, 0.6);
+	--orange05: rgba(255, 167, 79, 0.5);
+	--orange04: rgba(255, 167, 79, 0.4);
+	--orange03: rgba(255, 167, 79, 0.3);
+	--orange02: rgba(255, 167, 79, 0.2);
+	--orange01: rgba(255, 167, 79, 0.1);
+	--red: rgba(206, 51, 117, 1);
+	--red09: rgba(206, 51, 117, 0.9);
+	--red08: rgba(206, 51, 117, 0.8);
+	--red07: rgba(206, 51, 117, 0.7);
+	--red06: rgba(206, 51, 117, 0.6);
+	--red05: rgba(206, 51, 117, 0.5);
+	--red04: rgba(206, 51, 117, 0.4);
+	--red03: rgba(206, 51, 117, 0.3);
+	--red02: rgba(206, 51, 117, 0.2);
+	--red01: rgba(206, 51, 117, 0.1);
+	--white: rgba(255, 255, 255, 1);
+	--white09: rgba(255, 255, 255, 0.9);
+	--grey: #666;
+	--grey03: #66666630;
+}
+body, html{
+	margin:0;
+	padding:0;
+	text-align:left;
+	width:100%;
+	color: #333;
+	background-color: var(--backcolor);
+	min-height: 100vh;
+	font-size: 12px;
+	overflow-x: hidden;
+	overflow-y: visible;
+}
+html, #alert{
+	background: url(/components/img/bg.png) no-repeat center center fixed;
+	background-position: calc(100vw - 120px) center;
+	background-repeat: no-repeat;
+	background-size: auto 50%;
+}
+ul{
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+button {
+  margin: 10px;
+  min-width: 200px;
+  color: white;
+  padding: 5px;
+  border: none;
+  transition: all 0.3s;
+  background-color: var(--blue07);
+  cursor: pointer;
+	border-radius: 5px;
+}
+button:hover {
+  background-color: var(--blue);
+}
+button.red {
+	background-color: var(--red07);
+}
+button.red:hover {
+	background-color: var(--red);
+}
+button.green {
+	background-color: var(--green07);
+}
+button.green:hover {
+	background-color: var(--green);
+}
+button.orange {
+	background-color: var(--orange07);
+}
+button.orange:hover {
+	background-color: var(--orange);
+}
+span.red {
+	color: var(--red);
+}
+span.blue {
+	color: var(--blue);
+}
+input {
+  border: none;
+  border-bottom: 2px solid var(--blue);
+  color: var(--blue);
+  margin-right: 20px;
+  outline: none;
+  transition: all 0.3s;
+  width: 300px;
+}
+input[type="number"] {
+  width: 30px;
+  text-align: center;
+}
+input[type="checkbox"] {
+	width: 20px;
+  padding-left: 0;
+  margin-left: 0;
+}
+input:focus, input:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+table {
+  margin: 20px;
+  border: 1px solid var(--blue);
+  padding: 10px;
+  min-width: 382px;
+}
+th {
+  text-align: center;
+}
+tr {
+  height: 20px;
+  transition: all 0.3s;
+}
+tr:hover {
+  background-color: var(--blue01);
+}
+td {
+  padding-right: 15px;
+}
+h1 {
+  font-family: 'Allura', cursive;
+  font-size: 3em;
+  border-bottom: 3px solid var(--blue);
+  margin: 0;
+  padding: 12px;
+}
+h2 {
+  text-align: center;
+}
+h3 {
+  border-top: 1px solid var(--blue);
+  padding-top: 10px;
+  color: var(--blue);
+  text-align: center;
+}
+span, label, button, input, h2, h3, h4, td, th, h1 {
+  letter-spacing: 0.1em;
+}
+table button{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+div.title{
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  background-color: var(--white09);
+}
+#auth {
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--blue);
+  box-shadow: 0px 20px 20px var(--blue);
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
+}
+#content, #top, #menu_select > div{
+  display: inline-block;
+  vertical-align: top;
+}
+#top{
+  border-right: 1px solid;
+  padding-right: 20px;
+  height: calc(100vh - 72px);
+  background-color: var(--blue08);
+  color: white;
+  position: relative;
+  top: 72px;
+	overflow-y: auto;
+	padding-left: 1em;
+}
+#top #menu #menu_ul{
+	padding: 0;
+}
+#top ul{
+  cursor: pointer;
+  padding-left: 1.2em;
+}
+#top li span:before{
+	content: "⮞";
+	margin-right: 5px;
+}
+#top li span{
+  transition: all 0.3s;
+}
+#top li span:hover{
+  color: var(--orange);
+}
+#top span.selected:before{
+	content: '⮞';
+	color: var(--red);
+	margin-right: 5px;
+}
+#top span.selected:after{
+	content: '⮜';
+	color: var(--red);
+	margin-left: 5px;
+}
+#content {
+  margin-top: 72px;
+  position: relative;
+	height: calc(100vh - 72px);
+	overflow-y: auto;
+}
+#menu_select > div {
+ border-right: 1px solid;
+ display: inline-block;
+ text-align: center;
+ padding-right: 1em;
+ height: calc(100vh - 72px);
+ overflow-y: auto;
+ max-width: 50vw;
+ min-width: 10vw;
+ transition: all 0.3s;
+}
+#menu_select table {
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+}
+p.del{
+   text-align: center;
+ }
+p.del button, button.del{
+  background-color: var(--red07);
+}
+p.del button:hover, button.del:hover{
+  background-color: var(--red);
+}
+li.key {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: var(--blue);
+}
+#article_selected{
+	margin-left: 1em;
+}
+
+#article_content_div button{
+  background-color: unset;
+  min-width: unset;
+}
+#_alert {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: var(--red02);
+	text-align: center;
+	height: 100vh;
+  width: 100vw;
+	backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+}
+#_alert > div {
+	background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+  border: 10px solid var(--white);
+  box-shadow: 10px 15px 20px var(--red05);
+  max-height: calc(100vh - 20px);
+  max-width: calc(100vw - 20px);
+  overflow: auto;
+}
+#_alert h2 {
+	font-family: 'Allura', cursive;
+	font-size: 2.5em;
+}
+#admin_cpt, #admin_com {
+	max-width: calc(100vw - 195px);
+	width: calc(100vw - 195px);
+	background-color: var(--grey03);
+	text-align: center;
+}
+#admin_cpt > div {
+	display: inline-block;
+	background-color: var(--white);
+	margin: 5px;
+	padding: 0;
+	text-align: center;
+	border: 1px solid var(--blue07);
+}
+#admin_cpt > div table, #admin_com > div table {
+	margin: 0;
+	padding: 5px;
+	text-align: left;
+	border: none;
+}
+#admin_cpt > div table input[type="text"]{
+	margin: 0;
+	font-size: 12px;
+	width: 200px;
+}
+
+div.generalInfo{
+	color: white;
+	background-color: var(--red);
+	position: fixed;
+	top: 200px;
+	left: 0;
+	width: 100vw;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center !important;
+	max-width: 100vw !important;
+	font-size: 20px;
+}
+div.show{
+	visibility: visible;
+}
+#validation_change{
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	background: url(/components/img/bg.png) no-repeat center center fixed;
+	background-position: 10px center;
+	background-repeat: no-repeat;
+	background-size: auto 50%;
+	background-color: var(--orange02);
+	backdrop-filter: blur(4px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.3s;
+}
+#validation_change > div{
+	background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+  border: 10px solid var(--white);
+  box-shadow: 10px 15px 20px var(--grey);
+  max-height: calc(100vh - 20px);
+  max-width: 500px;
+  overflow: auto;
+	font-size: 1.5em;
+}
+#admin_com {
+	overflow: hidden;
+}
+#admin_com > div {
+	display: inline-block;
+	background-color: var(--white);
+	margin: 10px;
+	height: calc(100vh - 96px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 480px;
+}
+#admin_com > div > div > div{
+	border: 1px solid var(--blue);
+	margin: 5px;
+	width: 440px;
+}
+#admin_com > div table td{
+	vertical-align: top;
+}
