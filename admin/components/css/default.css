@@ -17,7 +17,7 @@
 	--green06: rgba(39, 157, 159, 0.6);
 	--green05: rgba(39, 157, 159, 0.5);
 	--green04: rgba(39, 157, 159, 0.4);
-	--green03: rgba(39, 157, 1595, 0.3);
+	--green03: rgba(39, 157, 159, 0.3);
 	--green02: rgba(39, 157, 159, 0.2);
 	--green01: rgba(39, 157, 159, 0.1);
 	--orange: rgba(255, 167, 79, 1);
@@ -234,21 +234,21 @@ div.title{
 	margin-left: 5px;
 }
 #content {
-  margin-top: 72px;
-  position: relative;
+	margin-top: 72px;
+	position: relative;
 	height: calc(100vh - 72px);
 	overflow-y: auto;
 }
 #menu_select > div {
- border-right: 1px solid;
- display: inline-block;
- text-align: center;
- padding-right: 1em;
- height: calc(100vh - 72px);
- overflow-y: auto;
- max-width: 50vw;
- min-width: 10vw;
- transition: all 0.3s;
+	border-right: 1px solid;
+	display: inline-block;
+	text-align: center;
+	padding-right: 1em;
+	height: calc(100vh - 72px);
+	overflow-y: auto;
+	max-width: 50vw;
+	min-width: 10vw;
+	transition: all 0.3s;
 }
 #menu_select table {
 	text-align: left;
@@ -305,7 +305,7 @@ li.key {
 	font-family: 'Allura', cursive;
 	font-size: 2.5em;
 }
-#admin_cpt, #admin_com {
+#admin_cpt, #admin_com, #admin_msg {
 	max-width: calc(100vw - 195px);
 	width: calc(100vw - 195px);
 	background-color: var(--grey03);
@@ -375,10 +375,10 @@ div.show{
   overflow: auto;
 	font-size: 1.5em;
 }
-#admin_com {
+#admin_com, #admin_msg {
 	overflow: hidden;
 }
-#admin_com > div {
+#admin_com > div, #admin_msg > div {
 	display: inline-block;
 	background-color: var(--white);
 	margin: 10px;
@@ -395,3 +395,96 @@ div.show{
 #admin_com > div table td{
 	vertical-align: top;
 }
+div.nooverflow{
+	overflow: hidden;
+}
+#admin_msg > div{
+	overflow: hidden;
+	border: 1px solid var(--blue);
+	text-align: center;
+	height: 500px;
+}
+#admin_msg div.overflow{
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 275px;
+	text-align: left;
+}
+#admin_msg table{
+	margin: 0;
+	border: 0;
+	text-align: left;
+}
+#admin_msg textarea{
+	width: 80%;
+    max-width: none;
+    height: 50px;
+    max-height: 80px;
+	border-radius: 10px;
+    background-color: var(--blue01);
+    border: 1px solid var(--blue);
+    padding: 10px;
+}
+#admin_msg div span{
+	font-size: 0.8em;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+#admin_msg div.overflow{
+	padding: 10px;
+}
+#admin_msg div.overflow div{
+	max-width: 80%;
+    border-radius: 10px;
+    position: relative;
+    padding: 10px;
+    display: inline-block;
+    border: 2px solid;
+    background-color: var(--white);
+	font-size: 15px;
+}
+#admin_msg div.overflow div.contact{
+	border-color: var(--blue07);
+}
+#admin_msg div.overflow div.response{
+	border-color: var(--orange07);
+}
+#admin_msg div.contact{
+	text-align: left;
+	border-color: var(--blue);
+    left: 0;
+}
+#admin_msg div.response{
+	text-align: right;
+	border-color: var(--orange);
+    right: 0;
+}
+#admin_msg div.contact span{
+	color: var(--blue);
+}
+#admin_msg div.response span{
+	color: var(--orange);
+}
+#admin_msg div.overflow p{
+	text-align: justify;
+}
+#admin_msg li {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#admin_msg li.contact{
+	text-align: left;
+}
+#admin_msg li.response{
+	text-align: right;
+}
+#admin_msg ul{
+	list-style-type: none;
+}
+#admin_msg h2{
+	margin: 5px;
+}
+#admin_msg div.nooverflow > span{
+	font-size: 15px;
+}
+

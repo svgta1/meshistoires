@@ -199,7 +199,7 @@
           }
         case config.adminPath + '/msg':
           if(menuL['menu_msg']){
-            Tpl.msgs();
+            Tpl.msg();
             break;
           }
         case config.adminPath + '/ana':

@@ -103,7 +103,7 @@
         div.appendChild(table);
         let tpl = this.tplList;
         list[i].msg = list[i].msg.trim();
-        list[i].msg = list[i].msg.replaceAll('\n','<br>', list[i].msg);
+        list[i].msg = list[i].msg.replaceAll('\n','<br>');
         list[i].dateCreate = Utils.formatDateHM(list[i].dateCreate);
         list[i].dateUpdate = Utils.formatDateHM(list[i].dateUpdate);
         for(let [key, value] of Object.entries(list[i])){
