@@ -5,10 +5,11 @@
 
   var menuList = {
     menu_menus: {scope: 'auth admin:read', desc: 'Menus', path: '/menus'},
-    menu_img: {scope: 'auth admin:read', desc: 'Images', path: '/img'},
     menu_cpt: {scope: 'auth admin:read', desc: 'Comptes', path: '/cpt'},
     menu_com: {scope: 'auth admin:read', desc: 'Commentaires', path: '/com'},
     menu_msg: {scope: 'auth admin:read', desc: 'Messages', path: '/msg'},
+    menu_news: {scope: 'auth admin:read', desc: 'News letter', path: '/news'},
+    menu_img: {scope: 'auth admin:read', desc: 'Images', path: '/img'},
     menu_ana: {scope: 'auth admin:read', desc: 'Analytics', path: '/ana'},
     menu_out: {scope: 'auth', desc: 'Déconnexion', path: '/'},
   }
@@ -38,6 +39,9 @@
     }
     static async msg(){
       this.loadTpl('msg');
+    }
+    static async news(){
+      this.loadTpl('news');
     }
     static async ana(){
       this.loadTpl('ana');
@@ -205,6 +209,11 @@
         case config.adminPath + '/ana':
           if(menuL['menu_ana']){
             Tpl.ana();
+            break;
+          }
+        case config.adminPath + '/news':
+          if(menuL['menu_news']){
+            Tpl.news();
             break;
           }
         default:

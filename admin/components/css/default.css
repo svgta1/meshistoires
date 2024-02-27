@@ -214,7 +214,7 @@ div.title{
   padding-left: 1.2em;
 }
 #top li span:before{
-	content: "⮞";
+	content: " ⮞ ";
 	margin-right: 5px;
 }
 #top li span{
@@ -238,6 +238,8 @@ div.title{
 	position: relative;
 	height: calc(100vh - 72px);
 	overflow-y: auto;
+	scrollbar-color: var(--blue) var(--grey03);
+	scrollbar-width: thin;
 }
 #menu_select > div {
 	border-right: 1px solid;
@@ -432,6 +434,8 @@ div.nooverflow{
 }
 #admin_msg div.overflow{
 	padding: 10px;
+	scrollbar-color: var(--orange) var(--white);
+	scrollbar-width: thin;
 }
 #admin_msg div.overflow div{
 	max-width: 80%;
@@ -487,4 +491,6 @@ div.nooverflow{
 #admin_msg div.nooverflow > span{
 	font-size: 15px;
 }
-
+div.tinymce button, .tox button{
+	min-width: 0;
+}

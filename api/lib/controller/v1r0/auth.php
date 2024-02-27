@@ -333,6 +333,7 @@ class auth
         }
     }
     $tokenRes = $client->token();
+
     if(isset($provider['cert_path']) && !is_null($provider['cert_path'])){
       $tokenRes->set_auth_method('private_key_jwt');
       $tokenRes->jwt_headers_options('x5t');

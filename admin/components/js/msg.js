@@ -15,7 +15,7 @@
                     Utils.resp('Le message doit faire plus de 3 caractères.');
                     return;
                 }
-                json.msg = msg;
+                json.msg = mh.Seo.removeTags(msg.trim());
                 Utils.validChange('Confirmez l\'envoi du commentaire', this, textarea, json);
             },
             valid: async function(change, json){

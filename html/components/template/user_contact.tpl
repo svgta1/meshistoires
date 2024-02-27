@@ -8,7 +8,7 @@
     <button id="close_contact">Fermer</button>
   </div>
   <div>
-    <h2>Historique des contacts</h2>
+    <h2>Historique des échanges</h2>
     <div id="contact_history">
     </div>
   </div>

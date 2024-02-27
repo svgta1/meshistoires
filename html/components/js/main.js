@@ -561,12 +561,13 @@
         if(content.resume === true){
           Html.resume(
             article,
-            content.content.replaceAll('color: #6b5b95', 'color: var(--blue)'),
+            content.content.replaceAll('style="color: #6b5b95; font-family: \'Allura\', cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"').replaceAll('style="color: #6b5b95; font-family: Allura, cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"'),
             content.title,
             config.api.uri + config.api.version + '/imageThumb/' + content.firstImage
           );
         }else{
-          article.innerHTML = content.content.replaceAll('color: #6b5b95', 'color: var(--blue)');
+          article.innerHTML = content.content.replaceAll('style="color: #6b5b95; font-family: \'Allura\', cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"').replaceAll('style="color: #6b5b95; font-family: Allura, cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"');
+          article.querySelectorAll("*[style]").forEach((element) => element.removeAttribute('style'));
         }
         Html.contentConv(article, this.content.name, '');
         let from = config.api.uri + config.api.version + '/image/';
@@ -663,10 +664,11 @@
 
       h2.innerHTML += '<span class="hearts">&hearts;</span>' + content.title;
       let articleDiv = document.createElement('div');
-      content.content = content.content.replaceAll('color: #6b5b95', 'color: var(--blue)');
+      content.content = content.content.replaceAll('style="color: #6b5b95; font-family: \'Allura\', cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"').replaceAll('style="color: #6b5b95; font-family: Allura, cursive; font-weight: bold; font-size: 1.5em;"', 'class="signature"');
       articleDiv.innerHTML = content.content;
       article.innerHTML = '';
       article.appendChild(articleDiv);
+      article.querySelectorAll("*[style]").forEach((element) => element.removeAttribute('style'));
       this.articleComment(content, article, articleDiv);
 
       Html.contentConv(article, content.menu_name, content.title);
@@ -970,6 +972,7 @@
       resumeImg.setAttribute('alt', title);
       let resumeP = document.createElement('p');
       resumeP.innerHTML = content;
+      resumeP.querySelectorAll("*[style]").forEach((element) => element.removeAttribute('style'));
       elm.appendChild(resumeTitle);
       elm.appendChild(resumeImg);
       elm.appendChild(resumeP);
@@ -1259,6 +1262,9 @@
     }
     async loadConfig(){
       let json = await Fetch.get('/config/config.json?d=' + Date.now());
+      document.getElementById('header').addEventListener('click', ()=>{
+        window.location = "/";
+      });
       await this.start(json.resp);
       this.end();
     }

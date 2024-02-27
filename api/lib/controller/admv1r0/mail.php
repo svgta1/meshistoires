@@ -62,6 +62,7 @@ class mail
         
         $tpl = \file_get_contents($_ENV['MAIL_TPL'] . '/new_mail.tpl');
         $tpl = \str_replace('##domain##', $_ENV['DOMAIN'], $tpl);
+        $tpl = \str_replace('##site##', $_ENV['SITE_TITLE'], $tpl);
         $this->mail->send(
             subject: "Réponse à votre message",
             body: $tpl,

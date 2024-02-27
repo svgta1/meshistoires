@@ -57,7 +57,6 @@ body, html{
 	font-size: 12px;
 	overflow-x: hidden;
 	overflow-y: visible;
-	overflow: hidden;
 }
 
 body.mce-content-body {
@@ -148,6 +147,8 @@ a:hover{
 	margin-right: auto;
 	overflow-y: auto;
 	height: calc(100vh - 82px);
+	scrollbar-color: var(--blue05) var(--white);
+	scrollbar-width: thin;
 }
 #content{
 	font-size:1.2em;
@@ -208,6 +209,7 @@ div.article h2{
 div.article p, .mce-content-body p{
 	margin-bottom: 0px;
 	text-align: justify;
+	font-weight: 400;
 }
 
 div.article div.comment{
@@ -307,8 +309,7 @@ div.article ul, .mce-content-body ul{
 	border-left: 3px double var(--green01);
 	display: inline-block;
 }
-div.article li{
-}
+
 div.article li:before, .mce-content-body li:before {
 	content: '- ';
 	padding-right: 5px;
@@ -437,7 +438,6 @@ div.subMenu.hide{
 #submenu > ul > li span{
 	display: inline-block;
 	width: 100%;
-	margin-top;
 }
 
 div.navigate{
@@ -565,11 +565,9 @@ div.navigate > ul > li:hover > ul, div.navigate > ul > li:active > ul{
 }
 
 @media screen and (min-width: 1120px){
-.navigation-main ul ul {
-    text-align: left;
-}
-div.listeA{
-}
+	.navigation-main ul ul {
+			text-align: left;
+	}
 }
 @media screen and (min-width: 990px){
 	.navigation-main ul ul {
@@ -1118,6 +1116,12 @@ img.affimg{
 	min-width: 400px;
 	max-height: calc(100vh - 20px);
 	overflow: auto;
+	scrollbar-color: var(--blue05) var(--white);
+	scrollbar-width: thin;
+	transition: all 0.3s;
+}
+#user_info > div > div:hover{
+	scrollbar-color: var(--orange05) var(--white);
 }
 #user_info > div > div:first-child{
 	margin-right: 10px;
@@ -1180,6 +1184,12 @@ img.affimg{
 	border-radius: 10px;
 	overflow-y: auto;
   max-height: calc(100vh - 360px);
+	scrollbar-color: var(--blue05) var(--white);
+	scrollbar-width: thin;
+	transition: all 0.3s;
+}
+#contact_history:hover{
+	scrollbar-color: var(--orange05) var(--white);
 }
 #contact_history li{
 	margin-top: 5px;
@@ -1443,6 +1453,8 @@ input[type="checkbox"] {
 	vertical-align: top;
 	overflow-y: auto;
 	max-height: calc(100vh - 50px);
+	scrollbar-color: var(--blue05) var(--white);
+	scrollbar-width: thin;
 }
 #user_conn > div > div.blue {
 	background-color: var(--blue01);
@@ -1548,8 +1560,14 @@ div.generalInfo{
 	overflow: hidden;
 }
 #comm_new_version{
-		overflow-y: auto;
-		max-height: calc(100vh - 200px);
+	overflow-y: auto;
+	max-height: calc(100vh - 200px);
+	scrollbar-color: var(--blue05) var(--white);
+	scrollbar-width: thin;
+	transition: all 0.3s;
+}
+#comm_new_version{
+	scrollbar-color: var(--orange05) var(--white);
 }
 span.signature{
 	color: var(--blue);
@@ -1558,3 +1576,4 @@ span.signature{
 	font-size: 1.5em;
 	padding-left: 20px;
 }
+

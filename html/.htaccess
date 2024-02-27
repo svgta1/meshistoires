@@ -1,7 +1,10 @@
 Header always set X-FRAME-OPTIONS "DENY"
 Header always set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options "nosniff"
-Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Origin null
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+Header always set Content-Security-Policy "default-src 'none'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' https://meshistoires.fr https://*.meshistoires.fr data:; script-src 'self'; style-src https 'self'; font-src 'self'"
+Header always set Referrer-Policy "strict-origin"
 
 DirectoryIndex index.html
 
