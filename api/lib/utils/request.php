@@ -7,6 +7,7 @@ class request
 {
   public static function JWE_dec(array $request, bool $jsonArray = false)
   {
+    $h = \array_change_key_case(\getallheaders());
     if(!isset($request['type']) || (isset($request['type']) && $request['type'] != 'enc')){
       response::json('403', 'The request must be encypted');
     }
@@ -18,7 +19,6 @@ class request
       response::json('403', 'Session out');
     }
 
-    $h = \array_change_key_case(\getallheaders());
     if(isset($h['content-type']) && isset($h['content-type']) == 'application/json')
       $res = json_decode($res, $jsonArray);
     unset($request['cypher']);
@@ -79,6 +79,12 @@ class request
   }
   public static function input_to_string(?string &$str)
   {
-    $str = \htmlspecialchars(\strip_tags(\trim($str)));
+    $str = \htmlspecialchars(\strip_tags(\stripslashes(\trim($str))));
+  }
+  public static function validate_tinymce(string &$text)
+  {
+    $allowedTags = '<p><strong><em><u><h1><h2><h3><h4><h5><h6><img>';
+    $allowedTags .= '<li><ol><ul><span><div><br><ins><del>';
+    $text = \strip_tags(\stripslashes(\trim($text)), $allowedTags);
   }
 }

@@ -866,7 +866,7 @@
   class Utils {
     static resp(msg, id){
       if(id == undefined)
-        id = crypto.randomUUID();;
+        id = crypto.randomUUID();
       let respInfo = document.getElementById(id);
       let create = false;
       if(respInfo == undefined){

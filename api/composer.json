@@ -10,6 +10,7 @@
         "svgta/oidc-client-php": "^1.1",
         "ext-yaml": "*",
         "ext-gmp": "*",
+        "ext-imagick": "*",
         "mongodb/mongodb": "^1.11",
         "geoip2/geoip2": "^3.0"
     },

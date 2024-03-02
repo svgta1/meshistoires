@@ -9,4 +9,5 @@ class news extends absModel
   public int $dateCreate = 0;
   public int $dateUpdate = 0;
   public bool $published = false;
+  public int $datePublished = 0;
 }

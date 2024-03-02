@@ -48,6 +48,123 @@
     }
   }
   class Utils {
+    static tinyMce = {
+      general_init: {
+        selector: 'textarea#admin_news_textarea',
+        height: 500,
+        width: 800,
+        plugins: "autosave advlist autolink lists link image preview charmap searchreplace visualblocks code fullscreen insertdatetime media table image wordcount",
+        toolbar: "restoredraft | insertfile undo redo | styleselect | bold italic underline | fontselect fontsizeselect forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image insert", schema: 'html5',
+        paste_data_images: true,
+        autosave_ask_before_unload: true,
+        autosave_interval: "5s",
+        autosave_prefix: "autosave-{path}{query}-{id}-",
+        autosave_restore_when_empty: true,
+        autosave_retention: "1440m",
+        image_uploadtab: true,
+        image_advtab: true,
+        relative_urls: false,
+        remove_script_host: false,
+        convert_urls: true,
+        content_css: "/components/css/default.css?" + new Date().getTime(),
+        setup: (editor) => {
+          editor.on('paste', (e) => {
+            setTimeout(() => { Utils.tinyMce.clean(); }, 1000);
+          });
+        }
+      },
+      upload_img: (blobInfo, progress) => new Promise( async (resolve, reject) => {
+        let bInfo=blobInfo.blob();
+        let fname = null;
+        if(bInfo.name){
+          fname=bInfo.name;
+        }else{
+          let tname=blobInfo.filename();
+          let ext=tname.split('.').pop();
+          fname = 'img_' + crypto.randomUUID() + '.' + ext;
+        }
+
+        let reader = new FileReader();
+        let base64String;
+        reader.readAsDataURL(bInfo);
+        reader.onloadend = function () {
+          base64String = reader.result;
+        }
+
+        tinymce.activeEditor.setProgressState(true);
+        let auth = await Fetch.auth();
+        auth.body = JSON.stringify({
+          file_name: fname,
+          content: base64String
+        });
+        let json = await Fetch.post(apiUri + '/admin/image', auth);
+        tinymce.activeEditor.setProgressState(false);
+        if(!json.ok){
+          console.error(json.resp);
+          reject(json.resp);
+          return;
+        }
+        let img = mh.config.api.uri + mh.config.api.version + '/imageThumb300/' + json.resp.filename;
+        resolve(img);
+      }),
+      clean_text: function(text){
+        return text.replace('\x3C!-- [if !supportLists]--><span><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>\x3C!--[endif]-->', '');
+      },
+      setSib: function(elm){
+        let sib = elm.nextSibling.nextSibling;
+        if(sib.classList.contains('MsoListParagraphCxSpMiddle') || sib.classList.contains('MsoListParagraphCxSpLast'))
+          this.list.push(this.clean_text(sib.innerHTML));
+        if(sib.classList.contains('MsoListParagraphCxSpMiddle')){
+          this.setSib(sib);
+        }
+        if(sib.classList.contains('MsoListParagraphCxSpLast')){
+          sib.remove();
+        }
+        elm.remove();
+      },
+      clean_MsoList: function(poubelle){
+        let l = poubelle.getElementsByClassName('MsoListParagraphCxSpFirst');
+        if(l.length > 0){
+          this.list = [];
+          let _l = l[0];
+          this.list.push(this.clean_text(l[0].innerHTML));
+          let ul = document.createElement('ul');
+          poubelle.insertBefore(ul, l[0]);
+          this.setSib(l[0]);
+          for(let i = 0; i < this.list.length; i++){
+            let li = document.createElement('li');
+            ul.appendChild(li);
+            li.innerHTML = this.list[i];
+          }
+        }
+        if(poubelle.getElementsByClassName('MsoListParagraphCxSpFirst').length > 0)
+          this.clean_MsoList(poubelle);
+      },
+      clean_MsoNormal: function(poubelle){
+        let l = poubelle.getElementsByClassName('MsoNormal');
+        if(l.length > 0){
+          l[0].removeAttribute('class');
+          this.clean_MsoNormal(poubelle);
+        }
+      },
+      clean_style: function(poubelle){
+        let l = poubelle.querySelectorAll("*[style]");
+        if(l.length > 0){
+          l[0].removeAttribute('style');
+          this.clean_style(poubelle);
+        }
+      },
+      clean: function(){
+        let poubelle = document.createElement('div');
+        dispatchEvent.id = 'poubelle';
+        poubelle.innerHTML = tinyMCE.get('admin_news_textarea').getContent();
+        this.clean_MsoNormal(poubelle);
+        this.clean_style(poubelle);
+        this.clean_MsoList(poubelle);
+        tinyMCE.get('admin_news_textarea').setContent(poubelle.innerHTML);
+        poubelle.remove();
+      }
+    }
     static strUcFirst(a) {
       return (a+'').charAt(0).toUpperCase() + (a+'').substr(1);
     }

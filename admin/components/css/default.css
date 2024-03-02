@@ -100,6 +100,10 @@ button.orange {
 button.orange:hover {
 	background-color: var(--orange);
 }
+button.grey, button.grey:hover {
+	background-color: var(--grey);
+	cursor: not-allowed;
+}
 span.red {
 	color: var(--red);
 }
@@ -307,7 +311,7 @@ li.key {
 	font-family: 'Allura', cursive;
 	font-size: 2.5em;
 }
-#admin_cpt, #admin_com, #admin_msg {
+#admin_cpt, #admin_com, #admin_msg, div.admin_news {
 	max-width: calc(100vw - 195px);
 	width: calc(100vw - 195px);
 	background-color: var(--grey03);
@@ -345,6 +349,9 @@ div.generalInfo{
 	text-align: center !important;
 	max-width: 100vw !important;
 	font-size: 20px;
+}
+div.hidde{
+	visibility: hidden;
 }
 div.show{
 	visibility: visible;
@@ -493,4 +500,47 @@ div.nooverflow{
 }
 div.tinymce button, .tox button{
 	min-width: 0;
+}
+#news_setnews{
+	position: fixed;
+	top: 72px;
+	left: 0;
+	background-color: var(--grey03);
+	padding: 20px;
+	width: 100vw;
+	height: calc(100vh - 72px);
+	backdrop-filter: blur(4px);
+	text-align: center;
+}
+#news_setnews > div, #news_setnews div.tox-tinymce{
+	margin-left:auto;
+	margin-right: auto;
+}
+#news_setnews > div{
+	text-align: center;
+	background-color: var(--white);
+	display: inline-block;
+}
+#news_setnews > div > div{
+	display: inline-block;
+	vertical-align: top;
+}
+#admin_news_list{
+	background-color: var(--grey03);
+}
+#admin_news_list > li{
+	display: inline-block;
+}
+#admin_news_list > li > div{
+	display: inline-block;
+	text-align: center;
+	background-color: var(--white);
+	margin: 20px;
+	border-radius: 10px;
+}
+#admin_news_list table{
+	text-align: left;
+}
+div.admin_news{
+	background-color: var(--white);
 }
