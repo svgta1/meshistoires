@@ -171,6 +171,7 @@ class ui
       if($key['credentialId'] == $request['key'])
         unset($uInfo['sec_keys'][$k]);
     }
+    sort($uInfo['sec_keys']);
     db::get_res()['class']::delete(
       col: "keySec",
       uuid: $request['key']
@@ -226,8 +227,8 @@ class ui
       'mail' => $doc->mail,
       'givenname' => $doc->givenname,
       'sn' => $doc->sn,
-      'abo_news' => isset($doc->abo_news) ? $doc->abo_news : false,
-      'sec_keys' => isset($doc->sec_keys) ? $doc->sec_keys : [],
+      'abo_news' => $doc->abo_news,
+      'sec_keys' => $doc->sec_keys,
       'dateCreate' => self::getDate($doc, 'dateCreate'),
       'dateUpdate' => self::getDate($doc, 'dateUpdate'),
     ];
