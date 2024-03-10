@@ -29,7 +29,7 @@ class cache
       response::json(200, json_decode($cache, TRUE));
     }
   }
-  private static function _get($id){
+  public static function _get($id){
     $res = self::getRes();
     if(is_null($res))
       return null;

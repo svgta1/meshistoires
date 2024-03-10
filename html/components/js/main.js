@@ -45,10 +45,7 @@
       this.infoUrl = config.api.uri + '/info';
     }
     async getInfo(){
-      let info = window.localStorage.getItem('siteInfo');
-      if((info == null) || (info.length < 10)){
-        info = await this.getApiInfo();
-      }
+      let info = await this.getApiInfo();
       let title = document.getElementById('site_title');
       let desc = document.getElementById('site_desc');
       info = JSON.parse(info);
@@ -1089,9 +1086,9 @@
       if(this.JWKset == null){
         let uri = config.api.uri + config.api.version + '/JWK/sign';
         let json = await Fetch.get(uri, {
-          credentials: "include",
           headers: new Headers({
               'Authorization': 'Bearer ' + auth,
+              'Content-Type': 'application/json'
           }),
         });
         if(!json.ok)
@@ -1182,7 +1179,6 @@
     }
     static async auth(){
       return {
-        credentials: "include",
         headers: new Headers({
             'Authorization': 'Bearer ' + await Jose.getJWS(),
             'Content-Type': 'application/json'
@@ -1219,6 +1215,8 @@
     static async _fetch(method, uri, params){
       if(params === undefined)
         params = {};
+      if(params.credentials == undefined)
+        params.credentials = "same-origin";
       params.method = method;
       let response = await fetch(uri, params);
       return await this.response(response);
@@ -1271,10 +1269,8 @@
     async start(json){
       config = json;
       window.mh.config = config;
-      let htmlHead = document.getElementsByTagName('head')[0];
       Utils.loadScript("/components/js/ident.js", "scriptIdent");
       Utils.loadScript("/components/js/vendor/simplewebauthn.js", "scriptWebauthn");
-
       info = new Info();
       await info.getInfo();
       content = new Content();
@@ -1286,7 +1282,6 @@
         gArticle = new Article();
       }
 
-      let these = this;
       prevUrl = window.location.href;
       setInterval(() => {
         let currUrl = window.location.href;

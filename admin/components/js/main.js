@@ -476,7 +476,6 @@
     }
     static async auth(){
       return {
-        credentials: "include",
         headers: new Headers({
             'Authorization': 'Bearer ' + await Jose.getJWS(),
             'Content-Type': 'application/json'
@@ -513,6 +512,8 @@
     static async _fetch(method, uri, params){
       if(params === undefined)
         params = {};
+      if(params.credentials == undefined)
+        params.credentials = "same-origin";
       params.method = method;
       try{
         let response = await fetch(uri, params);
@@ -604,9 +605,9 @@
       if(this.JWKset == null){
         let uri = apiUri + '/JWK/sign';
         let json = await Fetch.get(uri, {
-          credentials: "include",
           headers: new Headers({
               'Authorization': 'Bearer ' + auth,
+              'Content-Type': 'application/json'
           }),
         });
         if(!json.ok)

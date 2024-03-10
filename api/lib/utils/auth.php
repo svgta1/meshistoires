@@ -49,8 +49,8 @@ class auth
 
       $h = \hash('sha256', json_encode([
         'uuid' => $_SESSION['ui']['uuid'],
-        'ua' => $_SESSION['ui']['ua'],
-        'ip' => $_SESSION['ui']['ip'],
+        'ua' => Utils::getUA(),
+        'ip' => Utils::getIP(),
       ]));
       if($payload['h'] !== $h)
         response::json(401, 'Bad authorization token');
@@ -78,18 +78,13 @@ class auth
       'sub' => Utils::genUUID(),
       'jti' => Utils::genUUID(),
       'rp' => $rp,
-      'h' => \hash('sha256', json_encode([
-        'uuid' => $_SESSION['ui']['uuid'],
-        'ua' => Utils::getUA(),
-        'ip' => Utils::getIP(),
-      ]))
     ];
 
     if(\boolval($_ENV['ADMIN_SECURE_JWS'])){
       $payload['h'] = hash('sha256', json_encode([
         'uuid' => $_SESSION['ui']['uuid'],
-        'ua' => $_SESSION['ui']['ua'],
-        'ip' => $_SESSION['ui']['ip'],
+        'ua' => Utils::getUA(),
+        'ip' => Utils::getIP(),
       ]));
       $payload['sub'] = $_SESSION['ui']['uuid'];
     }

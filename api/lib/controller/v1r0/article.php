@@ -27,69 +27,56 @@ class article
   public function prev()
   {
     $request = $this->request;
-    $articles = $this->nextPrev($request['uuid']);
-    $key = array_search($request['uuid'], $articles['articles']);
-    if(!isset($articles['articles'][$key - 1]))
-      response::json(200, ['error' => 'No more article']);
-    $uuid = $articles['articles'][$key - 1];
-    $this->_get($uuid, $articles['menuName']);
+    $cache_id = $this->className.'_'.__FUNCTION__.'_' . $request['uuid'];
+    $cache = cache::get($cache_id);
+
+    $article = $this->getArticle($request['uuid']);
+    if(is_null($article))
+      response::json(404, 'Article not found');
+    $prev = $this->nextPrev($article['position'] - 1, $article['parent']);
+    cache::set($cache_id, json_encode($prev));
+    response::json(200, $prev);
   }
   public function next()
   {
     $request = $this->request;
-    $articles = $this->nextPrev($request['uuid']);
-    $key = array_search($request['uuid'], $articles['articles']);
-    if(!isset($articles['articles'][$key + 1]))
-      response::json(200, ['error' => 'No more article']);
-    $uuid = $articles['articles'][$key + 1];
-    $this->_get($uuid, $articles['menuName']);
-  }
-  private function _get(string $uuid, string $menuName)
-  {
-    $cache_id = $this->className.'_'.__FUNCTION__.'_' . $uuid;
+    $cache_id = $this->className.'_'.__FUNCTION__.'_' . $request['uuid'];
     $cache = cache::get($cache_id);
 
-    $col = "articles";
-    $res = [];
-
-    $doc = $this->dbRes['class']::getOne(
-      col: $col,
-      param: ['uuid' => $uuid],
-      projection: ['title', 'uuid', 'dateUpdate']
+    $article = $this->getArticle($request['uuid']);
+    if(is_null($article))
+      response::json(404, 'Article not found');
+    $next = $this->nextPrev($article['position'] + 1, $article['parent']);
+    cache::set($cache_id, json_encode($next));
+    response::json(200, $next);
+  }
+  private function nextPrev(int $position, string $parent): array
+  {
+    $np = $this->dbRes['class']::getOne(
+      col: 'articles',
+      param: [
+        'parent' => $parent, 
+        'deleted' => false, 
+        'visible' => true,
+        'position' => $position
+      ],
+      projection: ['uuid']
     );
-    if(is_null($doc))
+    if(is_null($np))
+      response::json(404, 'Article not found');
+
+    $np = $this->getArticle($np->uuid);
+    if(is_null($np))
       response::json(404, 'Article not found');
     $res = [
-      'title' => $doc->title,
-      'update' => $doc->dateUpdate,
-      'uuid' => $doc->uuid,
-    ];
-
-    $res['uri'] = seo::seofy($menuName) . '/' . seo::seofy($doc->title);
-    cache::set($cache_id, json_encode($res));
-    response::json(200, $res);
-  }
-  private function nextPrev(string $uuid): array
-  {
-    $col = "articles";
-    $col_menu = "menus";
-    $doc = $this->dbRes['class']::getOne(
-      col: $col,
-      param: ['uuid' => $uuid],
-      projection: ['parent']
-    );
-    $docM = $this->dbRes['class']::getOne(
-      col: $col_menu,
-      param: ['uuid' => $doc->parent],
-      projection: ['articles', 'name']
-    );
-
-    $res = [
-      'articles' => json_decode(json_encode($docM->articles), TRUE),
-      'menuName' => $docM->name,
+      'title' => $np['title'],
+      'update' => $np['update'],
+      'uuid' => $np['uuid'],
+      'uri' => $np['uri']
     ];
     return $res;
   }
+  
   public function list()
   {
     $request = $this->request;
@@ -186,20 +173,27 @@ class article
     cache::set($cache_id, json_encode($res));
     response::json(200, $res);
   }
-  public function get()
-  {
-    $request = $this->request;
-    $cache_id = $this->className.'_'.__FUNCTION__.'_' . $request['uuid'];
-    $cache = cache::get($cache_id);
-
-    $col = "articles";
-    $col_menu = "menus";
-    $res = [];
-
-    $doc = $this->dbRes['class']::getOne(col: $col, param: ['uuid' => $request['uuid'], 'visible' => true, 'deleted' => false]);
-    if(is_null($doc))
+  public function get(){
+    $article = $this->getArticle($this->request['uuid']);
+    if(is_null($article))
       response::json(404, 'Article not found');
-    if(!is_null($doc) && isset($doc->content)){
+    response::json(200, $article);
+  }
+  private function getArticle($uuid)
+  {
+    $cache_id = $this->className.'_'.__FUNCTION__.'_' . $uuid;
+    $cache = cache::_get($cache_id);
+    if($cache)
+      return \json_decode($cache, true);
+
+    $res = [];
+    $doc = $this->dbRes['class']::getOne(
+      col: 'articles', 
+      param: ['uuid' => $uuid, 'visible' => true, 'deleted' => false]
+    );
+    if(is_null($doc))
+      return null;
+    if(isset($doc->content)){
       $change = $this->changeImg($doc->content);
     }else{
       $change = [
@@ -210,20 +204,25 @@ class article
     $res = [
       'title' => $doc->title,
       'update' => $doc->dateUpdate,
-      'resume' => isset($doc->resume) ? $doc->resume : false,
+      'resume' => $doc->resume,
       'uuid' => $doc->uuid,
       'content' => $change['content'],
       'firstImage' => $change['firstImg'],
-      'comment' => isset($doc->comment) ? $doc->comment : false,
+      'comment' => $doc->comment,
+      'position' => $doc->position,
+      'parent' => $doc->parent,
     ];
-    $rM = $this->dbRes['class']::getOne(col: $col_menu, param: ['uuid' => $doc->parent, 'visible' => true, 'deleted' => false]);
+    $rM = $this->dbRes['class']::getOne(
+      col: 'menus', 
+      param: ['uuid' => $doc->parent, 'visible' => true, 'deleted' => false]
+    );
     if(is_null($rM))
-      response::json(404, 'Article not found');
+      return null;
     $res['menu_name'] = $rM->name;
     $res['menu_uuid'] = $rM->uuid;
     $res['uri'] = seo::seofy($rM->name) . '/' . seo::seofy($doc->title);
     cache::set($cache_id, json_encode($res));
-    response::json(200, $res);
+    return $res;
   }
   private function changeImg(string $content)
   {
