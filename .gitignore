@@ -1,0 +1,7 @@
+api/config/*
+api/composer.lock
+api/data/*
+api/vendor/*
+api/.env
+html/config/config.json
+html/robots.txt

@@ -1,0 +1,28 @@
+{
+    "name": "meshistoires/api",
+    "description": "API pour Mes Histoires",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "guzzlehttp/guzzle": "^7.8",
+        "phpmailer/phpmailer": "^6.9",
+        "svgta/webauthn": "^1.0",
+        "svgta/oidc-client-php": "^1.1",
+        "ext-yaml": "*",
+        "ext-gmp": "*",
+        "ext-imagick": "*",
+        "mongodb/mongodb": "^1.11",
+        "geoip2/geoip2": "^3.0"
+    },
+    "license": "GPL-3.0-only",
+    "autoload": {
+        "psr-4": {
+            "Meshistoires\\Api\\": "lib/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Svgta"
+        }
+    ]
+}
