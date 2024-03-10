@@ -300,7 +300,7 @@ class ui
       response::json('400', 'User exist');
 
     $res = db::get_res()['class']::post(col: "contact", param: $u->_toArray());
-    if($res != 1)
+    if(!$res)
       response::json('400', 'Error on create user');
     return $u->uuid;
   }

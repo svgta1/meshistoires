@@ -75,7 +75,7 @@
         document.getElementById('news_setnews_published_date').innerHTML = Utils.formatDateHM(json.datePublished);
       tinyMCE.get('admin_news_textarea').setContent(json.msg);
 
-      document.getElementById('clean_editor').addEventListener('click', () => {Utils.tinyMce.clean();});
+      document.getElementById('clean_editor').addEventListener('click', () => {Utils.tinyMce.clean('admin_news_textarea');});
       document.getElementById('news_setnews_annuler').addEventListener('click', () => {
         tinymce.remove();
         div.remove();
@@ -129,6 +129,11 @@
       let initParam = Utils.tinyMce.general_init;
       initParam.selector = 'textarea#admin_news_textarea';
       initParam.images_upload_handler = Utils.tinyMce.upload_img;
+      initParam.setup = (editor) => {
+        editor.on('paste', (e) => {
+          setTimeout(() => { Utils.tinyMce.clean('admin_news_textarea'); }, 1000);
+        });
+      }
       tinymce.init(initParam);  
     }
     async init(){

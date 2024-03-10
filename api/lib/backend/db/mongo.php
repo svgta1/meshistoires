@@ -6,6 +6,18 @@ use Meshistoires\Api\backend\db;
 class mongo implements dbInt
 {
   private static $res = null;
+  public static function replace(
+    string $col,
+    string $uuid,
+    array $replace
+  )
+  {
+    $replace = self::get_res()->{$col}->replaceOne(
+      ['uuid' => $uuid],
+      $replace
+    );
+    return $replace->getModifiedCount();
+  }
   public static function deleteMany(
     string $col,
     array $param
@@ -47,7 +59,9 @@ class mongo implements dbInt
     array $param = []
   ){
     $insert = self::get_res()->{$col}->insertOne($param);
-    return $insert->getInsertedCount();
+    if($insert->getInsertedCount() !== 1)
+      return false;
+    return $insert->getInsertedId();
   }
   public static function count(
     string $col,

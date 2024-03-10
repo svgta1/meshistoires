@@ -2,6 +2,11 @@
 namespace Meshistoires\Api\backend\db;
 interface dbInt
 {
+  public static function replace(
+    string $col,
+    string $uuid,
+    array $replace
+  );
   public static function deleteMany(
     string $col,
     array $param

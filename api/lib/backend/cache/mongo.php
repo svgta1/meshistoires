@@ -17,6 +17,11 @@ class mongo extends cacheAbs implements cacheInt
     }
     return self::dec($doc->str);
   }
+  public static function clean()
+  {
+    $col = 'cache';
+    self::get_res()->{$col}->deleteMany(['type' => 'cache']);
+  }
   public static function delete(string $id)
   {
     $col = 'cache';
@@ -38,11 +43,4 @@ class mongo extends cacheAbs implements cacheInt
       self::get_res()->{$col}->updateOne(['uuid' => $id], ['$set' => ['str' => $data, 'exp' => time() + $lifetTime]]);
     }
   }
-  /*protected static function get_res()
-  {
-    if(is_null(self::$res))
-      self::$res = cache::get_res();
-    self::$config = \yaml_parse_file($_ENV['CACHE_YAML']);
-    return self::$res['res'];
-  }*/
 }

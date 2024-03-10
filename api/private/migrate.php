@@ -9,9 +9,15 @@ $contacts->testMigrate();
 
 $articles = new Meshistoires\Api\migrate\mongo\articles();
 $articles->testMigrate();
+$articles->changeModel();
 
 $comments = new Meshistoires\Api\migrate\mongo\comments();
 $comments->testMigrate();
 
 $menus = new Meshistoires\Api\migrate\mongo\menus();
 $menus->testMigrate();
+
+$position = new Meshistoires\Api\migrate\mongo\articlePosition();
+$position->doMigration();
+
+$menus->changeModel();

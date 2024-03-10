@@ -31,6 +31,35 @@ class image
     }
     $this->dir = $dir;
   }
+  public function list()
+  {
+    $request = $this->request;
+    if(isset($request['skip']))
+      $request['skip'] = (int)$request['skip'];
+
+    if(!isset($request['skip']))
+      $request['skip'] = 0;
+    $cursor = $this->stockage['class']::list($request['skip']);
+    $res = [
+      'skip' => $request['skip'],
+      'list' => [],
+      'count' => 0,
+      'total' => $this->stockage['class']::count()
+    ];
+    foreach($cursor as $doc)
+      $res['list'][] = [
+        'title' => $doc->metadata->title,
+        'value' => $doc->filename
+      ];
+    $res['count'] = count($res['list']);
+    response::json('200', $res);
+  }
+  public function delete()
+  {
+    $request = $this->request;
+    $this->stockage['class']::delete($request['uuid']);
+    response::json(204, '');
+  }
   public function post()
   {
     $request = $this->request;

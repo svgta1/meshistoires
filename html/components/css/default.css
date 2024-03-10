@@ -64,6 +64,8 @@ body.mce-content-body {
 	padding-left: 5vw;
 	padding-right: 5vw;
 	width:90vw;
+	scrollbar-color: var(--orange) var(--grey03);
+	scrollbar-width: thin;
 }
 
 html{

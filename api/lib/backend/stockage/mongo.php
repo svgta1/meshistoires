@@ -12,6 +12,18 @@ class mongo implements stockageInt
   const THUMB300="thumb300";
   const PDF = "pdf";
 
+  public static function delete(string $file)
+  {
+    self::deleteImg(self::IMG, $file);
+    self::deleteImg(self::THUMB, $file);
+    self::deleteImg(self::THUMB300, $file);
+  }
+  private static function deleteImg(string $bucketName, string $file){
+    $bucket = self::get_res()->selectGridFSBucket(['bucketName' => $bucketName]);
+    $doc = $bucket->findOne(['filename' => $file]);
+    if(!is_null($doc))
+      $bucket->delete($doc->_id);
+  }
   public static function post(string $file): string
   {
     if (\in_array(\strtolower(\pathinfo($file, PATHINFO_EXTENSION)), array("jpg", "jpeg"))){
@@ -185,6 +197,24 @@ class mongo implements stockageInt
       'metadata' => $doc,
       'stream' => $bucket->openDownloadStreamByName($uuid, ['revision' => 0])
     ];
+  }
+
+  public static function list(int $skip = 0)
+  {
+    $bucket = self::get_res()->selectGridFSBucket(['bucketName' => self::IMG]);
+    $cursor = $bucket->find([], [
+      'sort' => ['uploadDate' => -1],
+      'skip' => $skip,
+      'limit' => 50,
+      'projection' => ['filename' => 1, 'metadata.title' => 1]
+    ]);
+    return $cursor;
+  }
+
+  public static function count(): int
+  {
+    $col = self::IMG . '.files';
+    return self::get_res()->{$col}->count();
   }
 
   private static function get_res(){

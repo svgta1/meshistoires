@@ -210,33 +210,7 @@ div.title{
 	overflow-y: auto;
 	padding-left: 1em;
 }
-#top #menu #menu_ul{
-	padding: 0;
-}
-#top ul{
-  cursor: pointer;
-  padding-left: 1.2em;
-}
-#top li span:before{
-	content: " ⮞ ";
-	margin-right: 5px;
-}
-#top li span{
-  transition: all 0.3s;
-}
-#top li span:hover{
-  color: var(--orange);
-}
-#top span.selected:before{
-	content: '⮞';
-	color: var(--red);
-	margin-right: 5px;
-}
-#top span.selected:after{
-	content: '⮜';
-	color: var(--red);
-	margin-left: 5px;
-}
+
 #content {
 	margin-top: 72px;
 	position: relative;
@@ -311,9 +285,9 @@ li.key {
 	font-family: 'Allura', cursive;
 	font-size: 2.5em;
 }
-#admin_cpt, #admin_com, #admin_msg, div.admin_news {
-	max-width: calc(100vw - 195px);
-	width: calc(100vw - 195px);
+#admin_cpt, #admin_com, #admin_msg, div.admin_news, #admin_imgs_list {
+	max-width: calc(100vw - 200px);
+	width: calc(100vw - 200px);
 	background-color: var(--grey03);
 	text-align: center;
 }
@@ -412,12 +386,17 @@ div.nooverflow{
 	border: 1px solid var(--blue);
 	text-align: center;
 	height: 500px;
+	padding: 10px;
 }
 #admin_msg div.overflow{
 	overflow-y: auto;
 	overflow-x: hidden;
-	height: 275px;
+	height: 260px;
 	text-align: left;
+	padding: 10px;
+	scrollbar-color: var(--orange) var(--white);
+	scrollbar-width: thin;
+	background-color: var(--grey03);
 }
 #admin_msg table{
 	margin: 0;
@@ -426,23 +405,18 @@ div.nooverflow{
 }
 #admin_msg textarea{
 	width: 80%;
-    max-width: none;
-    height: 50px;
-    max-height: 80px;
+	max-width: none;
+	height: 50px;
+	max-height: 80px;
 	border-radius: 10px;
-    background-color: var(--blue01);
-    border: 1px solid var(--blue);
-    padding: 10px;
+	background-color: var(--orange01);
+	border: 1px solid var(--orange);
+	padding: 10px;
 }
 #admin_msg div span{
 	font-size: 0.8em;
     margin-bottom: 5px;
     display: inline-block;
-}
-#admin_msg div.overflow{
-	padding: 10px;
-	scrollbar-color: var(--orange) var(--white);
-	scrollbar-width: thin;
 }
 #admin_msg div.overflow div{
 	max-width: 80%;
@@ -493,7 +467,9 @@ div.nooverflow{
 	list-style-type: none;
 }
 #admin_msg h2{
+	border-top: 2px solid var(--blue);
 	margin: 5px;
+	padding-top: 5px;
 }
 #admin_msg div.nooverflow > span{
 	font-size: 15px;
@@ -501,37 +477,49 @@ div.nooverflow{
 div.tinymce button, .tox button{
 	min-width: 0;
 }
-#news_setnews{
+#news_setnews, #aff_img, #article_aff{
 	position: fixed;
 	top: 72px;
 	left: 0;
-	background-color: var(--grey03);
 	padding: 20px;
 	width: 100vw;
 	height: calc(100vh - 72px);
 	backdrop-filter: blur(4px);
 	text-align: center;
+	background: url(/components/img/bg.png) no-repeat center center fixed;
+	background-position: calc(100vw - 120px) center;
+	background-repeat: no-repeat;
+	background-size: auto 50%;
+	background-color: var(--grey03);
+	padding-top: 10px;
 }
-#news_setnews > div, #news_setnews div.tox-tinymce{
+#news_setnews > div, #news_setnews div.tox-tinymce, #article_aff > div{
 	margin-left:auto;
 	margin-right: auto;
 }
-#news_setnews > div{
+#news_setnews > div, #article_aff > div{
 	text-align: center;
 	background-color: var(--white);
 	display: inline-block;
+	border: 3px solid var(--blue05);
+	border-radius: 10px;
+	max-height: calc(100vh - 100px);
+	overflow-y: auto;
+	max-width: calc(100vw - 80px);
+	scrollbar-color: var(--blue) var(--grey03);
+	scrollbar-width: thin;
 }
-#news_setnews > div > div{
+#news_setnews > div > div, #article_aff > div > div{
 	display: inline-block;
 	vertical-align: top;
 }
 #admin_news_list{
 	background-color: var(--grey03);
 }
-#admin_news_list > li{
+#admin_news_list > li, #admin_imgs_list > li{
 	display: inline-block;
 }
-#admin_news_list > li > div{
+#admin_news_list > li > div, #admin_imgs_list li > div{
 	display: inline-block;
 	text-align: center;
 	background-color: var(--white);
@@ -543,4 +531,83 @@ div.tinymce button, .tox button{
 }
 div.admin_news{
 	background-color: var(--white);
+}
+#admin_imgs_list li > div{
+	padding: 10px;
+	height: 200px;
+	width: 380px;
+	vertical-align: top;
+}
+#aff_img img{
+	max-height: calc(100% - 30px);
+	max-width: calc(100% - 30px);
+	border: 10px solid var(--white);
+}
+
+#admin_menus_list{
+	padding: 0;
+}
+#admin_menus_list ul{
+  cursor: pointer;
+  padding-left: 1.2em;
+}
+#admin_menus_list li span:before{
+	content: " ⮞ ";
+	margin-right: 5px;
+}
+#admin_menus_list li span{
+  transition: all 0.3s;
+}
+#admin_menus_list li span:hover{
+  color: var(--orange);
+}
+#admin_menus_list span.selected{
+	color: var(--red);
+}
+#admin_menus_list span.selected:before{
+	content: '⮞';
+	color: var(--red);
+	margin-right: 5px;
+}
+#admin_menus_list span.selected:after{
+	content: '⮜';
+	color: var(--red);
+	margin-left: 5px;
+}
+#admin_menus > div{
+	display: inline-block;
+	vertical-align: top;
+	max-height: calc(100vh - 100px);
+	overflow-y: auto;
+	scrollbar-color: var(--blue) var(--grey03);
+	scrollbar-width: thin;
+}
+#menu li span, #menu_submenutable td, #menu_articletable td{
+	cursor: pointer;
+}
+#menu li span{
+	line-height: 32px;
+	font-size: 1.2em;
+	transition: all 0.3s;
+}
+#menu li span:hover{
+	color: var(--orange);
+}
+#menu li span:before{
+	content: " ⮞ "
+}
+.tox div.tox-promotion{
+	visibility: hidden;
+}
+#admin_menus_details > div{
+	padding: 10px;
+	background-color: var(--grey03);
+	text-align: center;
+}
+#admin_menus_details > div table{
+	background-color: var(--white);
+	text-align: left;
+}
+#admin_imgs_list img{
+	cursor: pointer;
 }

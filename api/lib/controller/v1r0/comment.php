@@ -146,7 +146,7 @@ class comment
     $comment->artUUID = $request['articleUuid'];
 
     $res = $this->dbRes['class']::post(col: "comment", param: $comment->_toArray());
-    if($res != 1){
+    if(!$res){
       response::json(400, 'Error on create comment');
     }
     $this->mailNewCommentAdm($comment->givenName, $artDoc, $menuDoc, $comment->msg);

@@ -28,4 +28,20 @@ class menus extends abstractMig
       param: $ar
     );
   }
+  public function changeModel()
+  {
+    $cursor = $this->dbRes['class']::get(col: $this->col);
+    foreach($cursor as $doc){
+      $m = new mMenu();
+      $doc = json_decode(json_encode($doc), true);
+      foreach($m as $k => $v){
+        $m->{$k} = $doc[$k];
+      }
+      $this->dbRes['class']::replace(
+        col: $this->col,
+        uuid: $m->uuid,
+        replace: $m->_toArray()
+      );
+    }
+  }
 }

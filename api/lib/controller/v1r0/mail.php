@@ -79,7 +79,7 @@ class mail
       col: 'mail',
       param: $contact->_toArray()
     );
-    if($res != 1)
+    if(!$res)
       response::json(400, 'Error in enreg');
 
     $tpl = \file_get_contents($_ENV['MAIL_TPL'] . '/adm_new_mail.tpl');

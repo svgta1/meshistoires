@@ -11,6 +11,7 @@
     menu_news: {scope: 'auth admin:read', desc: 'News letter', path: '/news'},
     menu_img: {scope: 'auth admin:read', desc: 'Images', path: '/img'},
     menu_ana: {scope: 'auth admin:read', desc: 'Analytics', path: '/ana'},
+    menu_site: {scope: 'auth', desc: 'Retour au site', path: '/'},
     menu_out: {scope: 'auth', desc: 'Déconnexion', path: '/'},
   }
 
@@ -50,27 +51,36 @@
   class Utils {
     static tinyMce = {
       general_init: {
-        selector: 'textarea#admin_news_textarea',
         height: 500,
         width: 800,
         plugins: "autosave advlist autolink lists link image preview charmap searchreplace visualblocks code fullscreen insertdatetime media table image wordcount",
         toolbar: "restoredraft | insertfile undo redo | styleselect | bold italic underline | fontselect fontsizeselect forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image insert", schema: 'html5',
         paste_data_images: true,
         autosave_ask_before_unload: true,
-        autosave_interval: "5s",
+        autosave_interval: "30s",
         autosave_prefix: "autosave-{path}{query}-{id}-",
         autosave_restore_when_empty: true,
         autosave_retention: "1440m",
         image_uploadtab: true,
         image_advtab: true,
+        image_caption: true,
         relative_urls: false,
         remove_script_host: false,
         convert_urls: true,
         content_css: "/components/css/default.css?" + new Date().getTime(),
-        setup: (editor) => {
-          editor.on('paste', (e) => {
-            setTimeout(() => { Utils.tinyMce.clean(); }, 1000);
-          });
+        image_list: async (success) => {
+          let json = await Fetch.get(apiUri + '/admin/images', await Fetch.auth());
+          if(!json.ok){
+            console.error('List not accessible');
+            return;
+          }
+          let list = [];
+          for(let i = 0; i < json.resp.count; i++){
+            let img = json.resp.list[i];
+            img.value = mh.config.api.uri + mh.config.api.version + '/imageThumb300/' + img.value;
+            list.push(img);
+          }
+          success(list);
         }
       },
       upload_img: (blobInfo, progress) => new Promise( async (resolve, reject) => {
@@ -126,7 +136,6 @@
         let l = poubelle.getElementsByClassName('MsoListParagraphCxSpFirst');
         if(l.length > 0){
           this.list = [];
-          let _l = l[0];
           this.list.push(this.clean_text(l[0].innerHTML));
           let ul = document.createElement('ul');
           poubelle.insertBefore(ul, l[0]);
@@ -154,14 +163,14 @@
           this.clean_style(poubelle);
         }
       },
-      clean: function(){
+      clean: function(id){
         let poubelle = document.createElement('div');
         dispatchEvent.id = 'poubelle';
-        poubelle.innerHTML = tinyMCE.get('admin_news_textarea').getContent();
+        poubelle.innerHTML = tinyMCE.get(id).getContent();
         this.clean_MsoNormal(poubelle);
         this.clean_style(poubelle);
         this.clean_MsoList(poubelle);
-        tinyMCE.get('admin_news_textarea').setContent(poubelle.innerHTML);
+        tinyMCE.get(id).setContent(poubelle.innerHTML);
         poubelle.remove();
       }
     }
@@ -285,14 +294,19 @@
           let span = document.createElement('span');
           span.innerHTML = value.desc;
           li.appendChild(span);
-          if(key !== 'menu_out'){
+          if(key !== 'menu_out' && key !== 'menu_site'){
             span.addEventListener('click', function(e){
               window.location = config.adminPath + value.path;
             });
           }else{
             span.addEventListener('click', function(e){
-              window.localStorage.removeItem('_ua');
-              document.location = config.adminPath;
+              if(key == 'menu_out'){
+                window.localStorage.removeItem('_ua');
+                document.location = config.adminPath;
+              }
+              if(key == 'menu_site'){
+                document.location = value.path;
+              }
             });
           }
         }
@@ -500,8 +514,12 @@
       if(params === undefined)
         params = {};
       params.method = method;
-      let response = await fetch(uri, params);
-      return await this.response(response);
+      try{
+        let response = await fetch(uri, params);
+        return await this.response(response);
+      }catch{
+        Utils.resp('Une erreur serveur a été détectée. L\'action est annulée.');
+      }
     }
     static async response(response){
       let contentType = null;

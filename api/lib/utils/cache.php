@@ -4,6 +4,11 @@ use Meshistoires\Api\backend\cache as bckCache;
 
 class cache
 {
+  public static function clean()
+  {
+    $res = self::getRes();
+    $res['class']::clean();
+  }
   public static function set(string $id, string $data)
   {
     $res = self::getRes();
@@ -15,7 +20,7 @@ class cache
   {
     $cache = self::_get($id);
     if($cache)
-      response::json(200, json_decode($cache, TRUE));
+      response::xml(200, json_decode($cache, TRUE));
   }
   public static function get(string $id)
   {

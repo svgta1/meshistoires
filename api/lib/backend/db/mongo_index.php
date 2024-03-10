@@ -15,6 +15,7 @@ class mongo_index
     $this->_creaInd($this->analytic());
     $this->_creaInd($this->keySec());
     $this->_creaInd($this->mail());
+    $this->_creaInd($this->news());
 
     $this->_creaInd($this->image());
     $this->_creaInd($this->thmb300());
@@ -61,6 +62,19 @@ class mongo_index
       ['key' => ['responseTo' => 1, 'type' => 1], 'unique' => false, 'name' => 'responseTo'],
       ['key' => ['createTs' => -1], 'unique' => false, 'name' => 'createTs'],
       ['key' => ['userUuid' => 1, 'type' => 1], 'unique' => false, 'name' => 'userUuid'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
+  private function news(): array
+  {
+    $col = 'news';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['userUuid' => 1], 'unique' => false, 'name' => 'userUuid'],
+      ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
     ];
     return [
       'col' => $col,
