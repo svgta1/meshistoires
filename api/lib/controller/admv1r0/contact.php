@@ -173,12 +173,16 @@ class contact
       uuid: $user->uuid,
     );
     $tpl = \file_get_contents($_ENV['MAIL_TPL'] . '/contact_deleted.tpl');
-    $this->mail->send(
-      subject: "Suppression de votre compte",
-      body: $tpl,
-      toMail: $user->mail,
-      toName: $user->givenname
-    );
+    try{
+      $this->mail->send(
+        subject: "Suppression de votre compte",
+        body: $tpl,
+        toMail: $user->mail,
+        toName: $user->givenname
+      );
+    }catch(\Throwable $t){
+
+    }
     response::json(204, '');
   }
   public function update()
