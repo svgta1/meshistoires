@@ -37,7 +37,7 @@
     <h3>Articles</h3>
     <button id="menu_newarticle">Créer un article</button>
     <table id="menu_articletable">
-      <tr><th>Position</th><th>Article</th></tr>
+      <tr><th>Position</th><th>Article</th><th>Visible</th></tr>
     </table>
   </div>
 </div>

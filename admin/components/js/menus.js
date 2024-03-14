@@ -503,7 +503,10 @@
         let td = document.createElement('td');
         tr.appendChild(td);
         td.innerHTML = this.articles[i].title.length > 0 ? this.articles[i].title : 'Sans titre';
-        td.addEventListener('click', ()=>{
+        let visible = document.createElement('td');
+        tr.appendChild(visible);
+        visible.innerHTML = this.articles[i].visible ? 'Oui' : 'Non';
+        tr.addEventListener('click', ()=>{
           let art = new Article(this.articles[i].uuid);
           art.affArticle();
         });

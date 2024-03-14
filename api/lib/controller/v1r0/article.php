@@ -227,7 +227,7 @@ class article
   private function changeImg(string $content)
   {
     $firstImage = null;
-    preg_match_all('/(src=\"([a-zA-Z0-9\.\?\/\=]*)\")/', $content, $matches,  PREG_SET_ORDER);
+    preg_match_all('/(src=\"([a-zA-Z0-9\.\?\/\=\:]*)\")/', $content, $matches,  PREG_SET_ORDER);
     foreach($matches as $matche)
     {
       $matche = array_unique($matche);

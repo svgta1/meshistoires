@@ -204,7 +204,7 @@ class article
       col: 'articles',
       param: ['parent' => $request['uuid'], 'deleted' => false],
       order: ['position' => 1],
-      projection: ['uuid', 'title', 'position']
+      projection: ['uuid', 'title', 'position', 'visible']
     );
     $res = [];
     foreach($cursor as $doc){
@@ -212,7 +212,8 @@ class article
         'title' => $doc->title,
         'uuid' => $doc->uuid,
         'position' => $doc->position,
-        'parent' => $request['uuid']
+        'parent' => $request['uuid'],
+        'visible' => $doc->visible,
       ];
       $res[] = $ar;
     }
