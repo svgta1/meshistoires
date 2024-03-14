@@ -84,7 +84,7 @@ class request
   public static function validate_tinymce(string &$text)
   {
     $allowedTags = '<p><strong><em><u><h1><h2><h3><h4><h5><h6><img>';
-    $allowedTags .= '<li><ol><ul><span><div><br><ins><del>';
+    $allowedTags .= '<li><ol><ul><span><div><br><ins><del><a>';
     $text = \strip_tags(\stripslashes(\trim($text)), $allowedTags);
   }
 }
