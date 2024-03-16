@@ -331,7 +331,6 @@
         a.setAttribute('uuid', subMenu[i]);
         li.appendChild(a);
         ul.appendChild(li);
-
         if(menu[subMenu[i]]){
           a.href = '/' + menu[subMenu[i]].uri;
           a.innerHTML = menu[subMenu[i]].name;
@@ -358,7 +357,6 @@
       if(window.localStorage.getItem('menu') == null)
         window.localStorage.setItem('menu', JSON.stringify(menus.list));
       return JSON.stringify(menus.list);
-      Seo.genSeoMenu();
     }
     async get_ApiMenuTop(){
       let url = this.menuUrl + '/top';
@@ -409,13 +407,22 @@
       if(subMenuDiv == null)
         return;
       subMenuDiv.innerHTML = "";
+      if(menu.name == "Accueil"){
+        let json = await Fetch.get(config.api.uri + config.api.version + '/menu/random');
+        if(json.ok)
+          menu.subMenu = json.resp;
+      }
       if(menu.subMenu.length == 0){
         subMenuDiv.classList.add('hide');
         document.getElementById('content').classList.add('minHeight');
         subMenuDiv.classList.remove('show');
       }else{
         let h2 = document.createElement('h2');
-        h2.innerHTML = "A lire dans cette section";
+        if(menu.name == "Accueil"){
+          h2.innerHTML = "Histoires au hasard";
+        }else{
+          h2.innerHTML = "A lire dans cette section";
+        }
         subMenuDiv.appendChild(h2);
         let ul = document.createElement('ul');
         subMenuDiv.appendChild(ul);

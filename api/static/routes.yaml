@@ -1,0 +1,607 @@
+routes:
+## Authent
+  - desc: Auth list
+    method: GET
+    uri: /v1/auth/list
+    version: v1r0
+    class: auth
+    class_method: list
+    scopes:
+  - desc: get a code
+    method: POST
+    uri: /v1/auth/code
+    version: v1r0
+    class: auth
+    class_method: genCode
+    scopes:
+  - desc: post a code
+    method: PUT
+    uri: /v1/auth/code
+    version: v1r0
+    class: auth
+    class_method: verifyCode
+    scopes:
+  - desc: webautnn get auth params
+    method: GET
+    uri: /v1/auth/webauthn
+    version: v1r0
+    class: auth
+    class_method: webauthn_params
+    scopes:
+  - desc: webauthn do auth
+    method: POST
+    uri: /v1/auth/webauthn
+    version: v1r0
+    class: auth
+    class_method: webauthn_auth
+    scopes:
+  - desc: webautnn enreg params
+    method: GET
+    uri: /v1/auth/webauthn/enreg
+    version: v1r0
+    class: auth
+    class_method: webauthn_enreg_params
+    scopes:
+      - auth
+  - desc: webautnn do params
+    method: POST
+    uri: /v1/auth/webauthn/enreg
+    version: v1r0
+    class: auth
+    class_method: webauthn_enreg
+    scopes:
+      - auth
+  - desc: OIDC uri
+    method: GET
+    uri: /v1/auth/oidc/{uuid}
+    version: v1r0
+    class: auth
+    class_method: oidc_uri
+    scopes:
+  - desc: OIDC callback
+    method: GET
+    uri: /v1/auth/oidc/callback/{uuid}
+    version: v1r0
+    class: auth
+    class_method: oidc_auth
+    scopes:
+  - desc: Renew JWT
+    method: PUT
+    uri: /v1/auth/renew
+    version: v1r0
+    class: auth
+    class_method: renewJWT
+    scopes:
+      - auth
+  - desc: Logout
+    method: DELETE
+    uri: /v1/auth
+    version: v1r0
+    class: auth
+    class_method: logout
+    scopes:
+      - auth
+
+##articles
+  - desc: read article
+    method: GET
+    uri: /v1/article/{uuid}
+    version: v1r0
+    class: article
+    class_method: get
+    scopes:
+  - desc: article Prev
+    method: GET
+    uri: /v1/article/{uuid}/prev
+    version: v1r0
+    class: article
+    class_method: prev
+    scopes:
+  - desc: article Next
+    method: GET
+    uri: /v1/article/{uuid}/next
+    version: v1r0
+    class: article
+    class_method: next
+    scopes:
+  - desc: articles from Parent
+    method: GET
+    uri: /v1/article/parent/{uuid}
+    version: v1r0
+    class: article
+    class_method: getFromParent
+    scopes:
+  - desc: articles list
+    method: GET
+    uri: /v1/article
+    version: v1r0
+    class: article
+    class_method: list
+    scopes:
+##menu
+  - desc: get Menu
+    method: GET
+    uri: /v1/menu/{uuid}
+    version: v1r0
+    class: menu
+    class_method: get
+    scopes:
+  - desc: list Menus
+    method: GET
+    uri: /v1/menu
+    version: v1r0
+    class: menu
+    class_method: list
+    scopes:
+  - desc: list TOP Menus
+    method: GET
+    uri: /v1/menu/top
+    version: v1r0
+    class: menu
+    class_method: listTop
+    scopes:
+  - desc: Random last menu
+    method: GET
+    uri: /v1/menu/random
+    version: v1r0
+    class: menu
+    class_method: menusRandom
+    scopes:
+
+##image
+  - desc: Get Image
+    method: GET
+    uri: /v1/image/{uuid}
+    version: v1r0
+    class: image
+    class_method: get
+    scopes:
+  - desc: Get Image thmb 300
+    method: GET
+    uri: /v1/imageThumb300/{uuid}
+    version: v1r0
+    class: image
+    class_method: getThumb300
+    scopes:
+  - desc: Get Image thmb
+    method: GET
+    uri: /v1/imageThumb/{uuid}
+    version: v1r0
+    class: image
+    class_method: getThumb
+    scopes:
+##info
+  - desc: Endpoints List
+    method: GET
+    uri: /endpoints
+    version:
+    class: info
+    class_method: endpoints
+    scopes:
+  - desc: Info site
+    method: GET
+    uri: /info
+    version:
+    class: info
+    class_method: info
+    scopes:
+  - desc: Comments actif
+    method: GET
+    uri: /info/commentActif
+    version:
+    class: info
+    class_method: commentEnable
+    scopes:
+  - desc: Contact actif
+    method: GET
+    uri: /info/contactActif
+    version:
+    class: info
+    class_method: contactEnable
+    scopes:
+##comments
+  - desc: Get comment
+    method: GET
+    uri: /v1/comment/{uuid}
+    version: v1r0
+    class: comment
+    class_method: get
+    scopes:
+  - desc: Get comments list from article
+    method: GET
+    uri: /v1/comment/article/{uuid}
+    version: v1r0
+    class: comment
+    class_method: getArticleList
+    scopes:
+  - desc: Post new comment to article
+    method: POST
+    uri: /v1/comment/article/{uuid}
+    version: v1r0
+    class: comment
+    class_method: post
+    scopes:
+      - auth
+## sitemap
+  - desc: site map articles
+    method: GET
+    uri: /v1/sitemap/articles
+    version: v1r0
+    class: sitemap
+    class_method: articles
+    scopes:
+  - desc: site map menus
+    method: GET
+    uri: /v1/sitemap/menus
+    version: v1r0
+    class: sitemap
+    class_method: menus
+    scopes:
+  - desc: site map index
+    method: GET
+    uri: /v1/sitemap/index
+    version: v1r0
+    class: sitemap
+    class_method: index
+    scopes:
+## ui
+  - desc: Ui post info
+    method: POST
+    uri: /v1/ui
+    version: v1r0
+    class: ui
+    class_method: post
+    scopes:
+  - desc: User Profile
+    method: GET
+    uri: /v1/user/profile
+    version: v1r0
+    class: ui
+    class_method: getProfile
+    scopes:
+      - auth
+  - desc: User update Profile
+    method: PUT
+    uri: /v1/user/profile
+    version: v1r0
+    class: ui
+    class_method: updateProfile
+    scopes:
+      - auth
+  - desc: User list comments
+    method: GET
+    uri: /v1/user/profile/comment
+    version: v1r0
+    class: comment
+    class_method: listUser
+    scopes:
+      - auth
+  - desc: User delete key
+    method: DELETE
+    uri: /v1/user/key
+    version: v1r0
+    class: ui
+    class_method: removeKey
+    scopes:
+      - auth
+  - desc: User history
+    method: GET
+    uri: /v1/user/history
+    version: v1r0
+    class: ui
+    class_method: history
+    scopes:
+      - auth
+  - desc: User cpt action
+    method: GET
+    uri: /v1/user/action/{uuid}
+    version: v1r0
+    class: ui
+    class_method: action
+    scopes:
+##JWK
+  - desc: get JWK Key for encyrption
+    method: GET
+    uri: /v1/JWK/enc
+    version: v1r0
+    class: JWK
+    class_method: getEnc
+    scopes:
+  - desc: get JWK Key for veify sign
+    method: GET
+    uri: /v1/JWK/sign
+    version: v1r0
+    class: JWK
+    class_method: getSign
+    scopes:
+      - auth
+##Mail - contact
+  - desc: List discussions
+    method: GET
+    uri: /v1/contact
+    version: v1r0
+    class: mail
+    class_method: getList
+    scopes:
+      - auth
+  - desc: List response
+    method: GET
+    uri: /v1/contact/{uuid}
+    version: v1r0
+    class: mail
+    class_method: getResponse
+    scopes:
+      - auth
+  - desc: Post discussion
+    method: POST
+    uri: /v1/contact
+    version: v1r0
+    class: mail
+    class_method: post
+    scopes:
+      - auth
+##admin menu
+  - desc: Admin list of top menu
+    method: GET
+    uri: /v1/admin/menus/top
+    version: admv1r0
+    class: menu
+    class_method: listTop
+    scopes:
+      - admin:read
+  - desc: Admin list of submenu
+    method: GET
+    uri: /v1/admin/menus/{uuid}
+    version: admv1r0
+    class: menu
+    class_method: listMenu
+    scopes:
+      - admin:read
+  - desc: Admin get menu
+    method: GET
+    uri: /v1/admin/menu/{uuid}
+    version: admv1r0
+    class: menu
+    class_method: getMenu
+    scopes:
+      - admin:read
+  - desc: Admin update menu
+    method: PUT
+    uri: /v1/admin/menu/{uuid}
+    version: admv1r0
+    class: menu
+    class_method: updateMenuInfo
+    scopes:
+      - admin:write
+  - desc: Admin delete menu
+    method: DELETE
+    uri: /v1/admin/menu/{uuid}
+    version: admv1r0
+    class: menu
+    class_method: deleteMenu
+    scopes:
+      - admin:delete
+  - desc: Admin create menu
+    method: POST
+    uri: /v1/admin/menu
+    version: admv1r0
+    class: menu
+    class_method: createMenu
+    scopes:
+      - admin:write
+
+##admin article
+  - desc: Admin get article
+    method: GET
+    uri: /v1/admin/article/{uuid}
+    version: admv1r0
+    class: article
+    class_method: getArticle
+    scopes:
+      - admin:read
+  - desc: Admin get article from parent
+    method: GET
+    uri: /v1/admin/articles/parent/{uuid}
+    version: admv1r0
+    class: article
+    class_method: getFromParent
+    scopes:
+      - admin:read
+  - desc: Admin create article from parent
+    method: POST
+    uri: /v1/admin/article
+    version: admv1r0
+    class: article
+    class_method: newArticle
+    scopes:
+      - admin:write
+  - desc: Admin update article
+    method: PUT
+    uri: /v1/admin/article/{uuid}
+    version: admv1r0
+    class: article
+    class_method: updateArticle
+    scopes:
+      - admin:write
+  - desc: Admin delete article
+    method: DELETE
+    uri: /v1/admin/article/{uuid}
+    version: admv1r0
+    class: article
+    class_method: deleteArticle
+    scopes:
+      - admin:delete
+
+## admin contact
+  - desc: Admin get contact list
+    method: GET
+    uri: /v1/admin/contacts
+    version: admv1r0
+    class: contact
+    class_method: list
+    scopes:
+      - admin:read
+  - desc: Admin get contact
+    method: GET
+    uri: /v1/admin/contact/{uuid}
+    version: admv1r0
+    class: contact
+    class_method: get
+    scopes:
+      - admin:read
+  - desc: Admin update contact
+    method: PUT
+    uri: /v1/admin/contact/{uuid}
+    version: admv1r0
+    class: contact
+    class_method: update
+    scopes:
+      - admin:write
+  - desc: Admin delete contact
+    method: DELETE
+    uri: /v1/admin/contact/{uuid}
+    version: admv1r0
+    class: contact
+    class_method: delete
+    scopes:
+      - admin:delete
+  - desc: Admin restore contact
+    method: PUT
+    uri: /v1/admin/contact/restore/{uuid}
+    version: admv1r0
+    class: contact
+    class_method: restore
+    scopes:
+      - admin:delete
+
+## admin Commentaires
+  - desc: Admin list comm
+    method: GET
+    uri: /v1/admin/com/list
+    version: admv1r0
+    class: comment
+    class_method: getList
+    scopes:
+      - admin:read
+  - desc: Admin com switch valid
+    method: PUT
+    uri: /v1/admin/com/{uuid}
+    version: admv1r0
+    class: comment
+    class_method: switchValid
+    scopes:
+      - admin:write
+  - desc: Admin com delete
+    method: DELETE
+    uri: /v1/admin/com/{uuid}
+    version: admv1r0
+    class: comment
+    class_method: delete
+    scopes:
+      - admin:delete
+## Admin chat mail
+  - desc: Admin list mail
+    method: GET
+    uri: /v1/admin/msg/list
+    version: admv1r0
+    class: mail
+    class_method: getList
+    scopes:
+      - admin:read
+  - desc: Admin post mail
+    method: POST
+    uri: /v1/admin/msg/{uuid}
+    version: admv1r0
+    class: mail
+    class_method: post
+    scopes:
+      - admin:write
+## Admin news letter mail
+  - desc: Admin list news
+    method: GET
+    uri: /v1/admin/news/list
+    version: admv1r0
+    class: news
+    class_method: list
+    scopes:
+      - admin:read
+  - desc: Admin get news
+    method: GET
+    uri: /v1/admin/news/{uuid}
+    version: admv1r0
+    class: news
+    class_method: get
+    scopes:
+      - admin:read
+  - desc: Admin post news
+    method: POST
+    uri: /v1/admin/news
+    version: admv1r0
+    class: news
+    class_method: post
+    scopes:
+      - admin:write
+  - desc: Admin put news
+    method: PUT
+    uri: /v1/admin/news/{uuid}
+    version: admv1r0
+    class: news
+    class_method: put
+    scopes:
+      - admin:write
+  - desc: Admin publish news
+    method: PUT
+    uri: /v1/admin/news/publish/{uuid}
+    version: admv1r0
+    class: news
+    class_method: publish
+    scopes:
+      - admin:write
+##image Admin
+  - desc: Get admin Image
+    method: GET
+    uri: /v1/admin/image/{uuid}
+    version: admv1r0
+    class: image
+    class_method: get
+    scopes:
+      - admin:read
+  - desc: Get Image thmb 300
+    method: GET
+    uri: /v1/admin/imageThumb300/{uuid}
+    version: admv1r0
+    class: image
+    class_method: getThumb300
+    scopes:
+      - admin:read
+  - desc: Get Image thmb
+    method: GET
+    uri: /v1/admin/imageThumb/{uuid}
+    version: admv1r0
+    class: image
+    class_method: getThumb
+    scopes:
+      - admin:read
+  - desc: POST Image
+    method: POST
+    uri: /v1/admin/image
+    version: admv1r0
+    class: image
+    class_method: post
+    scopes:
+  - desc: Get List Image
+    method: GET
+    uri: /v1/admin/images
+    version: admv1r0
+    class: image
+    class_method: list
+    scopes:
+      - admin:read
+  - desc: Delete image
+    method: DELETE
+    uri: /v1/admin/image/{uuid}
+    version: admv1r0
+    class: image
+    class_method: delete
+    scopes:
+      - admin:delete

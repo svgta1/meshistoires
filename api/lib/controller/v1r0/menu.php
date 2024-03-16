@@ -87,7 +87,10 @@ class menu
         'position' => $doc->position,
       ];
       $ar['articles'] = $this->getArticles($doc->uuid);
-      $ar['subMenu'] = $this->getSubM($doc->uuid);
+      if($doc->name !== "Accueil")
+        $ar['subMenu'] = $this->getSubM($doc->uuid);
+      else
+        $ar['subMenu'] = $this->menuLastList();
       $ar['uri'] = seo::seofy($doc->name);
       $res['list'][$doc->uuid] = $ar;
     }
@@ -130,7 +133,10 @@ class menu
         'position' => $doc->position,
       ];
       $ar['articles'] = $this->getArticles($doc->uuid);
-      $ar['subMenu'] = $this->getSubM($doc->uuid);
+      if($doc->name != "Accueil")
+        $ar['subMenu'] = $this->getSubM($doc->uuid);
+      else
+        $ar['subMenu'] = $this->menuLastList();
       $ar['uri'] = seo::seofy($doc->name);
       $res['list'][$doc->uuid] = $ar;
     }
@@ -138,6 +144,32 @@ class menu
     $res['metadata']['hash'] = \hash('sha256', json_encode($res['list']));
     cache::set($cache_id, json_encode($res));
     response::json(200, $res);
+  }
+  public function menusRandom()
+  {
+    response::json(200, $this->menuLastList());
+  }
+  private function menuLastList(): array
+  {
+    $list = [];
+    $cursor = $this->dbRes['class']::get(
+      col: 'menus',
+      param: ['visible' => true, 'deleted' => false],
+      projection: ['uuid'],
+      order: ['position' => 1]
+    );
+    foreach($cursor as $obj){
+      if(0 == $this->dbRes['class']::count(
+        col: 'menus',
+        param: ['parent' => $obj->uuid]
+      ))
+        $list[] = $obj->uuid;
+    }
+    \shuffle($list);
+    $ret = [];
+    for($i = 0; $i < 6; $i++)
+      $ret[] = $list[$i];
+    return $ret;
   }
   private function getArticles(string|bool $uuid): array
   {
