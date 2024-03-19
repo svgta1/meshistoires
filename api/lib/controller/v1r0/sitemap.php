@@ -51,10 +51,6 @@ class sitemap
     {
       if(!$doc->title)
         continue;
-      $ar = [
-        'title' => $doc->title,
-        'update' => $doc->dateUpdate,
-      ];
       $rM = $this->dbRes['class']::getOne(
         col: $col_menu,
         param: ['uuid' => $doc->parent, 'deleted' => false, 'visible' => true],
@@ -65,14 +61,17 @@ class sitemap
       if(isset($rM->visible) && !$rM->visible)
         continue;
 
-      $ar['uri'] = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . '/' . seo::seofy($rM->name) . '/' . seo::seofy($doc->title);
+      if($doc->title !== '')
+        $uri = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . '/' . seo::seofy($rM->name) . '/' . seo::seofy($doc->title);
+      else
+        $uri = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . '/' . seo::seofy($rM->name);
 
       $xw->startElement('url');
       $xw->startElement('loc');
-      $xw->text($ar['uri']);
+      $xw->text($uri);
       $xw->endElement(); //loc
       $xw->startElement('lastmod');
-      $xw->text(\date('Y-m-d', $ar['update']));
+      $xw->text(\date('Y-m-d', $doc->dateUpdate));
       $xw->endElement(); //lastmod
       $xw->endElement(); //url
     }
@@ -123,6 +122,76 @@ class sitemap
     cache::set($cache_id, json_encode($res));
     response::xml(200, $res);
   }
+  public function images()
+  {
+    $cache_id = $this->className.'_'.__FUNCTION__;
+    $cache = cache::getXml($cache_id);
+    $xw  = $this->xw;
+    $xw->startAttribute('xmlns:image');
+    $xw->text("http://www.google.com/schemas/sitemap-image/1.1");
+    $xw->endAttribute();
+    $cursor = $this->dbRes['class']::get(
+      col: 'articles',
+      param: ['visible' => true, 'deleted' => false],
+      projection: ['title', 'content', 'parent'],
+      order: ['dateUpdate' => -1]
+    );
+    foreach($cursor as $doc)
+    {
+      if(!$doc->title)
+        continue;
+      $rM = $this->dbRes['class']::getOne(
+        col: 'menus',
+        param: ['uuid' => $doc->parent, 'deleted' => false, 'visible' => true],
+        projection: ['name', 'uuid']
+      );
+      if(is_null($rM))
+        continue;
+      if(isset($rM->visible) && !$rM->visible)
+        continue;
+
+      if($doc->title !== '')
+        $uri = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . '/' . seo::seofy($rM->name) . '/' . seo::seofy($doc->title);
+      else
+        $uri = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . '/' . seo::seofy($rM->name);
+
+
+
+      preg_match_all('/(src=\"([a-zA-Z0-9\.\?\/\=\:]*)\")/', $doc->content, $matches,  PREG_SET_ORDER);
+      if(count($matches) > 0){
+        $xw->startElement('url');
+        $xw->startElement('loc');
+        $xw->text($uri);
+        $xw->endElement(); //loc
+        $imgList = [];
+        foreach($matches as $matche){
+          $matche = array_unique($matche);
+          foreach($matche as $m){
+            $fileName = \trim(pathinfo($m)['filename'] . '.' . pathinfo($m)['extension']);
+            $fileName = \trim(str_replace('"', "", $fileName));
+            if(!in_array($fileName, $imgList)){
+              $imgList[] = $fileName;
+              $fileName = str_replace('getImage.php?image=', '', $fileName);
+              $imgUri = $_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . $_ENV['BASE_PATH'] . '/v1/image/' . $fileName;
+              $xw->startElement('image:image');
+              $xw->startElement('image:loc');
+              $xw->text($imgUri);
+              $xw->endElement(); //image:loc
+              $xw->endElement(); //image:image
+            }
+          }
+        }
+  
+        $xw->endElement(); //url
+      }
+    }
+    $xw->endElement(); //urset
+    $xw->endDocument();
+    $res = $xw->outputMemory();
+
+    cache::set($cache_id, json_encode($res));
+    response::xml(200, $res);
+  }
   public function index()
   {
     $xw = new \XMLWriter();
@@ -142,6 +211,12 @@ class sitemap
     $xw->startElement('sitemap');
     $xw->startElement('loc');
     $xw->text($_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . $_ENV['BASE_PATH'] . '/v1/sitemap/menus');
+    $xw->endElement(); //loc
+    $xw->endElement(); //sitemap
+
+    $xw->startElement('sitemap');
+    $xw->startElement('loc');
+    $xw->text($_SERVER["REQUEST_SCHEME"]. "://".$_SERVER["HTTP_HOST"] . $_ENV['BASE_PATH'] . '/v1/sitemap/images');
     $xw->endElement(); //loc
     $xw->endElement(); //sitemap
 

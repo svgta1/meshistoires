@@ -244,6 +244,13 @@ routes:
     class: sitemap
     class_method: index
     scopes:
+  - desc: site map images
+    method: GET
+    uri: /v1/sitemap/images
+    version: v1r0
+    class: sitemap
+    class_method: images
+    scopes:
 ## ui
   - desc: Ui post info
     method: POST

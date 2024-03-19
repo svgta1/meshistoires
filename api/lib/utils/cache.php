@@ -7,6 +7,8 @@ class cache
   public static function clean()
   {
     $res = self::getRes();
+    if(is_null($res))
+      return;
     $res['class']::clean();
   }
   public static function set(string $id, string $data)
