@@ -484,8 +484,8 @@
   class Content {
     constructor(){
       this.url = document.location.protocol + '//' + document.location.host + document.location.pathname;
-      this.location = document.location.pathname;
-      if(this.location == '/')
+      this.location = document.location.pathname.replace(/\/$/, '');
+      if(this.location == '/' || this.location == '')
         this.location = '/accueil';
       this.articleApi = config.api.uri + config.api.version + '/article';
       this.menuApi = config.api.uri + config.api.version + '/menu';

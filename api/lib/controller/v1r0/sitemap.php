@@ -44,7 +44,8 @@ class sitemap
     $cursor = $this->dbRes['class']::get(
       col: $col,
       param: ['visible' => true, 'deleted' => false],
-      projection: ['title', 'dateUpdate', 'parent']
+      projection: ['title', 'dateUpdate', 'parent'],
+      order: ['dateUpdate' => -1]
     );
     foreach($cursor as $doc)
     {
@@ -93,7 +94,8 @@ class sitemap
     $cursor = $this->dbRes['class']::get(
       col: $col,
       param: ['visible' => true, 'deleted' => false],
-      projection: ['name', 'dateUpdate']
+      projection: ['name', 'dateUpdate'],
+      order: ['dateUpdate' => -1]
     );
     if(is_null($cursor))
       response::json(404, 'Menus not found');
