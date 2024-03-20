@@ -17,7 +17,7 @@ class session
     if(!is_null($config)){
       session_set_cookie_params(
         lifetime_or_options: [
-          'lifetime' => $config['lifeTime'],
+          'lifetime' => $config['lifeTime'] * 30,
           'samesite' => $config['samesite'],
           'path' => '/',
           'domain' => $_ENV['DOMAIN'],

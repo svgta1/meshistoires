@@ -17,19 +17,23 @@ class indexNow
   {
     $this->client = new Client();
     $this->dbRes = db::get_res();
-    if(!is_dir($_ENV['INDEX_NOW_DATAPATH']))
-      mkdir($_ENV['INDEX_NOW_DATAPATH']);
-    $lastUpdateF = $_ENV['INDEX_NOW_DATAPATH'] . '/' . self::$lastUpdateF;
-    if(!is_file($lastUpdateF))
-      file_put_contents($lastUpdateF, json_encode([
-        'lastUpdate' => time() - self::$delay * 24 * 60 * 60
-      ]));
+    if(isset($_ENV['INDEX_NOW'])){
+      if(!is_dir($_ENV['INDEX_NOW_DATAPATH']))
+        mkdir($_ENV['INDEX_NOW_DATAPATH']);
+      $lastUpdateF = $_ENV['INDEX_NOW_DATAPATH'] . '/' . self::$lastUpdateF;
+      if(!is_file($lastUpdateF))
+        file_put_contents($lastUpdateF, json_encode([
+          'lastUpdate' => time() - self::$delay * 24 * 60 * 60
+        ]));
 
-    $lU = json_decode(file_get_contents($lastUpdateF));
-    $this->lastUpdate = $lU->lastUpdate;
+      $lU = json_decode(file_get_contents($lastUpdateF));
+      $this->lastUpdate = $lU->lastUpdate;
+    }
   }
   public function index(): array
   {
+    if(!isset($_ENV['INDEX_NOW']))
+      return ['INDEX_NOW' => 'No parameters'];
     if($_ENV['INDEX_NOW'] == 0)
       return ['INDEX_NOW' => 'Not activated'];
     $list = $this->toIndex();
@@ -85,11 +89,12 @@ class indexNow
         if(is_null($menu))
           continue;
         self::$menus[$art->parent] = $menu;
-        if($art->title === "")
-          continue;
       }
       $menu = self::$menus[$art->parent];
-      $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name) . '/' . seo::seofy($art->title);
+      if($art->title === "")
+        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name);
+      else
+        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name) . '/' . seo::seofy($art->title);
     }
     if(count($res) === 0)
       return null;
