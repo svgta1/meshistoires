@@ -868,6 +868,19 @@
     }
   }
   class Utils {
+    static updateLocalStorage(){
+      let update = window.localStorage.getItem('_updateInfos');
+      let dU = new Date();
+      dU.setTime(update);
+      let diff = config.updateH * 60 * 60 * 1000;
+      if((d - dU) > diff){
+        window.localStorage.setItem('_updateInfos', d.getTime());
+        info.getApiInfo();
+        menu.get_ApiMenuTop();
+        menu.get_ApiMenu();
+        gArticle.get_ApiArticle();
+      }
+    }
     static resp(msg, id){
       if(id == undefined)
         id = crypto.randomUUID();
@@ -892,6 +905,7 @@
     static aPreventDefault(a){
       a.addEventListener('click', (event) => {
         event.preventDefault();
+        Utils.updateLocalStorage();
         window.history.pushState(window.location.pathname, '', a.href);
       });
     }
@@ -1319,17 +1333,7 @@
     end(){
       let d = new Date();
       if(Seo.load.menu && Seo.load.article){
-        let update = window.localStorage.getItem('_updateInfos');
-        let dU = new Date();
-        dU.setTime(update);
-        let diff = config.updateH * 60 * 60 * 1000;
-        if((d - dU) > diff){
-          window.localStorage.setItem('_updateInfos', d.getTime());
-          info.getApiInfo();
-          menu.get_ApiMenuTop();
-          menu.get_ApiMenu();
-          gArticle.get_ApiArticle();
-        }
+        Utils.updateLocalStorage();
       }else{
         window.localStorage.setItem('_updateInfos', d.getTime());
       }
