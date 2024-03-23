@@ -515,6 +515,7 @@ div.tinymce button, .tox button{
 }
 #admin_news_list{
 	background-color: var(--grey03);
+	width: calc(100vw - 185px);
 }
 #admin_news_list > li, #admin_imgs_list > li{
 	display: inline-block;
