@@ -869,6 +869,7 @@
   }
   class Utils {
     static updateLocalStorage(){
+      let d = new Date();
       let update = window.localStorage.getItem('_updateInfos');
       let dU = new Date();
       dU.setTime(update);
