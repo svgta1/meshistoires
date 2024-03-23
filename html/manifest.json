@@ -1,0 +1,49 @@
+{
+  "name": "Mes Histoires, par Cocols",
+  "short_name": "MesHistoires",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "components/img/logo_mh_16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "components/img/logo_mh_32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "components/img/logo_mh_64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "components/img/logo_mh_128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "components/img/logo_mh.png",
+      "sizes": "433x433",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen",
+  "background_color": "rgb(252, 252, 252, 0.8)",
+  "theme_color": "rgb(252, 252, 252, 0.8)",
+  "description": "Histoires érotiques entre autre",
+  "screenshots": [
+    {
+      "src": "components/img/logo_mh.png",
+      "sizes": "433x433",
+      "type": "image/png"
+    },
+        {
+      "src": "components/img/mes-histoires-par-cocolst_img-20210116172943-788.jpg",
+      "sizes": "1600x1200",
+      "type": "image/png",
+      "form_factor" : "wide"
+    }
+  ]
+}
