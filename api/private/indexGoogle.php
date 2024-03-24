@@ -1,5 +1,5 @@
 <?php
-use Googlex\Client;
+use Google\Client;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\utils\seo;
 
@@ -22,7 +22,7 @@ class indexGoogle
       $client->setAuthConfig($_ENV['INDEX_GOOGLE_KEY']);
       $client->addScope('https://www.googleapis.com/auth/indexing');
       $this->endpoint = 'https://indexing.googleapis.com/v3/urlNotifications:publish';
-      $this->auth = $this->client->authorize();
+      $this->auth = $client->authorize();
 
       if(!is_dir($_ENV['INDEX_GOOGLE_DATAPATH']))
         mkdir($_ENV['INDEX_GOOGLE_DATAPATH']);
@@ -154,10 +154,12 @@ class indexGoogle
         'url' => $url,
         'type' => 'URL_UPDATED'
       ]);
-      $response = $this->auth->post($this->endpoint, [ 'body' => $content ]);
-      $status_code = $response->getStatusCode();
-      if($status_code >= 300)
-        return ['error' => $response->getStatusCode()];
+      $response = $this->auth->post($this->endpoint, [ 'body' => $content]);
+      if($response->getStatusCode() !== 200)
+        return [
+          'status' => $response->getStatusCode(),
+          'error' => $response->getReasonPhrase(),
+        ];
     }
 
     $lastUpdateF = $_ENV['INDEX_GOOGLE_DATAPATH'] . '/' . self::$lastUpdateF;
