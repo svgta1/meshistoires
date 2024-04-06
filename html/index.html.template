@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" >
+  <head>
+    <title></title>
+    <link rel="preload" as="font" type="font/woff2" href="/components/fonts/allura1.woff2" crossorigin="anonymous">
+    <link rel="preload" as="font" type="font/woff2" href="/components/fonts/allura2.woff2" crossorigin="anonymous">
+    <link rel="preload" as="font" type="font/woff" href="/components/fonts/genericons-regular-webfont.woff" crossorigin="anonymous">
+    <link rel="preload" type="text/css" href="/components/css/default.css?v=v1.1" media="screen" as="style">
+    <link rel="preload" type="text/css" href="/components/css/allura.css" media="screen" as="style">
+    <link rel="stylesheet" type="text/css" href="/components/css/default.css?v=v1.0" media="screen">
+    <link rel="stylesheet" type="text/css" href="/components/css/allura.css" media="screen">
+    <meta charset="utf-8">
+    <meta name="robots" content="all">
+    <meta name="rating" content="adult">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="" id="__meta-description">
+
+    <meta property="og:description" content="" id="__meta-og:description">
+    <meta property="og:image" content="" id="__meta-og:image">
+    <meta property="og:title" content="" id="__meta-og:title">
+    <meta property="og:url" content="" id="__meta-og:url">
+    <meta property="og:locale" content="fr_FR">
+
+    <meta name="twitter:title" content="" id="__meta-twitter:title">
+    <meta name="twitter:url" content="" id="__meta-twitter:url">
+    <meta name="twitter:description" content="" id="__meta-twitter:desc">
+    <meta name="twitter:image" content="" id="__meta-twitter:image">
+    <meta name="twitter:card" content="summary_large_image" id="__meta-twitter:card">
+    <meta name="twitter:site" content="" id="__meta-twitter:site">
+
+    <meta property="fb:app_id" content="" id="__meta-fb:id">
+
+    <script rel="preload" src="/components/js/mh.js" as="script"></script>
+    <link rel="canonical" href="" id="__canonical">
+    <link rel="icon" type="image/png" sizes="16x16" href="/components/img/logo_mh_16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/components/img/logo_mh_32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/components/img/logo_mh_64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/components/img/logo_mh_128.png">
+    <link rel="icon" type="image/png" href="/components/img/logo_mh.png">
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <div id="top" class="top">
+      <div id="header">
+        <h1 class="site_title" id="site_title">Mon site</h1>
+        <p id="site_desc">Description</p>
+      </div>
+      <div id="ident"></div>
+      <div class="navigate" id="menu">
+      </div>
+
+    </div>
+    <div id="wrap">
+      <div id="content" class="minHeight">
+      </div>
+      <div class="subMenu" id="submenu" class="hide"></div>
+      <div class="footer" id="footer">
+        <div id="div_copyright">
+          <div><a href="https://doc.meshistoires.fr" target="_blank">Conditions d'utilisation</a></div>
+        </div>
+        <div class="social" id="footer_social">
+        </div>
+        <div class="copyright">
+          <img id="img_copyright" alt="Copyright Svgta" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTIwMCIgaGVpZ2h0PSIxMjAwIiB2aWV3Qm94PSIwIDAgMTIwMCAxMjAwIj48Zz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2MDAgNjAwKSBzY2FsZSgwLjY5IDAuNjkpIHJvdGF0ZSgwKSB0cmFuc2xhdGUoLTYwMCAtNjAwKSIgc3R5bGU9ImZpbGw6I0ZGRkZGRiI+PHN2ZyBmaWxsPSIjRkZGRkZGIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTAwIDEwMCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZD0iTTI2LjI0NSw2Ni4xODdjMC4zMS0xNy4wOTcsMTUuMDczLTEzLjUyLDExLjk2Ni0yNC43MWMtOS4xMjMtNy4yNTktMTAuODgxLTE3Ljg3NS0yLjc5OC0yNC44NjggIGMtMC4xNTUtNy4zMDQsNi42ODQtMTEuMDM0LDYuNjg0LTExLjAzNHM0Ljk3Myw0Ljk3NCw0LjUwNyw5Ljc5MWM0LjM1My0xLjM5OSwxMS4xOTEsMy4xMDksMTIuMjc5LDQuNjYzICBjMi4zMzItMy44ODYsMTAuNTY3LTMuNzI5LDEwLjU2Ny0zLjcyOXMyLjY0MywxMC40MTItNC4wNCwxNC4xNDNjLTAuOTMzLDkuMDEzLTcuNzM1LDEzLjUwOC0xMi4xMjMsMTMuODMzICBjLTAuNjcyLDcuNzAzLDExLjc4OSwxMS42MzgsMTAuNDc3LDI1LjU3NWM4LjI2NCw0LjA1MSwxMS42NDIsMTAuMzMsNi42MTgsMTYuODU0Yy03LjcxOSwxMC4wMjEtMjcuODg4LDEwLjcyMS0yOS45OTYsNi4yMTYgIGMtMi4yMDItNC43MDUsMS40MDYtOC45NjgsOS42MDUtNy40OTJjNy41LDEuMzUsMjQuNDMyLTMuOTM2LDExLjY0Mi0xMS4zMTRjLTMuMjgsNC43NTUtNy4wNTEsNy4yMTUtMTUuMzM5LDcuMzA1ICBDMzMuNjQ5LDgxLjU1NiwyNi4wNTgsNzYuNTksMjYuMjQ1LDY2LjE4N3oiPjwvcGF0aD48L3N2Zz48L2c+PC9nPjwvc3ZnPg==">
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
