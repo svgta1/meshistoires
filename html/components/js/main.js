@@ -1253,9 +1253,12 @@
       if(isJson)
         try{
           let resp = await response.json();
+          let jsonOk = response.ok;
+          if(resp.error !== undefined && resp.error)
+            jsonOk = false;
           return {
             resp: resp,
-            ok: response.ok
+            ok: jsonOk
           }
         } catch (error){
           window.localStorage.clear();

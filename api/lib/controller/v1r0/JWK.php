@@ -19,7 +19,7 @@ class JWK
   }
   public function getSign()
   {
-    utilsAuth::verifyScope($this->scopes);
+    utilsAuth::verifyScope($this->scopes, 200);
     $key = new Keys();
     $key
       ->set_public_key_pem($_SESSION['signKey']['publicKey'])

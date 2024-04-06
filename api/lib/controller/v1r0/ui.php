@@ -203,7 +203,7 @@ class ui
   }
   public function getProfile()
   {
-    utilsAuth::verifyScope($this->scopes);
+    utilsAuth::verifyScope($this->scopes, 200);
     response::json(200, self::userInfo());
   }
   public static function updateUserInfo(array $toUpdate)

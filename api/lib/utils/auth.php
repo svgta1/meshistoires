@@ -8,7 +8,7 @@ class auth
   public static $authPayload = null;
   public static $scopes = [];
 
-  public static function verifyScope(array $scopes)
+  public static function verifyScope(array $scopes, int $retCode = 403)
   {
     $verify = [];
     foreach($scopes as $v)
@@ -19,7 +19,7 @@ class auth
     }
     foreach($verify as $k=>$v){
       if($v === false)
-        response::json(403, 'Not authorized');
+        response::json($retCode, ['error' => true, 'reason' => 'Not authorized']);
     }
   }
 
