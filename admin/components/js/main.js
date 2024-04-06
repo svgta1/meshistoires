@@ -163,6 +163,14 @@
           this.clean_style(poubelle);
         }
       },
+      clean_listSupport: function(poubelle){
+        let text = poubelle.innerHTML.replaceAll('<!-- [if !supportLists]-->', '<span lang="fr">');
+        text = text.replaceAll('<!--[endif]-->', '</span>');
+        text = text.replaceAll(/<span lang="fr">(.*)<\/span>/g, "$1");
+        text = text.replaceAll('<li>-&nbsp;', '<li>');
+        text = text.replaceAll('<li>&nbsp;', '<li>');
+        poubelle.innerHTML = text;
+      },
       clean: function(id){
         let poubelle = document.createElement('div');
         dispatchEvent.id = 'poubelle';
@@ -170,6 +178,7 @@
         this.clean_MsoNormal(poubelle);
         this.clean_style(poubelle);
         this.clean_MsoList(poubelle);
+        this.clean_listSupport(poubelle);
         tinyMCE.get(id).setContent(poubelle.innerHTML);
         poubelle.remove();
       }
