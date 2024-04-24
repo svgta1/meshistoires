@@ -45,6 +45,7 @@
 	--white08: rgba(255, 255, 255, 0.8);
 	--grey: #666;
 	--grey03: #66666630;
+	--grey01: #66666610;
 }
 body, html{
 	margin:0;
@@ -1577,5 +1578,33 @@ span.signature{
 	font-weight: bold;
 	font-size: 1.5em;
 	padding-left: 20px;
+}
+
+p.sms1, p.sms2{
+	max-width: 400px;
+	margin: 0;
+	margin-left: 50px;
+	background-color: var(--grey01);
+	padding: 5px;
+}
+p.sms2{
+	text-align: right !important;
+}
+span.sms1, span.sms2{
+	display: inline-block;
+	padding: 10px;
+	border-radius: 10px;
+	max-width: 80%;
+	text-align: justify;
+}
+span.sms1{
+	border-top-left-radius: 0px;
+	border: 1px solid var(--blue03);
+	background-color: var(--blue01);
+}
+span.sms2{
+	border: 1px solid var(--orange03);
+	background-color: var(--orange01);
+	border-top-right-radius: 0px;
 }
 

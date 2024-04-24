@@ -169,7 +169,27 @@
         text = text.replaceAll(/<span lang="fr">(.*)<\/span>/g, "$1");
         text = text.replaceAll('<li>-&nbsp;', '<li>');
         text = text.replaceAll('<li>&nbsp;', '<li>');
+        text = text.replaceAll('<p>&nbsp;', '<p>');
         poubelle.innerHTML = text;
+      },
+      sms: function(poubelle){
+        let aP = poubelle.getElementsByTagName('p');
+        for(let i = 0; i < aP.length; i++){
+          let p = aP[i];
+          let text = p.innerHTML;
+          if(text.startsWith('&lt;') == false && text.startsWith('&gt;') == false)
+            continue;
+          if(text.startsWith('&lt;')){
+            text = text.replace(/^&lt;/g, '');
+            text = '<span class="sms1">' + text.trim() + '</span>';
+            p.classList.add('sms1');
+          }else if(text.startsWith('&gt;')){
+            text = text.replace(/^&gt;/g, '');
+            text = '<span class="sms2">' + text.trim() + '</span>';
+            p.classList.add('sms2');
+          }
+          p.innerHTML = text;
+        }
       },
       clean: function(id){
         let poubelle = document.createElement('div');
@@ -179,6 +199,7 @@
         this.clean_style(poubelle);
         this.clean_MsoList(poubelle);
         this.clean_listSupport(poubelle);
+        this.sms(poubelle);
         tinyMCE.get(id).setContent(poubelle.innerHTML);
         poubelle.remove();
       }
