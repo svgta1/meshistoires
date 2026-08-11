@@ -349,13 +349,15 @@ class menu
       $html .= $li;
     }
     $altImg = utilsMenu::getAltImg($doc->uuid, $this->is_valid_token());
+    $htmlAlt = "";
     if(!is_null($altImg)){
-      $html .= $altImg;
-      $tpl = str_replace("##hidden##", "", $tpl);
+      $htmlAlt .= $altImg;
+      $htmlAlt = str_replace("##hidden##", "", $htmlAlt);
     }else{
-      $tpl = str_replace("##hidden##", "hidden", $tpl);
+      $htmlAlt = str_replace("##hidden##", "hidden", $htmlAlt);
     }
     $tpl = str_replace("##content##", $html, $tpl);
+    $tpl = str_replace("##contentsAltImg##", $htmlAlt, $tpl);
     $ret['contents'] = [
       "imageUuid" => $doc->imageUuid,
       "desc" => $doc->desc

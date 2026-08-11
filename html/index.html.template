@@ -45,20 +45,20 @@
   </head>
   <body>
     <div id="top" class="top">
-      <div id="header">
+      <div id="header" role="banner">
         <h1 class="site_title" id="site_title">##siteTitle##</h1>
         <p id="site_desc">##SiteDescription##</p>
       </div>
-      <div class="navigate" id="menu">
+      <nav class="navigate" id="menu" role="navigation">
         ##menu##
-      </div>
+      </nav>
     </div>
-    <div id="wrap">
+    <div id="wrap" role="main">
       <div class="ariane" id="ariane">
       </div>
       <div id="content" class="minHeight">
       </div>
-      <div class="footer" id="footer">
+      <div class="footer" id="footer" role="contentinfo">
         <div id="div_copyright">
           <div><a href="https://doc.meshistoires.fr" target="_blank">Conditions d'utilisation</a></div>
         </div>

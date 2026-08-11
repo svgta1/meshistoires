@@ -21,5 +21,6 @@
     <ul>
       ##content##
     </ul>
+    ##contentsAltImg##
   </div>
 </div>

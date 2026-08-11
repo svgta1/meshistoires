@@ -75,7 +75,7 @@ body.mce-content-body {
 }
 
 html{
-	background: url(/components/img/bg.png) no-repeat center center fixed;
+	background: url(/components/v2/img/bg.png) no-repeat center center fixed;
 	background-position: 10px center;
 	background-repeat: no-repeat;
 	background-size: auto 50%;
@@ -241,7 +241,7 @@ div.subMenu.hide{
 		margin-top: 10px;
 }
 
-div.navigate{
+div.navigate, nav.navigate{
 	width:96%;
 	display:inline-block;
 	vertical-align:top;
@@ -251,7 +251,7 @@ div.navigate{
 	transition: all 0.3s;
 }
 
-div.navigate a, div.subMenu a{
+div.navigate a, nav.navigate a, div.subMenu a{
     color: #262636;
     display: inline-block;
     line-height: 2.77;
@@ -268,7 +268,7 @@ ul{
 	margin: 0;
 	padding-left: 0;
 }
-div.navigate > ul > li{
+div.navigate > ul > li, nav.navigate > ul > li{
 	display:inline-block;
 	position: relative;
 	vertical-align: top;
@@ -278,20 +278,28 @@ div.navigate > ul > li{
 	line-height: 1.5;
 }
 
-div.navigate > ul > li{
+div.navigate > ul > li, nav.navigate > ul > li{
 	border-top: 3px solid transparent;
 	transition: all 0.3s;
 }
-div.navigate > ul > li:hover, div.navigate li.highLight{
+div.navigate > ul > li:hover, div.navigate li.highLight,
+nav.navigate > ul > li:hover, nav.navigate li.highLight
+{
 	border-top: 3px solid var(--pantone_hematite);
 }
 
 
-div.navigate > ul > li a:hover, div.navigate > ul > li a:focus, div.navigate li.highLight a{
+div.navigate > ul > li a:hover, 
+div.navigate > ul > li a:focus, 
+div.navigate li.highLight a,
+nav.navigate > ul > li a:hover, 
+nav.navigate > ul > li a:focus, 
+nav.navigate li.highLight a{
 	color: var(--pantone_hematite);
 }
 
-div.navigate > ul > li > ul{
+div.navigate > ul > li > ul,
+nav.navigate > ul > li > ul{
 	list-style: none;
 	opacity: 0;
 	float: left;
@@ -306,22 +314,26 @@ div.navigate > ul > li > ul{
 	height: 0px;
 	transition: all 0.3s;
 }
-div.navigate > ul > li:hover > ul{
+div.navigate > ul > li:hover > ul,
+nav.navigate > ul > li:hover > ul{
 	height: auto;
 	opacity: 1;
 	z-index:1000;
 }
-div.navigate > ul > li > ul > li{
+div.navigate > ul > li > ul > li,
+nav.navigate > ul > li > ul > li{
 	background-color: rgba(252,252,252,0.95);
 	border-bottom: 3px solid transparent;
 	transition: all 0.3s;
 	padding: 11px;
 }
-div.navigate > ul > li > ul > li:hover{
+div.navigate > ul > li > ul > li:hover,
+nav.navigate > ul > li > ul > li:hover{
 	border-bottom: 3px solid var(--blue);
 }
 
-div.navigate > ul > li > ul a{
+div.navigate > ul > li > ul a,
+nav.navigate > ul > li > ul a{
     color: #333;
     line-height: 1.5;
     padding: 1em 10px 1em;
@@ -331,12 +343,14 @@ div.navigate > ul > li > ul a{
     transition: all 0.3s;
 }
 
-div.navigate > ul > li > ul a:hover{
+div.navigate > ul > li > ul a:hover,
+nav.navigate > ul > li > ul a:hover{
     color: var(--blue);
 }
 
 
-div.navigate > ul > li:hover > ul, div.navigate > ul > li:active > ul{
+div.navigate > ul > li:hover > ul, div.navigate > ul > li:active > ul,
+nav.navigate > ul > li:hover > ul, nav.navigate > ul > li:active > ul{
 	display: block;
 }
 
@@ -424,7 +438,8 @@ div.top #header p{
 	transition: all 0.3s;
 }
 
-div.top div.navigate{
+div.top div.navigate,
+div.top nav.navigate{
 	width:calc(100vw - 450px);
 	display:inline-block;
 	vertical-align: text-bottom;
@@ -437,7 +452,8 @@ div.top div.navigate{
 div.hidden, p.hidden{
 	display: none;
 }
-div.top div.navigate > ul > li{
+div.top div.navigate > ul > li,
+div.top nav.navigate > ul > li{
 	font-size:0.5em;
 }
 div.accueil {
@@ -461,7 +477,7 @@ div.accueil_list li, div.histoire_random li{
 	vertical-align: top;
 }
 div.accueil_list li div.div_desc, div.histoire_random li div.div_desc{
-	width: 365px;
+	width: 360px;
 	margin: 10px;
 }
 div.accueil_list li.image div.div_desc{
@@ -563,7 +579,8 @@ span.click{
 }
 
 @media screen and (min-width: 990px){
-	div.top div.navigate > ul > li{
+	div.top div.navigate > ul > li,
+	div.top nav.navigate > ul > li{
 		font-size:0.8em;
 	}
 	div.top #header p{
@@ -693,14 +710,15 @@ img.affimg{
 		width: 100%;
 		font-size: 2em;
 	}
-	div.top div.navigate{
+	div.top div.navigate,
+	div.top nav.navigate{
 		display: inline;
 		width: 100%;
 	}
 	div.top div.subMenu{
 		font-size: 0.8em;
 	}
-	div.navigate a, div.subMenu a{
+	div.navigate a, nav.navigate a, div.subMenu a{
 		padding: 0 5px;
 	}
 
@@ -731,7 +749,8 @@ img.affimg{
 		max-height: 50vh;
 	}
 	
-	div.top div.navigate > ul > li{
+	div.top div.navigate > ul > li,
+	div.top nav.navigate > ul > li{
 		font-size:0.8em;
 	}
 	div.subMenu > ul > li a {
