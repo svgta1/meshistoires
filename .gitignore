@@ -1,10 +1,13 @@
-api/config/*
+api/config/*.yaml
 api/composer.lock
 api/data/*
 api/vendor/*
 api/.env
 html/config/config.json
 html/robots.txt
+html/sitemap.xml
 html/c9a4a15690634dbdb69f5cf1d422daa4.txt
 html/index.html
+html/manifest.json
+html/.htaccess
 log
