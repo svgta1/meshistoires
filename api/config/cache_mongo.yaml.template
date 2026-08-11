@@ -1,0 +1,14 @@
+type: mongo
+uri: mongodb://localhost:27017
+db: dbname
+options:
+  username: username
+  password: password
+  authSource: dbname
+driver:
+col: cache
+enc: false
+enc_key: enc_key
+enc_alg: A256GCMKW
+enc_enc: A256CBC-HS512
+#enc_enc: A128CBC-HS256

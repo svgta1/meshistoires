@@ -65,7 +65,7 @@ class auth
     string $rp
   ): string
   {
-    $admin = \yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
+    $admin = opt::yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
     if(isset($admin[$email])){
       $scope .= ' ' . implode(' ', $admin[$email]['scopes']);
     }

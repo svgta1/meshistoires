@@ -1,7 +1,7 @@
 <?php
 use GuzzleHttp\Client;
 use Meshistoires\Api\backend\db;
-use Meshistoires\Api\utils\seo;
+use Meshistoires\Api\controller\v2r0\menu;
 
 require dirname(__FILE__, 2) . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2));
@@ -24,7 +24,7 @@ class indexNow
       $lastUpdateF = $_ENV['INDEX_NOW_DATAPATH'] . '/' . self::$lastUpdateF;
       if(!is_file($lastUpdateF))
         file_put_contents($lastUpdateF, json_encode([
-          'lastUpdate' => time() - self::$delay * 24 * 60 * 60
+          'lastUpdate' => 0
         ]));
 
       $lastDeleteF = $_ENV['INDEX_NOW_DATAPATH'] . '/' . self::$lastDeleteF;
@@ -46,9 +46,12 @@ class indexNow
       return ['INDEX_NOW' => 'No parameters'];
     if($_ENV['INDEX_NOW'] == 0)
       return ['INDEX_NOW' => 'Not activated'];
-    $list = $this->toDelete();
+    $list = null;
     if(is_null($list))
       return ['INDEX_NOW' => 'No List'];
+
+    /* todo un jour */
+
     $params = [
       'host' => $_ENV['DOMAIN'],
       'key' => $_ENV['INDEX_NOW_KEY'],
@@ -63,73 +66,6 @@ class indexNow
       'lastDelete' => time()
     ]));
     return $list;
-  }
-  private function toDelete(): ?array
-  {
-    $res = [];
-
-    $menus = $this->menuToDelete();
-    if(is_null($menus))
-      return $menus;
-    foreach($menus as $menu)
-      $res[] = $menu;
-    if(count($res) == 0)
-      return null;
-    return $res;
-  }
-  private function menuToDelete()
-  {
-    $res = [];
-    $menuC = $this->dbRes['class']::get(
-      col: 'menus',
-      param: [
-        'visible' => false,
-        'dateUpdate' => ['$gte' => $this->lastDelete]
-      ],
-      projection: ['name', 'uuid']
-    );
-    foreach($menuC as $menu){
-      $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name);
-      $arts = $this->artToDelete($menu->uuid);
-      if(!is_null($arts)){
-        $res = array_merge($res, $arts);
-      }
-    }
-    if(count($res) === 0)
-      return null;
-    
-    return array_unique($res);
-  }
-  private function artToDelete(string $parent)
-  {
-    $res = [];
-    $artC = $this->dbRes['class']::get(
-      col: 'articles',
-      param: [
-        'parent' => $parent
-      ],
-      projection: ['title', 'uuid', 'parent']
-    );
-    foreach($artC as $art){
-      if(!isset(self::$menus[$art->parent])){
-        $menu = self::$menus[$art->parent] = $this->dbRes['class']::getOne(
-          col: "menus",
-          param: ['uuid' => $art->parent],
-          projection: ['name', 'uuid']
-        );
-        if(is_null($menu))
-          continue;
-        self::$menus[$art->parent] = $menu;
-      }
-      $menu = self::$menus[$art->parent];
-      if($art->title === "")
-        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name);
-      else
-        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name) . '/' . seo::seofy($art->title);
-    }
-    if(count($res) === 0)
-      return null;
-    return $res;
   }
   public function index(): array
   {
@@ -150,6 +86,9 @@ class indexNow
     $resp = $this->client->post($_ENV['INDEX_NOW_API'],[
       'json' => $params
     ]);
+    print_r('Response code ' . $resp->getStatusCode() . PHP_EOL);
+    print_r('Retour ' . $resp->getBody()->getContents());
+    print_r(PHP_EOL);
     $lastUpdateF = $_ENV['INDEX_NOW_DATAPATH'] . '/' . self::$lastUpdateF;
     file_put_contents($lastUpdateF, json_encode([
       'lastUpdate' => time()
@@ -158,48 +97,61 @@ class indexNow
   }
   private function toIndex(): ?array
   {
-    $res = $this->getArticles();
-    if(is_null($res))
-      return null;
-
-    foreach(self::$menus as $menu)
-      $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name);
-    if(count($res) === 0)
-      return null;
-    return $res;
+    $res = [
+      'histoires' => $this->getHistoires(),
+      'collections' => $this->getCollections(),
+    ];
+    if(is_array($res['histoires']) && is_array($res['collections']))
+      return array_merge($res['histoires'], $res['collections']);
+    if(is_array($res['histoires']))
+      return $res['histoires'];
+    if(is_array($res['collections']))
+      return $res['collections'];
+    return null;
   }
-  private function getArticles(): ?array
+  private function getHistoires()
   {
-    $res = [];
-    $artC = $this->dbRes['class']::get(
-      col: 'articles',
-      param: [
-        'visible' => true,
-        'deleted' => false,
-        'dateUpdate' => ['$gte' => $this->lastUpdate]
-      ],
-      projection: ['title', 'uuid', 'parent']
-    );
-    foreach($artC as $art){
-      if(!isset(self::$menus[$art->parent])){
-        $menu = self::$menus[$art->parent] = $this->dbRes['class']::getOne(
-          col: "menus",
-          param: ['uuid' => $art->parent, 'visible' => true, 'deleted' => false],
-          projection: ['name', 'uuid']
-        );
-        if(is_null($menu))
-          continue;
-        self::$menus[$art->parent] = $menu;
-      }
-      $menu = self::$menus[$art->parent];
-      if($art->title === "")
-        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name);
-      else
-        $res[] = 'https://' . $_ENV['DOMAIN'] . '/' . seo::seofy($menu->name) . '/' . seo::seofy($art->title);
-    }
-    if(count($res) === 0)
+    $ret = $this->_getList('oeuvres');
+    if($ret["count"] == 0)
       return null;
-    return $res;
+    $list = [];
+    foreach($ret['cursor'] as $c){
+      $data = menu::getHistoireData($c->uuid);
+      $url = 'https://' . $_ENV['DOMAIN'] . '/' . $data['ariane'][1]['uri'];
+      $list[] = $url;
+    }
+    return $list;
+  }
+  private function getCollections()
+  {
+    $ret = $this->_getList('collections');
+    if($ret["count"] == 0)
+      return null;
+        $list = [];
+    foreach($ret['cursor'] as $c){
+      $data = menu::getCollectionData($c->uuid);
+      $url = 'https://' . $_ENV['DOMAIN'] . '/' . $data['ariane'][1]['uri'];
+      $list[] = $url;
+    }
+    return $list;
+  }
+  private function _getList($col)
+  {
+    return [
+      'count' => $this->dbRes['class']::count(
+          col: $col,
+          param : [
+            'dateUpdate' => ['$gte' => $this->lastUpdate]
+          ]
+        ),
+      'cursor' => $this->dbRes['class']::get(
+          col: $col,
+          param : [
+            'dateUpdate' => ['$gte' => $this->lastUpdate]
+          ],
+          projection: ['uuid']
+        )
+    ];
   }
 }
 

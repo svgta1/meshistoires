@@ -2,10 +2,12 @@
 namespace Meshistoires\Api\controller\v1r0;
 use Meshistoires\Api\utils\response;
 use Meshistoires\Api\utils\request;
+use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\utils\mail as uMail;
 use Meshistoires\Api\model\mail as mMail;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\utils\auth as utilsAuth;
+
 
 class mail
 {
@@ -87,7 +89,7 @@ class mail
     $msg = \str_replace(PHP_EOL, '<br>', $request['contact']);
     $tpl = \str_replace('##msg##', $msg, $tpl);
 
-    $admin_list = \yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
+    $admin_list = opt::yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
     foreach($admin_list as $adm => $v){
       $docAdmin = $this->dbRes['class']::getOne(
         col: "contact",

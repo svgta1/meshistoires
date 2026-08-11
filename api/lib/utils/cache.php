@@ -16,7 +16,7 @@ class cache
     $res = self::getRes();
     if(is_null($res))
       return;
-    $res['class']::add($id, $data);
+    $res['class']::add($id, $data, $_ENV['EXP_CACHE']);
   }
   public static function getXml(string $id)
   {
@@ -31,7 +31,7 @@ class cache
       response::json(200, json_decode($cache, TRUE));
     }
   }
-  public static function _get($id){
+  public static function _get(string $id){
     $res = self::getRes();
     if(is_null($res))
       return null;

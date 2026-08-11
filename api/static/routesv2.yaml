@@ -1,0 +1,212 @@
+routes:
+##info
+  - desc: Endpoints List
+    method: GET
+    uri: /endpoints
+    version:
+    class: info
+    class_method: endpoints
+    scopes:
+  - desc: Info site
+    method: GET
+    uri: /info
+    version:
+    class: info
+    class_method: info
+    scopes:
+## sitemap
+  - desc: site map histoires
+    method: GET
+    uri: /v2/sitemap/histoires
+    version: v2r0
+    class: sitemap
+    class_method: histoires
+    scopes:
+  - desc: site map categories
+    method: GET
+    uri: /v2/sitemap/categories
+    version: v2r0
+    class: sitemap
+    class_method: categories
+    scopes:
+  - desc: site map Collections
+    method: GET
+    uri: /v2/sitemap/collections
+    version: v2r0
+    class: sitemap
+    class_method: collections
+    scopes:
+  - desc: site map index
+    method: GET
+    uri: /v2/sitemap/index
+    version: v2r0
+    class: sitemap
+    class_method: index
+    scopes:
+  - desc: site map index
+    method: GET
+    uri: /v1/sitemap/index
+    version: v2r0
+    class: sitemap
+    class_method: index
+    scopes:
+  - desc: site map images
+    method: GET
+    uri: /v2/sitemap/images
+    version: v2r0
+    class: sitemap
+    class_method: images
+    scopes:
+##image
+  - desc: Get Images Accueil
+    method: GET
+    uri: /v2/accueil/images
+    version: v2r0
+    class: menu
+    class_method: getImagesParams
+    scopes:
+  - desc: Get Image
+    method: GET
+    uri: /v2/image/{uuid}
+    version: v2r0
+    class: image
+    class_method: get
+    scopes:
+  - desc: Get Image thmb 300
+    method: GET
+    uri: /v2/imageThumb300/{uuid}
+    version: v2r0
+    class: image
+    class_method: getThumb300
+    scopes:
+  - desc: Get Image thmb
+    method: GET
+    uri: /v2/imageThumb/{uuid}
+    version: v2r0
+    class: image
+    class_method: getThumb
+    scopes:
+  - desc: Delete Image Menu def
+    method: DELETE
+    uri: /v2/accueil/images/definitive/{uuid}
+    version: v2r0
+    class: menu
+    class_method: delImageDef
+    scopes:
+  - desc: Restore Image Menu
+    method: PUT
+    uri: /v2/accueil/images/{uuid}
+    version: v2r0
+    class: menu
+    class_method: restaureImage
+    scopes:
+  - desc: Delete Image Menu
+    method: DELETE
+    uri: /v2/accueil/images/{uuid}
+    version: v2r0
+    class: menu
+    class_method: delImage
+    scopes:
+  - desc: Delete Image Histoire
+    method: DELETE
+    uri: /v2/histoire/images/{uuid}
+    version: v2r0
+    class: menu
+    class_method: delImageHistoire
+    scopes:
+##menu
+  - desc: get Menu
+    method: GET
+    uri: /v2/menu/{uuid}
+    version: v2r0
+    class: menu
+    class_method: get
+    scopes:
+  - desc: list Menus
+    method: GET
+    uri: /v2/menu
+    version: v2r0
+    class: menu
+    class_method: list
+    scopes:
+  - desc: list TOP Menus
+    method: GET
+    uri: /v2/menu/top
+    version: v2r0
+    class: menu
+    class_method: list
+    scopes:
+##Collection
+  - desc: get histoire from Collection
+    method: GET
+    uri: /v2/collections/histoire/{uuid}
+    version: v2r0
+    class: menu
+    class_method: getCollectionHistoire
+    scopes:
+  - desc: get Collection
+    method: GET
+    uri: /v2/collections/{uuid}
+    version: v2r0
+    class: menu
+    class_method: getCollectionInfo
+    scopes:
+  - desc: get Collection
+    method: GET
+    uri: /v2/collections/{uuid}/
+    version: v2r0
+    class: menu
+    class_method: getCollectionInfo
+    scopes:
+##categories
+  - desc: get histoire from categorie
+    method: GET
+    uri: /v2/histoires/categories/{uuid}
+    version: v2r0
+    class: menu
+    class_method: getCategorieInfo
+    scopes:
+  - desc: get histoire from categorie
+    method: GET
+    uri: /v2/histoires/categories/{uuid}/
+    version: v2r0
+    class: menu
+    class_method: getCategorieInfo
+    scopes:
+##histoires
+  - desc: get histoire from Histoires
+    method: GET
+    uri: /v2/histoires/l/{uuid}
+    version: v2r0
+    class: menu
+    class_method: getHistoireFromHistoires
+    scopes:
+  - desc: get histoire
+    method: GET
+    uri: /v2/histoires/{uuid}
+    version: v2r0
+    class: menu
+    class_method: getHistoireInfo
+    scopes:
+  - desc: get histoire
+    method: GET
+    uri: /v2/histoires/{uuid}/
+    version: v2r0
+    class: menu
+    class_method: getHistoireInfo
+    scopes:
+## Error
+  - desc: error 404
+    method: GET
+    uri: /v2/accueil/error404
+    version: v2r0
+    class: menu
+    class_method: error404
+    scopes:
+  - desc: error 403
+    method: GET
+    uri: /v2/accueil/error403
+    version: v2r0
+    class: menu
+    class_method: error403
+    scopes:

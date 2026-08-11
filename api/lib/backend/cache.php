@@ -1,6 +1,7 @@
 <?php
 namespace Meshistoires\Api\backend;
 use Meshistoires\Api\utils\inException;
+use Meshistoires\Api\utils\opt;
 
 class cache implements gInterface
 {
@@ -10,7 +11,7 @@ class cache implements gInterface
   {
     if(isset($_ENV['CACHE_YAML']) && is_file($_ENV['CACHE_YAML']))
     {
-      $this->config =  \yaml_parse_file($_ENV['CACHE_YAML']);
+      $this->config =  opt::yaml_parse_file($_ENV['CACHE_YAML']);
     }
   }
 

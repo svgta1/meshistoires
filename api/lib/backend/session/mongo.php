@@ -4,6 +4,7 @@ use Meshistoires\Api\utils\trace;
 use Meshistoires\Api\backend\session;
 use Meshistoires\Api\backend\cache\mongo as cacheMongo;
 use Svgta\Lib\JWT;
+use Meshistoires\Api\utils\opt;
 
 class mongo extends sessionAbs
 {
@@ -45,7 +46,7 @@ class mongo extends sessionAbs
   {
     if(is_null(self::$res))
       self::$res = session::get_res();
-    self::$config = \yaml_parse_file($_ENV['SESSION_YAML']);
+    self::$config = opt::yaml_parse_file($_ENV['SESSION_YAML']);
     return self::$res['res'];
   }
   protected static function enc(string $str): string

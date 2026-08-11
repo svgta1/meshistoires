@@ -8,7 +8,7 @@ class mail
 {
   public function init()
   {
-    $config = \yaml_parse_file($_ENV['MAIL_YAML']);
+    $config = opt::yaml_parse_file($_ENV['MAIL_YAML']);
     try{
       $email = new PHPMailer(true);
       if($config['debug'])

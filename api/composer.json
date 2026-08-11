@@ -11,9 +11,10 @@
         "ext-yaml": "*",
         "ext-gmp": "*",
         "ext-imagick": "*",
-        "mongodb/mongodb": "^1.11",
+        "mongodb/mongodb": "^2.1",
         "geoip2/geoip2": "^3.0",
-        "google/apiclient": "^2.15.0"
+        "google/apiclient": "^2.15.0",
+        "ext-xml": "*"
     },
     "license": "GPL-3.0-only",
     "autoload": {

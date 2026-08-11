@@ -1,6 +1,7 @@
 <?php
 namespace Meshistoires\Api\backend;
 use Meshistoires\Api\utils\inException;
+use Meshistoires\Api\utils\opt;
 
 class session implements gInterface
 {
@@ -10,7 +11,7 @@ class session implements gInterface
   {
     if(isset($_ENV['SESSION_YAML']) && is_file($_ENV['SESSION_YAML']))
     {
-      $this->config =  \yaml_parse_file($_ENV['SESSION_YAML']);
+      $this->config =  opt::yaml_parse_file($_ENV['SESSION_YAML']);
     }
   }
 
@@ -30,7 +31,7 @@ class session implements gInterface
       throw new inException('No session set');
     $type = $this->config['type'];
     if($type == 'cache'){
-      $this->config = \yaml_parse_file($_ENV['CACHE_YAML']);
+      $this->config = opt::yaml_parse_file($_ENV['CACHE_YAML']);
       $type = $this->config['type'];
     }
     $class_res = __namespace__ . '\\session\\' . $type . '_res';

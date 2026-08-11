@@ -6,6 +6,7 @@ use Meshistoires\Api\utils\extException;
 use Meshistoires\Api\utils\inException;
 use Meshistoires\Api\utils\auth;
 use Meshistoires\Api\utils\request;
+use Meshistoires\Api\utils\opt;
 use Svgta\Lib\Utils;
 
 class kernel
@@ -18,7 +19,7 @@ class kernel
       trace::$useTrace = true;
 
     auth::verifyAuthHeaderSignature();
-    $this->routes = \yaml_parse_file($_ENV['ROUTES_YAML'])['routes'];
+    $this->routes = opt::yaml_parse_file($_ENV['ROUTES_YAML'])['routes'];
     $route = $this->verifyRoute($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
     if($route['error'])
       response::json(404, $route);
@@ -59,12 +60,11 @@ class kernel
 
   private function verifyRoute(string $method, string $uri): array
   {
-    $uri = explode('?', $uri)[0];
+    $uri = str_replace($_ENV['BASE_PATH'], '', explode('?', $uri)[0]);
     $route = ["error" => true, "msg" => "no route found", "uuid" => null];
     $routeExist = false;
     foreach($this->routes as $r)
     {
-      $r['uri'] = $_ENV['BASE_PATH'] . $r['uri'];
       if(($r['uri'] == $uri) && ($r['method'] == $method))
       {
         $route['route'] = $r;
@@ -85,14 +85,19 @@ class kernel
     $uuid = null;
     foreach($this->routes as $r)
     {
-      $match = [];
-      preg_match('/^([0-1A-Za-z\/].*)({uuid})(.*)$/', $r['uri'], $match);
-      $uuid = str_replace($_ENV['BASE_PATH'], '', $uri);
-      foreach($match as $m){
-        $uuid = str_replace($m, '', $uuid);
-      }
-      if(preg_match('/^[0-9a-zA-Z\-\.]{1,64}$/', trim($uuid)) == 0)
+      $rUriA = explode('/', $r['uri']);
+      if(count($uriA) != count($rUriA))
         continue;
+      foreach($rUriA as $k => $v){
+        if($v !== '{uuid}'){
+          if($v !== $uriA[$k]){
+            continue 2;
+          }
+        }else{
+          $uuid = $uriA[$k];
+          break;
+        }
+      }
       if($r['method'] !== $method)
         continue;
       $route['route'] = $r;

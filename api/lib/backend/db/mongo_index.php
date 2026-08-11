@@ -7,23 +7,98 @@ class mongo_index
   private static $res = null;
   public function createIndexes()
   {
+    $this->_creaInd($this->siteParamsStats());
+    $this->_creaInd($this->siteparams());
+    $this->_creaInd($this->altImages());
+    $this->_creaInd($this->oeuvres());
+    $this->_creaInd($this->collections());
+    $this->_creaInd($this->public());
+    $this->_creaInd($this->categories());
+
     $this->_creaInd($this->cache());
-    $this->_creaInd($this->article());
-    $this->_creaInd($this->menu());
-    $this->_creaInd($this->comment());
-    $this->_creaInd($this->contact());
-    $this->_creaInd($this->analytic());
-    $this->_creaInd($this->keySec());
-    $this->_creaInd($this->mail());
-    $this->_creaInd($this->news());
 
     $this->_creaInd($this->image());
     $this->_creaInd($this->thmb300());
     $this->_creaInd($this->thmb());
   }
+  private function categories(): array
+  {
+    $ar = $this->oeuvres();
+    $ar['col'] = 'categories';
+    return $ar;
+  }
+  private function collections(): array
+  {
+    $ar = $this->oeuvres();
+    $ar['col'] = 'collections';
+    return $ar;
+  }
+  private function public(): array
+  {
+    $ar = $this->oeuvres();
+    $ar['col'] = 'public';
+    return $ar;
+  }
+  private function siteParamsStats(): array
+  {
+    $col = 'siteParamsStats';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['deleted' => -1], 'unique' => false, 'name' => 'deleted'],
+      ['key' => ['from' => -1], 'unique' => false, 'name' => 'from'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
+  private function siteparams(): array
+  {
+    $col = 'siteparams';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['name' => -1], 'unique' => false, 'name' => 'name'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
+  private function altImages(): array
+  {
+    $col = 'altImages';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['oeuvreUuid' => 1], 'unique' => false, 'name' => 'oeuvreUuid'],
+      ['key' => ['name' => -1], 'unique' => false, 'name' => 'name'],
+      ['key' => ['name' => -1, 'oeuvreUuid' => 1], 'unique' => false, 'name' => 'nameOeuvre'],
+      ['key' => ['deleted' => -1], 'unique' => false, 'name' => 'deleted'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
+  private function oeuvres(): array
+  {
+    $col = 'oeuvres';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['gristuuid' => 1], 'unique' => true, 'name' => 'gristUuid'],
+      ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
   private function _creaInd(array $ar)
   {
-    $this->dropInd($ar['col']);
+    print_r('Create index ' . $ar['col'] . PHP_EOL);
+    try{
+      $this->dropInd($ar['col']);
+    }catch(\Throwable $t){
+    }
     self::get_res()->{$ar['col']}->createIndexes($ar['ind']);
   }
   private function dropInd(string $col)
@@ -47,112 +122,7 @@ class mongo_index
     $col = 'images.files';
     $ind = [
       ['key' => ['filename' => 1], 'unique' => false, 'name' => 'filename'],
-			['key' => ['md5' => 1], 'unique' => true, 'name' => 'md5'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function mail(): array
-  {
-    $col = 'mail';
-    $ind = [
-      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
-      ['key' => ['responseTo' => 1, 'type' => 1], 'unique' => false, 'name' => 'responseTo'],
-      ['key' => ['createTs' => -1], 'unique' => false, 'name' => 'createTs'],
-      ['key' => ['userUuid' => 1, 'type' => 1], 'unique' => false, 'name' => 'userUuid'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function news(): array
-  {
-    $col = 'news';
-    $ind = [
-      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
-      ['key' => ['userUuid' => 1], 'unique' => false, 'name' => 'userUuid'],
-      ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function keySec(): array
-  {
-    $col = 'keySec';
-    $ind = [
-      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
-      ['key' => ['credentialId' => 1], 'unique' => true, 'name' => 'credentialId'],
-      ['key' => ['userHandle' => 1], 'unique' => false, 'name' => 'userHandle'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function analytic(): array
-  {
-    $col = 'analytic';
-    $ind = [
-      ['key' => ['path' => 1], 'unique' => false, 'name' => 'path'],
-      ['key' => ['createTs' => 1], 'unique' => false, 'name' => 'date'],
-      ['key' => ['ip' => 1], 'unique' => false, 'name' => 'ip'],
-      ['key' => ['userUuid' => 1], 'unique' => false, 'name' => 'userUuid'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function contact(): array
-  {
-    $col = 'contact';
-    $ind = [
-      ['key' => ['mail' => 1], 'unique' => true, 'name' => 'mail'],
-      ['key' => ['dateCreate' => -1], 'unique' => false, 'name' => 'date'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function comment(): array
-  {
-    $col = 'comment';
-    $ind = [
-      ['key' => ['artUUID' => 1], 'unique' => false, 'name' => 'artUUID'],
-      ['key' => ['userUuid' => 1], 'unique' => false, 'name' => 'userUuid'],
-      ['key' => ['dateCreate' => -1], 'unique' => false, 'name' => 'date'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function menu(): array
-  {
-    $col = 'menus';
-    $ind = [
-      ['key' => ['uuid' => 1], 'unique' => false, 'name' => 'uuid'],
-			['key' => ['parent' => 1, ], 'unique' => false, 'name' => 'parent'],
-			['key' => ['subMenu' => 1, ], 'unique' => false, 'name' => 'subMenu'],
-    ];
-    return [
-      'col' => $col,
-      'ind' => $ind,
-    ];
-  }
-  private function article(): array
-  {
-    $col = 'articles';
-    $ind = [
-      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
-			['key' => ['parent' => 1, ], 'unique' => false, 'name' => 'parent'],
-			['key' => ['parent' => 1, 'visible' => 1, 'resume' => 1], 'unique' => false, 'name' => 'chapter'],
+			['key' => ['md5' => 1], 'unique' => false, 'name' => 'md5'],
     ];
     return [
       'col' => $col,

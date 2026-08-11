@@ -1,0 +1,16 @@
+type: memcache
+options:
+  Memcached::OPT_COMPRESSION: true
+  Memcached::OPT_PREFIX_KEY: MESHISTOIRES_
+  Memcached::OPT_DISTRIBUTION: CONSTANT_Memcached::DISTRIBUTION_CONSISTENT
+  Memcached::OPT_BINARY_PROTOCOL: true
+  Memcached::OPT_NO_BLOCK: true
+  Memcached::OPT_NOREPLY: true
+  Memcached::OPT_TCP_NODELAY: true
+servers:
+  - host: 127.0.0.1
+    port: 11211
+enc: true
+enc_key: enc_key
+enc_alg: A256KW
+enc_enc: A256CBC-HS512

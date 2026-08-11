@@ -1,0 +1,16 @@
+type: mongo
+uri: mongodb://localhost:27017
+db: dbname
+options:
+#  authMechanism: MONGODB-X509
+#  authSource: $external
+#  tls: true
+#  ssl: true
+#  tlsAllowInvalidCertificates: true
+#  tlsAllowInvalidHostnames: true
+#  tlsCAFile: /somewhere/rootCA.crt
+#  tlsCertificateKeyFile: /somewhere/cert.pem
+  username: username
+  password: password
+  authSource: authSource
+driver:

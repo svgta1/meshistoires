@@ -16,7 +16,7 @@ class request
     try{
       $res = JWT::decrypt($request['cypher'], $_SESSION['keySetEncPrivate']);
     }catch(\Throwable $t){
-      response::json('403', 'Session out');
+      response::json('403', 'Session out ' . $t->getMessage() . json_encode($_SESSION));
     }
 
     if(isset($h['content-type']) && isset($h['content-type']) == 'application/json')
@@ -33,9 +33,7 @@ class request
   }
   public static function validate_uuid(mixed $uuid)
   {
-    $v = is_string($uuid) && preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', $uuid);
-    if(!$v)
-      response::json(400, 'Bad uuid format');
+    return is_string($uuid) && preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', $uuid);
   }
   public static function validate_email(string &$email)
   {

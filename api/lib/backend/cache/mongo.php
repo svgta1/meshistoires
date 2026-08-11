@@ -4,8 +4,13 @@ use Meshistoires\Api\utils\trace;
 
 class mongo extends cacheAbs implements cacheInt
 {
+  private static $cacheData = [];
+
   public static function get(string $id): ?string
   {
+    if(isset(self::$cacheData[$id]))
+      return self::$cacheData[$id];
+
     self::deleteTs();
     $col = 'cache';
     $doc = self::get_res()->{$col}->findOne(['uuid' => $id]);
@@ -19,11 +24,15 @@ class mongo extends cacheAbs implements cacheInt
   }
   public static function clean()
   {
+    self::$cacheData = [];
     $col = 'cache';
     self::get_res()->{$col}->deleteMany(['type' => 'cache']);
   }
   public static function delete(string $id)
   {
+    if(isset(self::$cacheData[$id]))
+      unset(self::$cacheData[$id]);
+
     $col = 'cache';
     self::get_res()->{$col}->deleteOne(['uuid' => $id]);
   }
@@ -34,6 +43,7 @@ class mongo extends cacheAbs implements cacheInt
   }
   public static function add(string $id, string $data, int $lifetTime = 3600, string $type = 'cache')
   {
+    self::$cacheData[$id] = $data;
     $data = self::enc($data);
     $col = 'cache';
     $cpt = self::get_res()->{$col}->count(['uuid' => $id]);

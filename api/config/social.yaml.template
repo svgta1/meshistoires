@@ -1,0 +1,19 @@
+instagram:
+  name: Instagram
+  title: Ma page Instagram
+  url: https://www.instagram.com/name/
+  icon: https://domain.tld/pathTo/instagram-icon.png
+
+twitter:
+  name: X
+  title: Ma page X (ex twitter)
+  url: https://twitter.com/name
+  id: id
+  icon: https://domain.tld/pathTo/X-logo-white.png
+
+facebook:
+  name: Facebook
+  title: Ma page Facebook
+  url: https://www.facebook.com/name
+  id: id
+  icon: https://domain.tld/pathTo/fb-logo.png

@@ -3,6 +3,7 @@ namespace Meshistoires\Api\controller;
 use Meshistoires\Api\utils\trace;
 use Meshistoires\Api\utils\response;
 use Meshistoires\Api\utils\siteInfo;
+use Meshistoires\Api\utils\opt;
 
 class info
 {
@@ -17,7 +18,7 @@ class info
 
   public function endpoints(): void
   {
-    $route = \yaml_parse_file($_ENV['ROUTES_YAML'])['routes'];
+    $route = opt::yaml_parse_file($_ENV['ROUTES_YAML'])['routes'];
     foreach($route as $k=>$r)
     {
       unset($route[$k]['class']);

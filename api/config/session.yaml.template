@@ -1,0 +1,11 @@
+# Not used in V2
+type: cache
+name: sessionName
+lifeTime: 155552000
+secure: true
+httponly: true
+samesite: Strict
+enc: true
+enc_key: long encKey
+enc_alg: A256GCMKW
+enc_enc: A256CBC-HS512

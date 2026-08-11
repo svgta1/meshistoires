@@ -1,0 +1,7 @@
+tokenList:
+  longKey:
+    admin: adminame
+    scopes:
+      - admin:read
+      - admin:write
+      - admin:delete

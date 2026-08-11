@@ -1,0 +1,15 @@
+# Not used in V2
+smtp:
+  enable: true
+  host: smtpHost
+  port: 587
+  tls: true
+  authRequired: true
+  username: username
+  password: password
+fromMail: noreply@domain.tld
+fromName: My name
+htmlFormat: true
+debug: false
+imageHeader: https://domain.tld/pathto/myimage.png
+imageSignature: https://domain.tld/pathto/myimage_sign.png

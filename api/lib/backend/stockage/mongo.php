@@ -41,8 +41,12 @@ class mongo implements stockageInt
 			"title" => \pathinfo($file, PATHINFO_FILENAME),
 			"value" => $filename,
 			"ctype" => \image_type_to_mime_type(\exif_imagetype($webPFile)),
-      'exif' => self::_setExif(@\exif_read_data($webPFile))
+      'exif' => self::_setExif(@\exif_read_data($webPFile)),
 		);
+    if(isset($im) && $im){
+      $imgData['width'] = $im->getImageWidth();
+      $imgData['height'] = $im->getImageHeight();
+    }
 
     $bucketImg = self::get_res()->selectGridFSBucket(['bucketName' => self::IMG]);
     $docImg = $bucketImg->findOne(['filename' => $filename]);
@@ -55,6 +59,8 @@ class mongo implements stockageInt
       //300*300
       $resize = self::_dimImg(300, 300, $filename);
       $imgData['exif'] = $resize['exif'];
+      $imgData['width'] = $resize['width'];
+      $imgData['height'] = $resize['height'];
       self::_uploadStream($bucket300, $filename, $resize['blob'], $imgData);
     }
     $bucketThb = self::get_res()->selectGridFSBucket(['bucketName' => self::THUMB]);
@@ -63,6 +69,8 @@ class mongo implements stockageInt
       //128*128
       $resize = self::_dimImg(128, 128, $filename);
       $imgData['exif'] = $resize['exif'];
+      $imgData['width'] = $resize['width'];
+      $imgData['height'] = $resize['height'];
       self::_uploadStream($bucketThb, $filename, $resize['blob'], $imgData);
     }
     unlink($file);
@@ -149,6 +157,8 @@ class mongo implements stockageInt
     return [
       'blob' => $imgM->getImageBlob(),
       'exif' => $imgM->getImageProperties('*', true),
+      "width" => $imgM->getImageWidth(),
+      "height" => $imgM->getImageHeight()
     ];
   }
   private static function _setExif($exif)

@@ -3,6 +3,7 @@ namespace Meshistoires\Api\controller\v1r0;
 use Meshistoires\Api\controller\v1r0\ui;
 use Meshistoires\Api\utils\response;
 use Meshistoires\Api\utils\request;
+use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\utils\auth as utilsAuth;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\utils\mail;
@@ -20,7 +21,7 @@ class auth
     $this->request = $request;
     if(isset($this->request['uuid']))
       request::validate_string($this->request['uuid'], 4, 'oidc id');
-    $this->conf = \yaml_parse_file($_ENV['AUTH_YAML']);
+    $this->conf = opt::yaml_parse_file($_ENV['AUTH_YAML']);
     $this->dbRes = db::get_res()['class'];
   }
 

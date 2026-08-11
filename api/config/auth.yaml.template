@@ -1,0 +1,67 @@
+## Not used un V2
+
+code:
+  desc: Recevoir un code
+  id: code
+  type: code
+
+webauthn:
+  desc: Clé de sécurité
+  id: webauthn
+  type: webauthn
+
+google:
+  desc: Google
+  id: google
+  type: oidc
+  client_id: client_id
+  client_secret: client_secret
+  scopes: email profile
+  discovery: https://accounts.google.com/.well-known/openid-configuration
+  endpoints:
+  guzzleparams:
+  callback: call back url
+  set_nonce: true
+
+mslive:
+  desc: Microsoft Live
+  id: mslive
+  type: oidc
+  client_id: client_id
+  cert_path: cert path
+  private_key_path: Private key path
+  private_key_secret:
+  scopes: email profile
+  discovery: https://login.microsoftonline.com/consumers/v2.0/.well-known/openid-configuration
+  endpoints:
+  guzzleparams:
+  callback: call back url
+  set_nonce: true
+
+github:
+  desc: Github
+  id: github
+  type: oidc
+  client_id: client_id
+  client_secret: client_secret
+  scopes: email profile
+  discovery:
+  endpoints:
+    authorization_endpoint: https://github.com/login/oauth/authorize
+    token_endpoint: https://github.com/login/oauth/access_token
+    userinfo_endpoint: https://api.github.com/user
+  guzzleparams:
+  callback: call back url
+  set_nonce: false
+
+yahoo:
+  desc: Yahoo
+  id: yahoo
+  type: oidc
+  client_id: client_id
+  client_secret: client_secret
+  scopes: email profile
+  discovery: https://api.login.yahoo.com/.well-known/openid-configuration
+  guzzleparams:
+  callback: call back url
+  set_nonce: true

@@ -7,6 +7,7 @@ use Meshistoires\Api\utils\cache;
 use Meshistoires\Api\utils\request;
 use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\utils\mail;
+use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\utils\auth as utilsAuth;
 use Svgta\Lib\Utils;
@@ -177,7 +178,7 @@ class comment
   }
   private function mailNewCommentAdm(string $givenName, $art, $menu, $comment)
   {
-    $admin_list = \yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
+    $admin_list = opt::yaml_parse_file($_ENV['ADMIN_YAML'])['adminList'];
     if(boolval($_ENV['COMMENT_AUTO_VALID']))
       $validCom = "Non";
     else

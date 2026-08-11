@@ -2,6 +2,7 @@
 namespace Meshistoires\Api\backend\cache;
 use Meshistoires\Api\backend\cache;
 use Svgta\Lib\JWT;
+use Meshistoires\Api\utils\opt;
 
 abstract class cacheAbs implements cacheInt
 {
@@ -12,7 +13,7 @@ abstract class cacheAbs implements cacheInt
   {
     if(is_null(self::$res))
       self::$res = cache::get_res();
-    self::$config = \yaml_parse_file($_ENV['CACHE_YAML']);
+    self::$config = opt::yaml_parse_file($_ENV['CACHE_YAML']);
     return self::$res['res'];
   }
   protected static function enc(string $str): string
@@ -34,6 +35,6 @@ abstract class cacheAbs implements cacheInt
   }
   protected static function getConf()
   {
-    self::$config = \yaml_parse_file($_ENV['CACHE_YAML']);
+    self::$config = opt::yaml_parse_file($_ENV['CACHE_YAML']);
   }
 }
