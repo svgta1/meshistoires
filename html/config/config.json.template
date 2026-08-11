@@ -1,0 +1,14 @@
+{
+  "api": {
+    "uri": "/api",
+    "version": "/v2"
+  },
+  "default": {
+    "menu": "/accueil",
+    "admin": "Not used anymore"
+  },
+  "updateH": 0.1,
+  "version": "v2.0.7",
+  "modeDev": false,
+  "components": "/components/v2/"
+}
