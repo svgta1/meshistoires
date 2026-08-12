@@ -26,6 +26,10 @@ class setIndex
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . $this->config->components . 'img/inspiration.webp',
     ];
     $this->menu = menu::_menuList();
+    if($_SERVER['REQUEST_URI'] == '/'){
+      header('Location: ' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . '/accueil');
+      die();
+    }
     $this->reqUri = explode('/',$_SERVER['REQUEST_URI']);
     unset($this->reqUri[0]);
     $this->firstKey = array_key_first($this->reqUri);
