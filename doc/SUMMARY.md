@@ -9,16 +9,9 @@
 
 ## Utilisation du site
 
+* [But du site](utilisation-du-site/but-du-site.md)
 * [Navigation sur le site](utilisation-du-site/navigation-sur-le-site.md)
-* [Profil utilisateur](utilisation-du-site/profil-utilisateur.md)
-* [Commentaires sur une histoire](utilisation-du-site/commentaires-sur-une-histoire.md)
-* [Notifications](utilisation-du-site/notifications.md)
-
-## GESTION DU COMPTE
-
-* [Demande de modification email](gestion-du-compte/demande-de-modification-email.md)
-* [Demande de suppression](gestion-du-compte/demande-de-suppression.md)
-* [Etats d'un compte](gestion-du-compte/etats-dun-compte.md)
+* [Me contacter](utilisation-du-site/me-contacter.md)
 
 ## Information techniques
 
