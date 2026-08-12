@@ -11,6 +11,7 @@
 
 * [But du site](utilisation-du-site/but-du-site.md)
 * [Navigation sur le site](utilisation-du-site/navigation-sur-le-site.md)
+* [Me contacter](utilisation-du-site/me-contacter.md)
 
 ## Information techniques
 
