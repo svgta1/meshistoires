@@ -12,6 +12,7 @@ class setIndex
 {
   private $aff = [];
   private $config = null;
+  private $version = null;
   private $menu = null;
   private $reqUri = [];
   private $firstKey = 0;
@@ -20,6 +21,7 @@ class setIndex
   public function __construct()
   {
     $this->config = json_decode(file_get_contents('config/config.json'));
+    $this->version = json_decode(file_get_contents('config/version.json'));
     $this->aff = [
       'title' => $_ENV['SITE_TITLE'],
       'desc' => $_ENV['SITE_DESC'],
@@ -61,7 +63,7 @@ class setIndex
     if($this->config->modeDev)
       $version = time();
     else
-      $version = $this->config->version;
+      $version = $this->version->version;
     $contents = str_replace('##version##', $version, $contents);
     $contents = str_replace('##components##', $this->config->components, $contents);
     $contents = str_replace('##menu##', $this->menu['template'], $contents);
