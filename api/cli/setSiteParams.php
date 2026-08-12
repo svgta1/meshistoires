@@ -1,5 +1,6 @@
 <?php
 use Meshistoires\Api\utils\opt;
+use Meshistoires\Api\utils\utilsMenu;
 use Meshistoires\Api\model\siteparams;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\backend\stockage;
@@ -18,8 +19,8 @@ if(!is_file($ymlFile)){
   print_r(PHP_EOL);
 }
 $yml = opt::yaml_parse_file($ymlFile);
-
-foreach($yml as $ar){
+$saveYml = false;
+foreach($yml as $ym => $ar){
   $m = new siteparams();
   $m->name = $ar['name'];
   $cpt = $dbRes['class']->count(
@@ -43,12 +44,17 @@ foreach($yml as $ar){
     }
     $m->dateUpdate = time();
   }
-  foreach($ar['imgs'] as $img){
+  foreach($ar['imgs'] as $k => $img){
     $file = $dir . '/imgs/' . $img;
     if(is_file($file)){
       $filename = $stockageRes['class']::post($file);
-      $m->imagesUuid[] = $filename;
+      $ar['imgs'][$k] = $filename;
+      $saveYml = true;
     }
+    utilsMenu::setImageStatAccess($img, $m->name, false);
+  }
+  if($saveYml){
+    $yml[$ym] = $ar;
   }
   if($create){
     $dbRes['class']->post(
@@ -63,4 +69,6 @@ foreach($yml as $ar){
       param: $m->_toArray()
     );
   }
+  if($saveYml)
+    yaml_emit_file($ymlFile, $yml);
 }

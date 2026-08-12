@@ -369,16 +369,44 @@ class utilsMenu
   }
   public static function getImageMenuDel()
   {
-    $cursor = self::$dbRes['class']->get(
-      col: 'siteParamsStats',
-      param: ['deleted' => true],
-      projection: ['nbrAccess', 'from', 'uuid']
-    );
+    $cursor = self::getImagesStatCursor(true);
     $l = [];
     foreach($cursor as $doc){
       $l[] = $doc;
     }
     return $l;
+  }
+  public static function getImagesStatsInfo($from = 'accueil')
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $cpt = self::$dbRes['class']->count(
+      col: 'siteParamsStats',
+      param: ['deleted' => false, 'from' => $from],
+    );
+    $cursor = self::$dbRes['class']->get(
+      col: 'siteParamsStats',
+      param: ['deleted' => false, 'from' => $from],
+      projection: ['uuid', 'nbrAccess'],
+      order: ['dateUpdate' => -1, 'nbrAccess' => 1]
+    );
+    $ret = [
+      'nbr' => $cpt,
+      'cursor' => $cursor,
+    ];
+    return $ret;
+  }
+  public static function getImagesStatCursor($deleted = false)
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $cursor = self::$dbRes['class']->get(
+      col: 'siteParamsStats',
+      param: ['deleted' => $deleted],
+      projection: ['uuid', 'nbrAccess', 'from', '_uid' => -1],
+      order: ['dateUpdate' => -1, 'nbrAccess' => -1]
+    );
+    return $cursor;
   }
   public static function getImageStatAccess($uuid, $from = "accueil")
   {
@@ -400,10 +428,30 @@ class utilsMenu
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
 
+    $cptImg = self::$dbRes['class']::count(
+      col: "images.files",
+      param: ['filename' => $uuid]
+    );
+    if($cptImg == 0){
+      $cptImg = self::$dbRes['class']::count(
+        col: "images.files",
+        param: ['metadata.title' => $uuid]
+      );
+      if($cptImg != 1)
+        return;
+      $img = self::$dbRes['class']::getOne(
+        col: "images.files",
+        param: ['metadata.title' => $title],
+        projection: ['filename']
+      );
+      $uuid = $img->filename;
+    }
+
     $doc = self::$dbRes['class']->getOne(
       col: 'siteParamsStats',
       param: ['uuid' => $uuid]
     );
+    
     if(is_null($doc)){
       $m = new siteParamsStats();
       $m->newDate();
@@ -420,10 +468,10 @@ class utilsMenu
         col: 'siteParamsStats',
         uuid: $uuid,
         param: [
-          'nbrAccess' => $doc->nbrAccess + 1, 
+          'nbrAccess' => $incAccess ? $doc->nbrAccess + 1 : $doc->nbrAccess, 
           'dateUpdate' => time(),
           'deleted' => false,
-          //'from' => $from
+          'from' => $from
         ]
       );
     }

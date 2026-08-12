@@ -127,61 +127,40 @@ class menu
     );
     if(is_null($doc))
       response::json(404, 'Image not found');
-    $param = $this->dbRes['class']::getOne(
-      col: 'siteparams',
-      param: ['name' => $doc->from]
+    $this->dbRes['class']::put(
+      col: 'siteParamsStats',
+      uuid: $doc->uuid,
+      param: ['deleted' => true, 'dateUpdate' => time()]
     );
-    $key = array_search($doc->uuid, json_decode(json_encode($param->imagesUuid), true));
-    if($key !== false){
-      unset($param->imagesUuid[$key]);
-      $this->dbRes['class']::put(
-        col: 'siteparams',
-        uuid: $param->uuid,
-        param: ['imagesUuid' => $param->imagesUuid, 'dateUpdate' => time()]
-      );
-      $this->dbRes['class']::put(
-        col: 'siteParamsStats',
-        uuid: $doc->uuid,
-        param: ['deleted' => true, 'dateUpdate' => time()]
-      );
-    }else{
-      response::json(400, "Not found in params");
-    }
     response::json(204, '');
   }
   public function getImagesParams()
   {
     if(!$this->is_valid_token())
       response::json(403, 'Bad token or token not found');
-    $cursor = $this->dbRes['class']->get(
-      col: 'siteparams'
-    );
     $imgList = [];
     $imgUuid = [];
+    $cursor = utilsMenu::getImagesStatCursor();
     foreach($cursor as $doc){
-      $list = [];
-      foreach($doc->imagesUuid as $uuid){
-        $nbr = utilsMenu::getImageStatAccess($uuid, $doc->name);
-        if(is_null($nbr))
-          continue;
-        if(!in_array($uuid, $imgUuid)){
-          $imgUuid[] = $uuid;
-          $list[] = [
-            'uuid' => $uuid,
-            'nbrAff' => utilsMenu::getImageStatAccess($uuid)
-          ];
-        }
-        usort($list, function($a, $b){
-          if($a['nbrAff'] > $b['nbrAff']){
-            return -1;
-          }elseif($a['nbrAff'] < $b['nbrAff']){
-            return 1;
-          }else{
-            return 0;
-          }
-        });
-        $imgList[$doc->name] = $list;
+      if(!isset($imgList[$doc->from]))
+        $imgList[$doc->from] = [];
+      if(!in_array($doc->uuid, $imgUuid)){
+        $imgUuid[] = $doc->uuid;
+        $imgList[$doc->from][] = [
+          'uuid' => $doc->uuid,
+          'nbrAff' => $doc->nbrAccess
+        ];  
       }
+      if(count($imgList[$doc->from]) > 1)
+      usort($imgList[$doc->from], function($a, $b){
+        if($a['nbrAff'] > $b['nbrAff']){
+          return -1;
+        }elseif($a['nbrAff'] < $b['nbrAff']){
+          return 1;
+        }else{
+          return 0;
+        }
+      });
     }
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages.tpl');
     $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_ul.tpl');
@@ -593,32 +572,19 @@ class menu
     $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $tpl = str_replace('##text##', $text, $tpl);
 
-    $doc = $this->dbRes['class']->getOne(
-      col: 'siteparams',
-      param: ['name' => 'accueil']
-    );
-    $nbrImg = 0;
-    if($doc){
-      $nbrImg = count($doc->imagesUuid);
-    }
-    if($nbrImg > 0){
+    $res = utilsMenu::getImagesStatsInfo();
+    if($res['nbr'] > 0){
       $l = [];
-      foreach($doc->imagesUuid as $uuid){
-        $nbr = utilsMenu::getImageStatAccess($uuid);
-        if(is_null($nbr))
-          continue;
-        if(!isset($l[$nbr]))
-          $l[$nbr] = [];
-        $l[$nbr][] = $uuid;
+      foreach($res['cursor'] as $doc){
+        if(!isset($l[$doc->nbrAccess]))
+          $l[$doc->nbrAccess] = [];
+        $l[$doc->nbrAccess][] = $doc->uuid;
       }
       ksort($l);
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand]);
-      //$rand = random_int(0, $nbrImg - 1);
-      //$tpl = str_replace('##imageId##', $doc->imagesUuid[$rand], $tpl);
-      //utilsMenu::setImageStatAccess($doc->imagesUuid[$rand]);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
