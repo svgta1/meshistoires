@@ -435,13 +435,13 @@ class utilsMenu
     if($cptImg == 0){
       $cptImg = self::$dbRes['class']::count(
         col: "images.files",
-        param: ['metadata.title' => $uuid]
+        param: ['$or' => [['metadata.title' => $uuid], ['metadata.title' => pathinfo($uuid)['filename']]]]
       );
       if($cptImg != 1)
         return;
       $img = self::$dbRes['class']::getOne(
         col: "images.files",
-        param: ['metadata.title' => $title],
+        param: ['$or' => [['metadata.title' => $uuid], ['metadata.title' => pathinfo($uuid)['filename']]]],
         projection: ['filename']
       );
       $uuid = $img->filename;
