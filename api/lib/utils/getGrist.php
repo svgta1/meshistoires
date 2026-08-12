@@ -65,11 +65,11 @@ class getGrist
       );
       if(is_null($doc)){
         $create = true;
-        $this->$this->hasUpdate = true;
+        $this->hasUpdate = true;
       }else{
         if($doc->sha !== $sha){
           $update = true;
-          $this->$this->hasUpdate = true;
+          $this->hasUpdate = true;
         }
       }
       if($create){
@@ -121,11 +121,11 @@ class getGrist
       );
       if(is_null($doc)){
         $create = true;
-        $this->$this->hasUpdate = true;
+        $this->hasUpdate = true;
       }else{
         if($doc->sha !== $sha){
           $update = true;
-          $this->$this->hasUpdate = true;
+          $this->hasUpdate = true;
         }
       }
       if($create){
@@ -187,11 +187,11 @@ class getGrist
       }
       if(is_null($doc)){
         $create = true;
-        $this->$this->hasUpdate = true;
+        $this->hasUpdate = true;
       }else{
         if(!isset($doc->sha) || $doc->sha !== $sha){
           $update = true;
-          $this->$this->hasUpdate = true;
+          $this->hasUpdate = true;
         }
       }
       if($create){
@@ -252,11 +252,11 @@ class getGrist
       );
       if(is_null($doc)){
         $create = true;
-        $this->$this->hasUpdate = true;
+        $this->hasUpdate = true;
       }else{
         if(!isset($doc->sha) || $doc->sha !== $sha){
           $update = true;
-          $this->$this->hasUpdate = true;
+          $this->hasUpdate = true;
         }
       }
       if($create){
