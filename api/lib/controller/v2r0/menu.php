@@ -557,11 +557,14 @@ class menu
     $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
     $html = '';
     foreach($cursor as $doc){
+      $info = utilsMenu::getImageFrom($doc->filename);
       $li = str_replace("##ImageId##", $doc->filename, $tplLi);
       $width = $doc->metadata->width ?? '';
       $height = $doc->metadata->height ?? '';
       $li = str_replace("##width##", $width, $li);
-      $li = str_replace('##height##', $height, $li);
+      $li = str_replace("##width##", $width, $li);
+      $li = str_replace('##from##', $info['from'], $li);
+      $li = str_replace('##status##', $info['status'], $li);
       $html .= $li;
       $doc = utilsMenu::_unset($doc);
       $ret['contents'][] = $doc;

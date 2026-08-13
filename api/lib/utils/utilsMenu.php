@@ -10,7 +10,74 @@ class utilsMenu
   private static $cache = false;
   private static $cacheId = "Cache_Menus_";
   private static $dbRes = null;
+  private static $getImageFromCache = [];
 
+  public static function getImageFrom($uuid)
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $ret = [
+      'from' => 'unknown',
+      'status' => 'Actif'
+    ];
+    $doc = self::$dbRes['class']->getOne(
+      col: "altImages",
+      param: ['uuid' => $uuid],
+      projection: ['oeuvreUuid', 'deleted']
+    );
+    if(!is_null($doc)){
+      if(!isset(self::$getImageFromCache['histoires']))
+        self::$getImageFromCache['histoires'] = [];
+      if(isset(self::$getImageFromCache['histoires']['$doc->oeuvreUuid'])){
+        $o = self::$getImageFromCache['histoires']['$doc->oeuvreUuid'];
+      }else{
+        $o = self::$dbRes['class']->getOne(
+          col: "oeuvres",
+          param: ['uuid' => $doc->oeuvreUuid],
+          projection: ['title']
+        );
+        self::$getImageFromCache['histoires']['$doc->oeuvreUuid'] = $o;
+      }
+      $ret['from'] = $o->title;
+      if($doc->deleted)
+        $ret['status'] = 'Deleted';
+      return $ret;
+    }
+
+    $doc = self::$dbRes['class']->getOne(
+      col: "siteParamsStats",
+      param: ['uuid' => $uuid],
+      projection: ['from', 'deleted']
+    );
+    if(!is_null($doc)){
+      $ret['from'] = $doc->from;
+      if($doc->deleted)
+        $ret['status'] = 'Deleted';
+      return $ret;
+    }
+
+    $doc = self::$dbRes['class']->getOne(
+      col: "oeuvres",
+      param: ['imageUuid' => $uuid],
+      projection: ['title']
+    );
+    if(!is_null($doc)){
+      $ret['from'] = $doc->title;
+      return $ret;
+    }
+
+    $doc = self::$dbRes['class']->getOne(
+      col: "collections",
+      param: ['imageUuid' => $uuid],
+      projection: ['name']
+    );
+    if(!is_null($doc)){
+      $ret['from'] = $doc->name;
+      return $ret;
+    }
+
+    return $ret;
+  }
   public static function getAltImgDataCpt($uuid)
   {
     if(is_null(self::$dbRes))
