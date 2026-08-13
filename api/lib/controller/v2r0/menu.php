@@ -567,7 +567,7 @@ class menu
       $li = str_replace('##status##', $info['status'], $li);
       $html .= $li;
       $doc = utilsMenu::_unset($doc);
-      $ret['contents'][] = $doc;
+      //$ret['contents'][] = $doc;
     }
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
 
