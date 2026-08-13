@@ -182,3 +182,6 @@ if($menu == 'histoires'){
   die();
 }
 
+echo $index->setContents();
+
+

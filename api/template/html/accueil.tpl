@@ -3,7 +3,7 @@
   <div class="accueil_img">
     <img src="" alt="inspiration" id="img_accueil">
   </div>
-  <img id="##imageId##" alt="Error 404" width="200" height="300" class="##class##" att="random_img">
+  <img id="##imageId##" alt="Accueil" width="200" height="300" class="##class##" att="random_img">
   <div class="desc_right accueil_prez">
     ##text##
     <p><span class="signature">Cocolst</span></p>

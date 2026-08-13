@@ -175,6 +175,7 @@
       try {
         contentClass[method](res);
       }catch(error){
+        console.error(error);
         window.location = '/accueil/error404';
         // Erreur 404;
       }
@@ -304,6 +305,21 @@
             this.getHistoire(url, uuid);
         }
       }
+    }
+    async images(ress){
+      let res = await ress;
+      if(!res.ok){
+        if(res.responseCode == 404){
+          window.location = '/accueil/error404';
+          return;
+        }
+        if(res.responseCode == 403){
+          window.location = '/accueil/error403';
+          return;
+        }
+        return;
+      }
+      this.defaultContent(res.resp);
     }
     async getHistoire(url, uuid){
       let histoire = await Fetch.get(url);

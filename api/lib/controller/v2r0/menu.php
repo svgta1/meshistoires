@@ -23,13 +23,19 @@ class menu
     'Accueil' => 'accueil',
     'Collections' => 'collections',
     'Histoires' => 'histoires',
-  //  'Categories' => 'categories'
+    'Images' => 'images'
+  ];
+  private static $menuLVisibility = [
+    'accueil' => true,
+    'collections' => true,
+    'histoires' => true,
+    'images' => false
   ];
   private $method = [
     'accueil' => 'getAccueil',
     'collections' => 'getCollections',
     'histoires' => 'getHistoires',
-  //  'categories' => 'getCategories'
+    'images' => 'getImages',
   ];
 
   private $modelRetMenu =[
@@ -539,6 +545,32 @@ class menu
       'desc' => 'Liste globale de mes histoires'
     ];
   }
+  private function getImages(&$ret)
+  {
+    if(!$this->is_valid_token())
+      response::json(403, 'Bad token or token not found');
+    $col = "thumb300.files";
+    $cursor = $this->dbRes['class']::get(
+      col: $col,
+    );
+    $ret['contents'] = [];
+    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
+    $html = '';
+    foreach($cursor as $doc){
+      $li = str_replace("##ImageId##", $doc->filename, $tplLi);
+      $width = $doc->metadata->width ?? '';
+      $height = $doc->metadata->height ?? '';
+      $li = str_replace("##width##", $width, $li);
+      $li = str_replace('##height##', $height, $li);
+      $html .= $li;
+      $doc = utilsMenu::_unset($doc);
+      $ret['contents'][] = $doc;
+    }
+    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
+
+    $tpl = str_replace('##content##', $html, $tpl);
+    $ret['template'] = $tpl;
+  }
   private function getAccueil(&$ret)
   {
     $col = "oeuvres";
@@ -551,7 +583,6 @@ class menu
     $ret['contents'] = [];
     $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/accueil_li.tpl');
     $html = '';
-    $colList = [];
     foreach($cursor as $c){
       $data= utilsMenu::getHistoireData($c->uuid);
       $doc = $data['doc'];
@@ -575,10 +606,10 @@ class menu
     $res = utilsMenu::getImagesStatsInfo();
     if($res['nbr'] > 0){
       $l = [];
-      foreach($res['cursor'] as $doc){
-        if(!isset($l[$doc->nbrAccess]))
-          $l[$doc->nbrAccess] = [];
-        $l[$doc->nbrAccess][] = $doc->uuid;
+      foreach($res['cursor'] as $d){
+        if(!isset($l[$d->nbrAccess]))
+          $l[$d->nbrAccess] = [];
+        $l[$d->nbrAccess][] = $d->uuid;
       }
       ksort($l);
       $k = array_key_first($l);
@@ -588,10 +619,9 @@ class menu
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
-    $tpl = str_replace('##imageId##', $doc->imagesUuid[$rand], $tpl);
+    $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     $tpl = str_replace('##content##', $html, $tpl);
     $ret['template'] = $tpl;
-    
   }
   public function get()
   {
@@ -647,14 +677,16 @@ class menu
       ];
       $ar['uri'] = seo::seofy($menu);
       $res['list'][$menu] = $ar;
-      $li = str_replace("##href##", $ar['uri'], $tplLi);
-      $li = str_replace("##name##", $ar["name"], $li);
-      if($ar["uri"] == explode('/', $ref)[0]){
-        $li = str_replace("##class##", 'class="highLight"', $li);
-      }else{
-        $li = str_replace("##class##", '', $li);
+      if(self::$menuLVisibility[$menu]){
+        $li = str_replace("##href##", $ar['uri'], $tplLi);
+        $li = str_replace("##name##", $ar["name"], $li);
+        if($ar["uri"] == explode('/', $ref)[0]){
+          $li = str_replace("##class##", 'class="highLight"', $li);
+        }else{
+          $li = str_replace("##class##", '', $li);
+        }
+        $html .= $li;
       }
-      $html .= $li;
     };
     $res['metadata']['count'] = \count($res['list']);
     $res['metadata']['hash'] = \hash('sha256', json_encode($res['list']));

@@ -78,39 +78,29 @@ class utilsMenu
       self::$dbRes = db::get_res();
 
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/' . $error . '.tpl');
-    $doc = self::$dbRes['class']->getOne(
-      col: 'siteparams',
-      param: ['name' => $error]
-    );
-
-    $nbrImg = 0;
-    if($doc){
-      $nbrImg = count($doc->imagesUuid);
-    }
-    if($nbrImg > 0){
+    $res = utilsMenu::getImagesStatsInfo($error);
+    if($res['nbr'] > 0){
       $l = [];
-      foreach($doc->imagesUuid as $uuid){
-        $nbr = self::getImageStatAccess($uuid);
-        if(is_null($nbr))
-          continue;
-        if(!isset($l[$nbr]))
-          $l[$nbr] = [];
-        $l[$nbr][] = $uuid;
+      foreach($res['cursor'] as $doc){
+        if(!isset($l[$doc->nbrAccess]))
+          $l[$doc->nbrAccess] = [];
+        $l[$doc->nbrAccess][] = $doc->uuid;
       }
       ksort($l);
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
-      self::setImageStatAccess($l[$k][$rand], $error);
+      utilsMenu::setImageStatAccess($l[$k][$rand], $error);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
+    $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
+    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/error_li.tpl');
+    $html = '';
     $random = self::$dbRes['res']->oeuvres->aggregate([
       ['$sample' => ["size" => (int)$_ENV['AC_HIST_LIMIT']]],
       ['$project' => ["uuid" => 1]]
     ]);
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/error_li.tpl');
-    $html = '';
     foreach($random as $c){
       $_data = self::getHistoireData($c->uuid);
       $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
@@ -136,7 +126,7 @@ class utilsMenu
       'isMenu' => false,
       'title' => $libelle,
       'contents' => [
-        'desc' => 'Page non trouvée.',
+        'desc' => 'Page non trouvée ou interdite.',
       ],
     ];
     return $data;

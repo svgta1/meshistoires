@@ -202,7 +202,7 @@ class mongo implements stockageInt
   {
     $bucket = self::get_res()->selectGridFSBucket(['bucketName' => self::THUMB]);
     $doc = $bucket->findOne(['filename' => $uuid]);
-
+    
     return [
       'metadata' => $doc,
       'stream' => $bucket->openDownloadStreamByName($uuid, ['revision' => 0])
