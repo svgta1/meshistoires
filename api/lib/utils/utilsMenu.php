@@ -28,15 +28,15 @@ class utilsMenu
     if(!is_null($doc)){
       if(!isset(self::$getImageFromCache['histoires']))
         self::$getImageFromCache['histoires'] = [];
-      if(isset(self::$getImageFromCache['histoires']['$doc->oeuvreUuid'])){
-        $o = self::$getImageFromCache['histoires']['$doc->oeuvreUuid'];
+      if(isset(self::$getImageFromCache['histoires'][$doc->oeuvreUuid])){
+        $o = self::$getImageFromCache['histoires'][$doc->oeuvreUuid];
       }else{
         $o = self::$dbRes['class']->getOne(
           col: "oeuvres",
           param: ['uuid' => $doc->oeuvreUuid],
           projection: ['title']
         );
-        self::$getImageFromCache['histoires']['$doc->oeuvreUuid'] = $o;
+        self::$getImageFromCache['histoires'][$doc->oeuvreUuid] = $o;
       }
       $ret['from'] = $o->title;
       if($doc->deleted)
@@ -119,7 +119,7 @@ class utilsMenu
     $tplLiDel = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li_delete.tpl');
     $cursor = self::$dbRes['class']->get(
       col: "altImages",
-      param: ['oeuvreUuid' => $uuid],
+      param: ['oeuvreUuid' => $uuid, 'deleted' => false],
       order: ['name' => 1],
       projection: ['uuid', 'name', 'thmbWidth', 'thmbHeight']
     );
