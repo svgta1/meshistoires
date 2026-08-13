@@ -86,6 +86,7 @@ class mongo_index
       ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
       ['key' => ['gristuuid' => 1], 'unique' => true, 'name' => 'gristUuid'],
       ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
+      ['key' => ['imageUuid' => 1], 'unique' => false, 'name' => 'imageUuid'],
     ];
     return [
       'col' => $col,
