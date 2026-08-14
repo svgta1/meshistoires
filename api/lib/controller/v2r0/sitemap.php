@@ -37,6 +37,12 @@ class sitemap
       $shem = 'https';
     $this->uriSite = $shem .'://' . $_ENV['DOMAIN'];
   }
+  private static function setDateFormat(int $timestamp)
+  {
+    $date = \DateTimeImmutable::createFromFormat('U', (string)$timestamp);
+    $date = $date->setTimezone(new \DateTimeZone('UTC'));
+    return $date->format('Y-m-d\TH:i:s.v') . 'Z';
+  }
   public static function global()
   {
     $self = new self(null, []);
@@ -54,8 +60,12 @@ class sitemap
       $xw->startElement('loc');
       $xw->text($uri);
       $xw->endElement(); //loc
+      $xw->startElement('priority');
+      $xw->text('0.84');
+      $xw->endElement(); //priority
       $xw->startElement('lastmod');
-      $xw->text(\date('Y-m-d', $menu['update']));
+      //$xw->text(\date('Y-m-d', $menu['update']));
+      $xw->text(self::setDateFormat($menu['update']));
       $xw->endElement(); //lastmod
       $xw->endElement(); //url
     }
@@ -78,8 +88,12 @@ class sitemap
       $xw->startElement('loc');
       $xw->text($uri);
       $xw->endElement(); //loc
+      $xw->startElement('priority');
+      $xw->text('0.50');
+      $xw->endElement(); //priority
       $xw->startElement('lastmod');
-      $xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      //$xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      $xw->text(self::setDateFormat($data['doc']->dateUpdate));
       $xw->endElement(); //lastmod
       $xw->endElement(); //url
     }
@@ -98,6 +112,9 @@ class sitemap
       $xw->startElement('loc');
       $xw->text($uri);
       $xw->endElement(); //loc
+      $xw->startElement('priority');
+      $xw->text('0.75');
+      $xw->endElement(); //priority
       $xw->startElement('image:image');
       $xw->startElement('image:loc');
       $imgUri = $self->uriSite . '/api/v2/image/' . $data['doc']->imageUuid;
@@ -116,7 +133,8 @@ class sitemap
         }
       }
       $xw->startElement('lastmod');
-      $xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      //$xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      $xw->text(self::setDateFormat($data['doc']->dateUpdate));
       $xw->endElement(); //lastmod
       $xw->endElement(); //url
     }
@@ -135,6 +153,9 @@ class sitemap
       $xw->startElement('loc');
       $xw->text($uri);
       $xw->endElement(); //loc
+      $xw->startElement('priority');
+      $xw->text('0.64');
+      $xw->endElement(); //priority
       $xw->startElement('image:image');
       $xw->startElement('image:loc');
       $imgUri = $self->uriSite . '/api/v2/image/' . $data['doc']->imageUuid;
@@ -142,7 +163,8 @@ class sitemap
       $xw->endElement(); //image:loc
       $xw->endElement(); //image:image
       $xw->startElement('lastmod');
-      $xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      //$xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
+      $xw->text(self::setDateFormat($data['doc']->dateUpdate));
       $xw->endElement(); //lastmod
       $xw->endElement(); //url
     }
