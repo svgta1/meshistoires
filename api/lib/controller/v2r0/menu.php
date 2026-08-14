@@ -553,22 +553,58 @@ class menu
     $cursor = $this->dbRes['class']::get(
       col: $col,
     );
-    $ret['contents'] = [];
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
-    $html = '';
+
+    $liAr = [];
     foreach($cursor as $doc){
       $info = utilsMenu::getImageFrom($doc->filename);
-      $li = str_replace("##ImageId##", $doc->filename, $tplLi);
-      $width = $doc->metadata->width ?? '';
-      $height = $doc->metadata->height ?? '';
-      $li = str_replace("##width##", $width, $li);
-      $li = str_replace("##width##", $width, $li);
-      $li = str_replace('##from##', $info['from'], $li);
-      $li = str_replace('##status##', $info['status'], $li);
-      $html .= $li;
-      $doc = utilsMenu::_unset($doc);
-      //$ret['contents'][] = $doc;
+      if(!isset($liAr[$info['from']]))
+        $liAr[$info['from']] = [];
+      $liAr[$info['from']][] = [
+        'status' => $info['status'],
+        'doc' => $doc,
+        'info' => $info
+      ];
     }
+    ksort($liAr);
+    $ret['contents'] = [];
+    $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/images_ul.tpl');
+    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
+    $html = '';
+    foreach($liAr as $f => $from){
+      usort($from, function($a, $b){
+        if($a['status'] > $b['status']){
+          return -1;
+        }elseif($a['status'] < $b['status']){
+          return 1;
+        }else{
+          return 0;
+        }
+      });
+      $ul = str_replace('##from##', $f, $tplUl);
+      $htmlUl = '';
+      $nbr = 0;
+      foreach($from as $ar){
+        $nbr += 1;
+        $doc = $ar['doc'];
+        $info = $ar['info'];
+        $li = str_replace("##ImageId##", $doc->filename, $tplLi);
+        $width = $doc->metadata->width ?? '';
+        $height = $doc->metadata->height ?? '';
+        $li = str_replace("##width##", $width, $li);
+        $li = str_replace("##width##", $width, $li);
+        $li = str_replace('##status##', $info['status'], $li);
+        if($info['status'] == "Deleted"){
+          $li = str_replace('##red##', 'red', $li);
+        }else{
+          $li = str_replace('##red##', '', $li);
+        }
+        $htmlUl .= $li;
+      }
+      $ul = str_replace('##contents##', $htmlUl, $ul);
+      $ul = str_replace('##nbr##', $nbr, $ul);
+      $html .= $ul;
+    }
+    $ret['contents'] = $liAr;
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
 
     $tpl = str_replace('##content##', $html, $tpl);
