@@ -65,14 +65,17 @@ class menu
       return false;
     return true;
   }
-  public function delImageHistoire()
+  Public function deleteImage()
   {
     if(!$this->is_valid_token())
       response::json(403, 'Bad token or token not found');
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
+    $col = utilsMenu::searcheImageCol($this->request['uuid']);
+    if(is_null($col))
+      response::json(400, 'Image non trouvée');
     $this->dbRes['class']::put(
-      col: 'altImages',
+      col: $col,
       uuid: $this->request['uuid'],
       param: ["deleted" => true, "dateUpdate" => time()]
     );
@@ -84,27 +87,13 @@ class menu
       response::json(403, 'Bad token or token not found');
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
-    $doc = $this->dbRes['class']::getOne(
-      col: 'siteParamsStats',
-      param: ['uuid' => $this->request['uuid']]
-    );
-    $param = $this->dbRes['class']::getOne(
-      col: 'siteparams',
-      param: ['name' => $doc->from]
-    );
-    $ar = json_decode(json_encode($param->imagesUuid), true);
-    if(!in_array($this->request['uuid'], $ar)){
-      $ar[] = $this->request['uuid'];
-      $this->dbRes['class']::put(
-        col: 'siteparams',
-        uuid: $param->uuid,
-        param: ['imagesUuid' => $ar, 'dateUpdate' => time()]
-      );
-    }
+    $col = utilsMenu::searcheImageCol($this->request['uuid'], true);
+    if(is_null($col))
+      response::json(400, 'Image non trouvée');
     $this->dbRes['class']::put(
-      col: 'siteParamsStats',
+      col: $col,
       uuid: $this->request['uuid'],
-      param: ['deleted' => false]
+      param: ['deleted' => false, "dateUpdate" => time()]
     );
     response::json(204, '');
   }
@@ -114,30 +103,14 @@ class menu
       response::json(403, 'Bad token or token not found');
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
+    $col = utilsMenu::searcheImageCol($this->request['uuid'], true);
+    if(is_null($col))
+      response::json(400, 'Image non trouvée');
     $this->dbRes['class']::delete(
-      col: 'siteParamsStats',
+      col: $col,
       uuid: $this->request['uuid']
     );
     $this->dbStockage['class']::delete($this->request['uuid']);
-    response::json(204, '');
-  }
-  public function delImage()
-  {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
-    if(!isset($this->request['uuid']))
-      response::json(400, 'uuid not given');
-    $doc = $this->dbRes['class']::getOne(
-      col: 'siteParamsStats',
-      param: ['uuid' => $this->request['uuid']]
-    );
-    if(is_null($doc))
-      response::json(404, 'Image not found');
-    $this->dbRes['class']::put(
-      col: 'siteParamsStats',
-      uuid: $doc->uuid,
-      param: ['deleted' => true, 'dateUpdate' => time()]
-    );
     response::json(204, '');
   }
   public function getImagesParams()
@@ -171,6 +144,7 @@ class menu
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages.tpl');
     $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_ul.tpl');
     $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_li.tpl');
+    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
     $html = '';
     $nbrAff = 0;
     $nbrImages = 0;
@@ -188,7 +162,8 @@ class menu
         'aff' => 0
       ];
       foreach($imgs as $img){
-        $li = str_replace('##histoireImageId##', $img['uuid'], $tplLi);
+        $li = str_replace('##delete##', $d, $tplLi);
+        $li = str_replace('##histoireImageId##', $img['uuid'], $li);
         $li = str_replace('##nbr##', $img['nbrAff'], $li);
         $nbr['global']['aff'] += $img['nbrAff'];
         $nbr['global']['images'] += 1;
@@ -204,13 +179,15 @@ class menu
     $imgDel = utilsMenu::getImageMenuDel();
     $tplDel = file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel.tpl');
     $tplLiDel = file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel_li.tpl');
+    $dr = file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
     $ulHtml = "";
     $nbr['del'] = [
       'images' => 0,
       'aff' => 0
     ];
     foreach($imgDel as $img){
-      $li = str_replace('##histoireImageId##', $img->uuid, $tplLiDel);
+      $li = str_replace('##delete##', $dr, $tplLiDel);
+      $li = str_replace('##histoireImageId##', $img->uuid, $li);
       $li = str_replace('##nbr##', $img->nbrAccess, $li);
       $li = str_replace('##from##', $img->from, $li);
       $nbr["del"]['aff'] += $img->nbrAccess;
@@ -569,6 +546,8 @@ class menu
     $ret['contents'] = [];
     $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/images_ul.tpl');
     $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
+    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
+    $dr = file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
     $html = '';
     foreach($liAr as $f => $from){
       usort($from, function($a, $b){
@@ -590,14 +569,20 @@ class menu
         $li = str_replace("##ImageId##", $doc->filename, $tplLi);
         $width = $doc->metadata->width ?? '';
         $height = $doc->metadata->height ?? '';
+        if($info['statusCode'] == 0){
+          $li = str_replace('##deleteImg##', $dr, $li);
+          $li = str_replace('##red##', 'red', $li);
+        }elseif($info['statusCode'] == 2){
+          $li = str_replace('##deleteImg##', "", $li);
+          $li = str_replace('##red##', 'blue', $li);
+        }else{
+          $li = str_replace('##deleteImg##', $d, $li);
+          $li = str_replace('##red##', '', $li);
+        }
         $li = str_replace("##width##", $width, $li);
         $li = str_replace("##width##", $width, $li);
         $li = str_replace('##status##', $info['status'], $li);
-        if($info['status'] == "Deleted"){
-          $li = str_replace('##red##', 'red', $li);
-        }else{
-          $li = str_replace('##red##', '', $li);
-        }
+        $li = str_replace("##histoireImageId##", $doc->filename, $li);
         $htmlUl .= $li;
       }
       $ul = str_replace('##contents##', $htmlUl, $ul);

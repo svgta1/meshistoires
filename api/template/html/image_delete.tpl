@@ -1,0 +1,1 @@
+<span id="span_imageId_##histoireImageId##" class="click red" action="delete" title="delete image"><i class="fa fa-minus-circle"></i></span>

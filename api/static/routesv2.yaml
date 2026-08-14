@@ -86,33 +86,26 @@ routes:
     class: image
     class_method: getThumb
     scopes:
-  - desc: Delete Image Menu def
+  - desc: Delete Image
     method: DELETE
-    uri: /v2/accueil/images/definitive/{uuid}
+    uri: /v2/image/{uuid}
+    version: v2r0
+    class: menu
+    class_method: deleteImage
+    scopes:
+  - desc: Delete Image  def
+    method: DELETE
+    uri: /v2/image/definitive/{uuid}
     version: v2r0
     class: menu
     class_method: delImageDef
     scopes:
-  - desc: Restore Image Menu
+  - desc: restaure Image  def
     method: PUT
-    uri: /v2/accueil/images/{uuid}
+    uri: /v2/image/{uuid}
     version: v2r0
     class: menu
     class_method: restaureImage
-    scopes:
-  - desc: Delete Image Menu
-    method: DELETE
-    uri: /v2/accueil/images/{uuid}
-    version: v2r0
-    class: menu
-    class_method: delImage
-    scopes:
-  - desc: Delete Image Histoire
-    method: DELETE
-    uri: /v2/histoire/images/{uuid}
-    version: v2r0
-    class: menu
-    class_method: delImageHistoire
     scopes:
 ##menu
   - desc: get Menu

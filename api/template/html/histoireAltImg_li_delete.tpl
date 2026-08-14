@@ -1,1 +1,0 @@
-<span id="span_imageId_##histoireImageId##" class="click red" action="delete"><i class="fa fa-trash"></i></span>

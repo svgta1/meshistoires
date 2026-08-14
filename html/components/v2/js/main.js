@@ -236,48 +236,6 @@
       if(img_ac)
         img_ac.src = l;
       document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = l;
-      let delL = document.getElementsByTagName("span");
-      for(let d of delL){
-        if(!d.hasAttribute('action')){
-          continue;
-        }
-        let id = null;
-        let uri = null;
-        let action = null;
-        let reload = false;
-        if(d.getAttribute('action') == "delete"){
-          id = d.id.replace('span_imageId_', '');
-          uri = this.apiUrl + '/accueil/images/' + id;
-          action = 'delete';
-        }
-        if(d.getAttribute('action') == "deleteDefitive"){
-          id = d.id.replace('span_imageId_del_', '');
-          uri = this.apiUrl + '/accueil/images/definitive/' + id;
-          action = 'delete';
-          reload = true;
-        }
-        if(d.getAttribute('action') == "restore"){
-          id = d.id.replace('span_imageId_rest_', '');
-          uri = this.apiUrl + '/accueil/images/' + id;
-          action = 'put';
-          reload = true;
-        }
-        if(uri !== null && action !== null){
-          d.addEventListener('click', async ()=>{
-            let token = window.localStorage.getItem('_tokenImgs');
-            let b = {};
-            if(token !== null){
-              b.body = JSON.stringify({token: token});
-            }
-            let res = await Fetch[action](uri, b);
-            if(res.ok){
-              document.getElementById('li_' + id).remove();
-              if(reload)
-                window.location.reload();
-            }
-          });
-        }
-      }
     }
     async collections(ress){
       let res = await ress;
@@ -364,28 +322,6 @@
             this.getHistoire(url, uuid);
         }
       }
-      let delL = document.getElementById('content').getElementsByTagName("span");
-      for(let d of delL){
-        if(!d.hasAttribute('action')){
-          continue;
-        }
-        if(d.getAttribute('action') !== "delete"){
-          continue;
-        }
-        d.addEventListener('click', async ()=>{
-          let id = d.id.replace('span_imageId_', '');
-          let uri = this.apiUrl + '/histoire/images/' + id;
-          let token = window.localStorage.getItem('_tokenImgs');
-          let b = {};
-          if(token !== null){
-            b.body = JSON.stringify({token: token});
-          }
-          let res = await Fetch.delete(uri, b);
-          if(res.ok){
-            document.getElementById('li_' + id).remove();
-          }
-        });
-      }
     }
     defaultContent(resp){
       let dAriane = document.getElementById('ariane')
@@ -416,6 +352,47 @@
       document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = location.origin + imgUrl + resp.contents.imageUuid;
       document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = location;
       document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.contents.desc;
+      let delL = document.getElementsByTagName("span");
+      for(let d of delL){
+        if(!d.hasAttribute('action')){
+          continue;
+        }
+        let id = null;
+        let uri = null;
+        let action = null;
+        let reload = false;
+        if(d.getAttribute('action') == "delete"){
+          id = d.id.replace('span_imageId_', '');
+          uri = this.apiUrl + '/image/' + id;
+          action = 'delete';
+        }
+        if(d.getAttribute('action') == "deleteDefitive"){
+          id = d.id.replace('span_imageId_del_', '');
+          uri = this.apiUrl + '/image/definitive/' + id;
+          action = 'delete';
+          reload = true;
+        }
+        if(d.getAttribute('action') == "restore"){
+          id = d.id.replace('span_imageId_rest_', '');
+          uri = this.apiUrl + '/image/' + id;
+          action = 'put';
+          reload = true;
+        }
+        if(uri !== null && action !== null){
+          d.addEventListener('click', async ()=>{
+            console.log(d);
+            let token = window.localStorage.getItem('_tokenImgs');
+            let b = {};
+            if(token !== null){
+              b.body = JSON.stringify({token: token});
+            }
+            let res = await Fetch[action](uri, b);
+            if(res.ok){
+              document.getElementById('li_' + id).remove();
+            }
+          });
+        }
+      }
     }
     async loadConfig(){
       config = window.mh.config;

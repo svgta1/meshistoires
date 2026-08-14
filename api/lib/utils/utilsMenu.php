@@ -12,13 +12,34 @@ class utilsMenu
   private static $dbRes = null;
   private static $getImageFromCache = [];
 
+  public static function searcheImageCol($uuid, $deleted = false)
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $col = 'altImages';
+    $doc = self::$dbRes['class']::getOne(
+      col: $col,
+      param: ["deleted" => $deleted, "uuid" => $uuid]
+    );
+    if(is_null($doc)){
+      $col = 'siteParamsStats';
+      $doc = self::$dbRes['class']::getOne(
+        col: $col,
+        param: ["deleted" => $deleted, "uuid" => $uuid]
+      );
+    }
+    if(is_null($doc))
+      return null;
+    return $col;
+  }
   public static function getImageFrom($uuid)
   {
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
     $ret = [
       'from' => 'unknown',
-      'status' => 'Actif'
+      'status' => 'Actif',
+      'statusCode' => 1, /* 0, 1, 2*/
     ];
     $doc = self::$dbRes['class']->getOne(
       col: "altImages",
@@ -39,8 +60,10 @@ class utilsMenu
         self::$getImageFromCache['histoires'][$doc->oeuvreUuid] = $o;
       }
       $ret['from'] = $o->title;
-      if($doc->deleted)
+      if($doc->deleted){
         $ret['status'] = 'Deleted';
+        $ret['statusCode'] = 0;
+      }
       return $ret;
     }
 
@@ -51,8 +74,10 @@ class utilsMenu
     );
     if(!is_null($doc)){
       $ret['from'] = $doc->from;
-      if($doc->deleted)
+      if($doc->deleted){
         $ret['status'] = 'Deleted';
+        $ret['statusCode'] = 0;
+      }
       return $ret;
     }
 
@@ -63,6 +88,8 @@ class utilsMenu
     );
     if(!is_null($doc)){
       $ret['from'] = $doc->title;
+      $ret['status'] = 'Couv';
+      $ret['statusCode'] = 2;
       return $ret;
     }
 
@@ -73,6 +100,8 @@ class utilsMenu
     );
     if(!is_null($doc)){
       $ret['from'] = $doc->name;
+      $ret['status'] = 'Couv';
+      $ret['statusCode'] = 2;
       return $ret;
     }
 
@@ -116,7 +145,7 @@ class utilsMenu
       return null;
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg.tpl');
     $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li.tpl');
-    $tplLiDel = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li_delete.tpl');
+    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
     $cursor = self::$dbRes['class']->get(
       col: "altImages",
       param: ['oeuvreUuid' => $uuid, 'deleted' => false],
@@ -126,7 +155,7 @@ class utilsMenu
     $html = "";
     foreach($cursor as $doc){
       if($canDelete){
-        $li = str_replace("##delete##", $tplLiDel, $tplLi);
+        $li = str_replace("##delete##", $d, $tplLi);
       }else{
         $li = str_replace("##delete##", "", $tplLi);
       }
