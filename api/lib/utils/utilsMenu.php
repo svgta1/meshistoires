@@ -148,16 +148,20 @@ class utilsMenu
 
     $doc = self::getImageFromSiteParamsStats($uuid);
     if(!is_null($doc)){
-      $ret['from'] = $doc->from;
+      return null;
+      // On ne récupère pas les sites params qui se font via accueil/images
+      /*$ret['from'] = $doc->from;
       if($doc->deleted){
         $ret['status'] = 'Deleted';
         $ret['statusCode'] = 0;
       }
-      return $ret;
+      return $ret;*/
     }
 
     $doc = self::getImageFromCollections($uuid);
     if(!is_null($doc)){
+      return null;
+      // On ne récupère pas les images des collections car pas d'action dessus
       $ret['from'] = $doc->name;
       $ret['status'] = 'Couv';
       $ret['statusCode'] = 2;

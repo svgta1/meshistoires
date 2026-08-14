@@ -535,6 +535,8 @@ class menu
     $liAr = [];
     foreach($cursor as $doc){
       $info = utilsMenu::getImageFrom($doc->filename);
+      if(is_null($info))
+        continue;
       if(!isset($liAr[$info['from']]))
         $liAr[$info['from']] = [];
       $liAr[$info['from']][] = [
