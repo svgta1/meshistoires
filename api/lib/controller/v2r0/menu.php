@@ -529,6 +529,7 @@ class menu
     $col = "thumb300.files";
     $cursor = $this->dbRes['class']::get(
       col: $col,
+      projection: ['filename', 'metadata.width', 'metadata.height']
     );
 
     $liAr = [];
@@ -589,7 +590,7 @@ class menu
       $ul = str_replace('##nbr##', $nbr, $ul);
       $html .= $ul;
     }
-    $ret['contents'] = $liAr;
+    //$ret['contents'] = $liAr;
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
 
     $tpl = str_replace('##content##', $html, $tpl);

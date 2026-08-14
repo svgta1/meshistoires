@@ -11,6 +11,10 @@ class utilsMenu
   private static $cacheId = "Cache_Menus_";
   private static $dbRes = null;
   private static $getImageFromCache = [];
+  private static $getImageFromAltImages = null;
+  private static $getImageFromSiteParamsStats = null;
+  private static $getImageFromCollections = null;
+  private static $getImageFromOeuvres = null;
 
   public static function searcheImageCol($uuid, $deleted = false)
   {
@@ -32,6 +36,82 @@ class utilsMenu
       return null;
     return $col;
   }
+  public static function getImageFromAltImages($uuid)
+  {
+    if(is_null(self::$getImageFromAltImages)){
+      self::$getImageFromAltImages = [];
+    
+      if(is_null(self::$dbRes))
+        self::$dbRes = db::get_res();
+      $cursor = self::$dbRes['class']->get(
+        col: "altImages",
+        projection: ['oeuvreUuid', 'deleted', 'uuid']
+      );
+      foreach($cursor as $doc){
+        self::$getImageFromAltImages[$doc->uuid] = $doc;
+      }
+    }
+    if(isset(self::$getImageFromAltImages[$uuid]))
+      return self::$getImageFromAltImages[$uuid];
+    return null;
+  }
+  public static function getImageFromSiteParamsStats($uuid)
+  {
+    if(is_null(self::$getImageFromSiteParamsStats)){
+      self::$getImageFromSiteParamsStats = [];
+    
+      if(is_null(self::$dbRes))
+        self::$dbRes = db::get_res();
+      $cursor = self::$dbRes['class']->get(
+        col: "siteParamsStats",
+        projection: ['from', 'deleted', 'uuid']
+      );
+      foreach($cursor as $doc){
+        self::$getImageFromSiteParamsStats[$doc->uuid] = $doc;
+      }
+    }
+    if(isset(self::$getImageFromSiteParamsStats[$uuid]))
+      return self::$getImageFromSiteParamsStats[$uuid];
+    return null;
+  }
+  public static function getImageFromCollections($uuid)
+  {
+    if(is_null(self::$getImageFromCollections)){
+      self::$getImageFromCollections = [];
+    
+      if(is_null(self::$dbRes))
+        self::$dbRes = db::get_res();
+      $cursor = self::$dbRes['class']->get(
+        col: "collections",
+        projection: ['imageUuid', 'name']
+      );
+      foreach($cursor as $doc){
+        self::$getImageFromCollections[$doc->imageUuid] = $doc;
+      }
+    }
+    if(isset(self::$getImageFromCollections[$uuid]))
+      return self::$getImageFromCollections[$uuid];
+    return null;
+  }
+  public static function getImageFromOeuvres($uuid)
+  {
+    if(is_null(self::$getImageFromOeuvres)){
+      self::$getImageFromOeuvres = [];
+    
+      if(is_null(self::$dbRes))
+        self::$dbRes = db::get_res();
+      $cursor = self::$dbRes['class']->get(
+        col: "oeuvres",
+        projection: ['imageUuid', 'title']
+      );
+      foreach($cursor as $doc){
+        self::$getImageFromOeuvres[$doc->imageUuid] = $doc;
+      }
+    }
+    if(isset(self::$getImageFromOeuvres[$uuid]))
+      return self::$getImageFromOeuvres[$uuid];
+    return null;
+  }
   public static function getImageFrom($uuid)
   {
     if(is_null(self::$dbRes))
@@ -41,16 +121,15 @@ class utilsMenu
       'status' => 'Actif',
       'statusCode' => 1, /* 0, 1, 2*/
     ];
-    $doc = self::$dbRes['class']->getOne(
-      col: "altImages",
-      param: ['uuid' => $uuid],
-      projection: ['oeuvreUuid', 'deleted']
-    );
+    
+    $doc = self::getImageFromAltImages($uuid);
     if(!is_null($doc)){
+      $cache = false;
       if(!isset(self::$getImageFromCache['histoires']))
         self::$getImageFromCache['histoires'] = [];
       if(isset(self::$getImageFromCache['histoires'][$doc->oeuvreUuid])){
         $o = self::$getImageFromCache['histoires'][$doc->oeuvreUuid];
+        $cache = true;
       }else{
         $o = self::$dbRes['class']->getOne(
           col: "oeuvres",
@@ -67,17 +146,21 @@ class utilsMenu
       return $ret;
     }
 
-    $doc = self::$dbRes['class']->getOne(
-      col: "siteParamsStats",
-      param: ['uuid' => $uuid],
-      projection: ['from', 'deleted']
-    );
+    $doc = self::getImageFromSiteParamsStats($uuid);
     if(!is_null($doc)){
       $ret['from'] = $doc->from;
       if($doc->deleted){
         $ret['status'] = 'Deleted';
         $ret['statusCode'] = 0;
       }
+      return $ret;
+    }
+
+    $doc = self::getImageFromCollections($uuid);
+    if(!is_null($doc)){
+      $ret['from'] = $doc->name;
+      $ret['status'] = 'Couv';
+      $ret['statusCode'] = 2;
       return $ret;
     }
 
@@ -88,18 +171,6 @@ class utilsMenu
     );
     if(!is_null($doc)){
       $ret['from'] = $doc->title;
-      $ret['status'] = 'Couv';
-      $ret['statusCode'] = 2;
-      return $ret;
-    }
-
-    $doc = self::$dbRes['class']->getOne(
-      col: "collections",
-      param: ['imageUuid' => $uuid],
-      projection: ['name']
-    );
-    if(!is_null($doc)){
-      $ret['from'] = $doc->name;
       $ret['status'] = 'Couv';
       $ret['statusCode'] = 2;
       return $ret;
