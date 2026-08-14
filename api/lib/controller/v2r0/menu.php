@@ -550,6 +550,7 @@ class menu
     $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
     $dr = file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
     $html = '';
+    $globalNbr = 0;
     foreach($liAr as $f => $from){
       usort($from, function($a, $b){
         if($a['status'] > $b['status']){
@@ -564,6 +565,7 @@ class menu
       $htmlUl = '';
       $nbr = 0;
       foreach($from as $ar){
+        $globalNbr += 1;
         $nbr += 1;
         $doc = $ar['doc'];
         $info = $ar['info'];
@@ -594,6 +596,7 @@ class menu
     $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
 
     $tpl = str_replace('##content##', $html, $tpl);
+    $tpl = str_replace('##globalNbr##', $globalNbr, $tpl);
     $ret['template'] = $tpl;
   }
   private function getAccueil(&$ret)
