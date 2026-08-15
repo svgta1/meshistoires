@@ -491,7 +491,7 @@ class menu
     }
     $ret['menuLi'] = "histoires";
     $ret['title'] = "Mes histoires";
-    $tpl = opt::_contents($_ENV['HTML_TPL'] . '/histoires.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires.tpl');
     $txt = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires.txt');
     $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $tpl = str_replace('##text##', $text, $tpl);
