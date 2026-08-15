@@ -493,8 +493,9 @@ div.accueil_list div.accueil_col{
 	display: none;
 }
 div.accueil_img_limit{
-	max-height: 435px;
-  overflow-y: scroll;
+	max-height: 390px;
+  overflow-y: auto;
+	scrollbar-width: thin;
 }
 div.accueil_img_limit p{
 	margin: 0;
