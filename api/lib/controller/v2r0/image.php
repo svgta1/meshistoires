@@ -12,7 +12,7 @@ class image
   private $scopes = null;
   private $request = [];
 
-  const HEADER_EXPIRE = 14 * 60*60*24;
+  const HEADER_EXPIRE = 150 * 60*60*24;
 
   public function __construct(?array $scopes, array $request)
   {
