@@ -754,6 +754,7 @@
     end(){
       let d = new Date();
       window.localStorage.setItem('_updateInfos', d.getTime());
+      document.body.classList.remove('hidden');
     }
   }
 

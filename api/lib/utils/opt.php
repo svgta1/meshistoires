@@ -4,10 +4,24 @@ namespace Meshistoires\Api\utils;
 class opt
 {
   private static $yamlFileContents = [];
+  private static $tplFileContents = [];
   private static $dirCache = [
     'cli' => 'OpCacheCli',
     'web' => 'OpCacheWeb'
   ];
+
+  public static function file_get_contents(string $fileName)
+  {
+    $key = md5($fileName);
+    if(isset(self::$tplFileContents[$key]))
+        return self::$tplFileContents[$key];
+
+    if(!is_file($fileName))
+      return false;
+
+    self::get_file_contentsTpl($fileName, $key);
+    return self::$tplFileContents[$key];
+  }
 
   public static function yaml_parse_file(string $fileName){
     $key = md5($fileName);
@@ -18,11 +32,46 @@ class opt
       return false;
 
     //self::$yamlFileContents[$key] = yaml_parse_file($fileName);
-    self::get_file_contents($fileName, $key);
+    self::get_file_contentsYaml($fileName, $key);
     return self::$yamlFileContents[$key];
   }
 
-  public static function get_file_contents(string $fileName, string $key){
+  public static function get_file_contentsTpl(string $fileName, string $key){
+    if(!$oc = opcache_get_configuration())
+      return self::get_from_tpl($fileName, $file_PHP, $key);
+
+    $opConf = $oc['directives'];
+    $revalidate = $opConf['opcache.revalidate_freq'];
+
+    if(php_sapi_name() == 'cli'){
+      $file_PHP = self::get_phpfile_path(self::$dirCache['cli'], $key, $opConf['opcache.enable_cli']);
+      if(!$opConf['opcache.enable_cli']){
+        return self::get_from_tpl($fileName, $file_PHP, $key);
+      }
+    }      
+    else{
+      $file_PHP = self::get_phpfile_path(self::$dirCache['web'], $key, $opConf['opcache.enable']);
+      if(!$opConf['opcache.enable']){
+        return self::get_from_tpl($fileName, $file_PHP, $key);
+      }
+    }
+
+    if(!is_file($file_PHP)){
+      return self::get_from_tpl($fileName, $file_PHP, $key, true);
+    }
+    
+    if($opConf['opcache.validate_timestamps'] && (filemtime($file_PHP) + $revalidate < time())){
+      if(filemtime($file_PHP) < filemtime($fileName)){
+        return self::get_from_tpl($fileName, $file_PHP, $key, true);
+      }else{
+        touch($file_PHP);
+      }   
+    }
+    require($file_PHP);
+    self::$tplFileContents[$key] = htmlspecialchars_decode($tpl);
+  }
+
+  public static function get_file_contentsYaml(string $fileName, string $key){
     if(!$oc = opcache_get_configuration())
       return self::get_from_yaml($fileName, $file_PHP, $key);
 
@@ -74,6 +123,13 @@ class opt
     if($genPhp){
       $array = var_export(self::$yamlFileContents[$key], 1);
       $contents = "<?php \$array = $array; ?>";
+      file_put_contents($file_PHP, $contents);
+    }
+  }
+  public static function get_from_tpl(string $fileName, string $file_PHP, string $key, bool $genPhp = false){
+    self::$tplFileContents[$key] = file_get_contents($fileName);
+    if($genPhp){
+      $contents = "<?php \$tpl = '" . htmlspecialchars(self::$tplFileContents[$key]) . "'; ?>";
       file_put_contents($file_PHP, $contents);
     }
   }

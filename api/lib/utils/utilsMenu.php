@@ -4,6 +4,7 @@ use Meshistoires\Api\utils\cache;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\model\siteParamsStats;
 use Meshistoires\Api\utils\seo;
+use Meshistoires\Api\utils\opt;
 
 class utilsMenu
 {
@@ -218,9 +219,9 @@ class utilsMenu
     $cursor = self::getAltImgData($uuid);
     if(is_null($cursor))
       return null;
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg.tpl');
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li.tpl');
-    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li.tpl');
+    $d = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
     $cursor = self::$dbRes['class']->get(
       col: "altImages",
       param: ['oeuvreUuid' => $uuid, 'deleted' => false],
@@ -248,7 +249,7 @@ class utilsMenu
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
 
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/' . $error . '.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/' . $error . '.tpl');
     $res = utilsMenu::getImagesStatsInfo($error);
     if($res['nbr'] > 0){
       $l = [];
@@ -266,7 +267,7 @@ class utilsMenu
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
     $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/error_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/error_li.tpl');
     $html = '';
     $random = self::$dbRes['res']->oeuvres->aggregate([
       ['$sample' => ["size" => (int)$_ENV['AC_HIST_LIMIT']]],
@@ -492,7 +493,7 @@ class utilsMenu
     if($nbrCat !== 0){
       $nbr = 0;
       $catHtml = "";
-      $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/categorie.tpl');
+      $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/categorie.tpl');
       foreach($data['categories'] as $cat){
         $li = str_replace('##catUri##', $cat['ariane'][1]['uri'], $tplLi);
         $li = str_replace('##catName##', '« '.$cat['doc']->name.' »', $li);
@@ -639,13 +640,13 @@ class utilsMenu
   }
   public static function ariane(array $ar){
     $html = "";
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/ariane_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/ariane_li.tpl');
     foreach($ar as $a){
       $li = str_replace("##href##", $a["uri"], $tplLi);
       $li = str_replace("##name##", $a["name"], $li);
       $html .= $li;
     }
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/ariane.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/ariane.tpl');
     return str_replace("##ariane##", $html, $tpl);
   }
 }

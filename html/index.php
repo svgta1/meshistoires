@@ -2,6 +2,7 @@
 use Meshistoires\Api\controller\v2r0\menu;
 use Meshistoires\Api\utils\siteInfo;
 use Meshistoires\Api\utils\utilsMenu;
+use Meshistoires\Api\utils\opt;
 
 require dirname(__FILE__, 2) . '/api/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2) . '/api/');
@@ -53,7 +54,7 @@ class setIndex
   }
   public function setContents()
   {
-    $contents = file_get_contents('index.html.template');
+    $contents = opt::file_get_contents('index.html.template');
     $contents = str_replace('##image##', $this->aff['image'], $contents);
     $contents = str_replace('##title##', $this->aff['title'], $contents);
     $contents = str_replace('##description##', $this->aff['desc'], $contents);

@@ -141,10 +141,10 @@ class menu
         }
       });
     }
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages.tpl');
-    $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_ul.tpl');
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_li.tpl');
-    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueilImages.tpl');
+    $tplUl = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_ul.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueilImages_li.tpl');
+    $d = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
     $html = '';
     $nbrAff = 0;
     $nbrImages = 0;
@@ -177,9 +177,9 @@ class menu
       $html .= $ul;
     }
     $imgDel = utilsMenu::getImageMenuDel();
-    $tplDel = file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel.tpl');
-    $tplLiDel = file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel_li.tpl');
-    $dr = file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
+    $tplDel = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel.tpl');
+    $tplLiDel = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueilImagesDel_li.tpl');
+    $dr = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
     $ulHtml = "";
     $nbr['del'] = [
       'images' => 0,
@@ -254,7 +254,7 @@ class menu
     $ret['contents'] = [
       'desc' => 'Histoires de la catégorie ' . $data['doc']->name,
     ];
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/categorie_info.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/categorie_info.tpl');
     $tpl = str_replace("##nbrHist##", $data['histoires']['nbr'], $tpl);
     $tpl = str_replace("##catName##", $data['doc']->name, $tpl);
     $html = "";
@@ -283,7 +283,7 @@ class menu
     $ret['isMenu'] = false;
     $doc = $data['doc'];
     $ret['title'] = $doc->title;
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
     $tpl = str_replace('##title##', $doc->title, $tpl);
     $tpl = str_replace('##imageId##', $doc->imageUuid, $tpl);
     $desc = '<p>' . $doc->desc . '</p>';
@@ -300,7 +300,7 @@ class menu
       ['$sample' => ["size" => (int)$_ENV['AC_HIST_LIMIT']]],
       ['$project' => ["uuid" => 1]]
     ]);
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/histoire_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire_li.tpl');
     $html = '';
     foreach($random as $rand){
       $_data = utilsMenu::getHistoireData($rand->uuid);
@@ -333,7 +333,7 @@ class menu
     $data = utilsMenu::getHistoireData($this->request['uuid']);
     if(is_null($data))
       response::json(404, 'Histoire de collection non trouvée');
-    $li = file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
+    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
     $histoire = $data['doc'];
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
@@ -382,7 +382,7 @@ class menu
     foreach($ret['histoires']['list'] as $uuid){
       $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
     }
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
     $tpl = str_replace("##colName##", $dataCol['doc']->name, $tpl);
     $tpl = str_replace("##imageId##", $dataCol['doc']->imageUuid, $tpl);
     $tpl = str_replace("##content##", $html, $tpl);
@@ -402,7 +402,7 @@ class menu
   private function setCollectionsTpl($contents)
   {
     $html = '';
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/collections_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/collections_li.tpl');
     foreach($contents as $data){
       $doc = $data['doc'];
       $li = $tplLi;
@@ -416,8 +416,8 @@ class menu
       $li = str_replace("##distantLink##", $doc->distanteLink, $li);
       $html .= $li;
     }
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/collections.tpl');
-    $txt = file_get_contents($_ENV['HTML_TPL'] . '/collections.txt');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.tpl');
+    $txt = opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt');
     $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $tpl = str_replace('##text##', $text, $tpl);
     return str_replace('##content##', $html, $tpl);
@@ -451,7 +451,7 @@ class menu
     $data = utilsMenu::getHistoireData($uuid);
     if(is_null($data))
       response::json(404, 'Histoire des histoires non trouvée');
-    $li = file_get_contents($_ENV['HTML_TPL'] . '/histoires_li.tpl');
+    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires_li.tpl');
     $histoire = $data['doc'];
     $collection = $data['collection'];
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
@@ -491,8 +491,8 @@ class menu
     }
     $ret['menuLi'] = "histoires";
     $ret['title'] = "Mes histoires";
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/histoires.tpl');
-    $txt = file_get_contents($_ENV['HTML_TPL'] . '/histoires.txt');
+    $tpl = opt::_contents($_ENV['HTML_TPL'] . '/histoires.tpl');
+    $txt = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires.txt');
     $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $tpl = str_replace('##text##', $text, $tpl);
     $tpl = str_replace("##nbrHist##", $ret['histoires']['nbr'], $tpl);
@@ -547,10 +547,10 @@ class menu
     }
     ksort($liAr);
     $ret['contents'] = [];
-    $tplUl = file_get_contents($_ENV['HTML_TPL'] . '/images_ul.tpl');
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
-    $d = file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
-    $dr = file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
+    $tplUl = opt::file_get_contents($_ENV['HTML_TPL'] . '/images_ul.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/images_li.tpl');
+    $d = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
+    $dr = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_deleteRestore.tpl');
     $html = '';
     $globalNbr = 0;
     foreach($liAr as $f => $from){
@@ -595,7 +595,7 @@ class menu
       $html .= $ul;
     }
     //$ret['contents'] = $liAr;
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/images.tpl');
 
     $tpl = str_replace('##content##', $html, $tpl);
     $tpl = str_replace('##globalNbr##', $globalNbr, $tpl);
@@ -611,7 +611,7 @@ class menu
       projection: ['uuid']
     );
     $ret['contents'] = [];
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/accueil_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueil_li.tpl');
     $html = '';
     foreach($cursor as $c){
       $data= utilsMenu::getHistoireData($c->uuid);
@@ -628,8 +628,8 @@ class menu
       $doc = utilsMenu::_unset($doc);
       $ret['contents'][] = $data;
     }
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/accueil.tpl');
-    $txt = file_get_contents($_ENV['HTML_TPL'] . '/accueil.txt');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueil.tpl');
+    $txt = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueil.txt');
     $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $tpl = str_replace('##text##', $text, $tpl);
 
@@ -690,7 +690,7 @@ class menu
       'template' => null,
     ];
     $html = "";
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/menu_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/menu_li.tpl');
     if(isset($_SERVER['HTTP_REFERER']))
       $ref = str_replace($_SERVER["REQUEST_SCHEME"] .'://' . $_ENV['DOMAIN'] . '/', '', $_SERVER['HTTP_REFERER']);
     else
@@ -720,7 +720,7 @@ class menu
     };
     $res['metadata']['count'] = \count($res['list']);
     $res['metadata']['hash'] = \hash('sha256', json_encode($res['list']));
-    $tpl = file_get_contents($_ENV['HTML_TPL'] . '/menu.tpl');
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/menu.tpl');
     $res['template'] = str_replace("##menuList##", $html, $tpl);
     return $res;
   }

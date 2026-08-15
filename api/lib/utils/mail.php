@@ -3,6 +3,7 @@ namespace Meshistoires\Api\utils;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
+use Meshistoires\Api\utils\opt;
 
 class mail
 {
@@ -52,7 +53,7 @@ class mail
   }
   private function prepareFooter(): string
   {
-    $footer = \file_get_contents($_ENV['MAIL_TPL'] . '/footer.tpl');
+    $footer = opt::file_get_contents($_ENV['MAIL_TPL'] . '/footer.tpl');
     $siteInfo = siteInfo::infoFooterMail();
     $footer = str_replace('##social##', $siteInfo['social'], $footer);
     $footer = str_replace('##copyright##', $siteInfo['cr'], $footer);
@@ -61,7 +62,7 @@ class mail
   }
   private function prepareHeader(string $userName): string
   {
-    $header = \file_get_contents($_ENV['MAIL_TPL'] . '/header.tpl');
+    $header = opt::file_get_contents($_ENV['MAIL_TPL'] . '/header.tpl');
     $header = str_replace('##imgUrl##', $this->config['imageHeader'], $header);
     $header = str_replace('##ident##', $userName, $header);
     return $header;

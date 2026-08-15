@@ -40,7 +40,7 @@ class siteInfo
   public static function getSocial()
   {
     $social = opt::yaml_parse_file($_ENV['SOCIAL_YAML']);
-    $tplLi = file_get_contents($_ENV['HTML_TPL'] . '/social_li.tpl');
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/social_li.tpl');
     $html = "";
     foreach($social as $k => $s){
       $li = str_replace('##socialHref##', $s['url'], $tplLi);
