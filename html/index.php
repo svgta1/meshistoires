@@ -60,7 +60,7 @@ class setIndex
     $contents = str_replace('##description##', $this->aff['desc'], $contents);
     $contents = str_replace('##siteTitle##', $_ENV['SITE_TITLE'], $contents);
     $contents = str_replace('##SiteDescription##', $_ENV['SITE_DESC'], $contents);
-    $contents = str_replace('##url##', $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'], $contents);
+    $contents = str_replace('##url##', $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_SERVER['REQUEST_URI'], $contents);
     if($this->config->modeDev)
       $version = time();
     else

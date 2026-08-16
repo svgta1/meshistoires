@@ -1,6 +1,7 @@
 <?php
 namespace Meshistoires\Api\utils;
 use Svgta\Lib\Utils;
+use Meshistoires\Api\utils\opt;
 
 class siteInfo
 {
@@ -10,6 +11,7 @@ class siteInfo
     //if(is_file($_ENV['SOCIAL_YAML']))
     //$social = opt::yaml_parse_file($_ENV['SOCIAL_YAML']);
     $cr = str_replace('#AAAA#', \date('Y'), $_ENV['COPYRIGHT']);
+    $version = opt::yaml_parse_file($_ENV['BASE_DIR'] . '/version.yaml')['version'];
     $res = [
       'title' => $_ENV['SITE_TITLE'],
       'description' => $_ENV['SITE_DESC'],
@@ -21,6 +23,7 @@ class siteInfo
       'enc_POST' => isset($_ENV['REQUEST_POST_ENC']) && \boolval($_ENV['REQUEST_POST_ENC']),
       'enc_PUT' => isset($_ENV['REQUEST_PUT_ENC']) && \boolval($_ENV['REQUEST_PUT_ENC']),
       'enc_DELETE' => isset($_ENV['REQUEST_DELETE_ENC']) && \boolval($_ENV['REQUEST_DELETE_ENC']),
+      'version' => $version,
     ];
     return $res;
   }
