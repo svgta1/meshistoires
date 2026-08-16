@@ -300,10 +300,11 @@ class utilsMenu
       ]
     ];
     $data['ariane'] = self::ariane( $data['data']['ariane']);
+    $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['data']['meta'] = [
       'title' => $libelle . ' - ' . $_ENV['SITE_TITLE'],
-      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
-      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['data']['ariane'][1]['uri'],
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['data']['ariane'][1]['uri'],
       'description' => htmlspecialchars('Page non trouvée ou interdite.'),
       'keywords' => $libelle . ', ' . $_ENV['KEYWORDS'],
     ];
@@ -343,10 +344,11 @@ class utilsMenu
     $data['doc'] = self::_unset($doc);
     $data['collection'] = self::getCollectionData($doc->collectionUuid);
     $categories = [];
+    $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
       'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
-      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
-      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars($data['doc']->desc),
       'keywords' => $_ENV['KEYWORDS'],
     ];
@@ -410,10 +412,11 @@ class utilsMenu
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
     }
+    $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
       'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
-      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
-      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars($data['doc']->desc),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
@@ -464,10 +467,11 @@ class utilsMenu
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
     }
+    $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
       'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
-      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
-      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars('Histoires de la catégorie ' . $data['doc']->name),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
