@@ -3,6 +3,7 @@ use Meshistoires\Api\controller\v2r0\menu;
 use Meshistoires\Api\utils\siteInfo;
 use Meshistoires\Api\utils\utilsMenu;
 use Meshistoires\Api\utils\opt;
+use Meshistoires\Api\controller\v2r0\menu as ctrlMenu;
 
 require dirname(__FILE__, 2) . '/api/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2) . '/api/');
@@ -18,16 +19,12 @@ class setIndex
   private $reqUri = [];
   private $firstKey = 0;
   private $nextKey = 0;
+  private $ctrlMenu = null;
 
   public function __construct()
   {
     $this->config = json_decode(file_get_contents('config/config.json'));
     $this->version = json_decode(file_get_contents('config/version.json'));
-    $this->aff = [
-      'title' => $_ENV['SITE_TITLE'],
-      'desc' => $_ENV['SITE_DESC'],
-      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . $this->config->components . 'img/inspiration.webp',
-    ];
     $this->menu = menu::_menuList();
     if($_SERVER['REQUEST_URI'] == '/'){
       header('Location: ' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . '/accueil');
@@ -36,6 +33,7 @@ class setIndex
     $this->reqUri = explode('/',$_SERVER['REQUEST_URI']);
     unset($this->reqUri[0]);
     $this->firstKey = array_key_first($this->reqUri);
+    $this->ctrlMenu = new ctrlMenu([], []);
   }
   public function verifyMenu()
   {
@@ -43,8 +41,11 @@ class setIndex
       http_response_code(404);
       return false;
     }
-    $this->aff['title'] = $this->menu['list'][$this->reqUri[$this->firstKey]]['name'];
-    $this->aff['desc'] = file_get_contents($_ENV['HTML_TPL'] . '/' . $this->menu['list'][$this->reqUri[$this->firstKey]]['uuid'] . '.txt');
+    if(count($this->reqUri) == 1 && $this->reqUri[$this->firstKey] !== "images"){
+      $ret = $this->ctrlMenu->_get($this->reqUri[$this->firstKey]);
+      $this->aff = $ret['data']['meta'];
+    }
+    
     $this->nextKey = $this->firstKey;
     return true;
   }
@@ -57,7 +58,7 @@ class setIndex
     $contents = opt::file_get_contents('index.html.template');
     $contents = str_replace('##image##', $this->aff['image'], $contents);
     $contents = str_replace('##title##', $this->aff['title'], $contents);
-    $contents = str_replace('##description##', $this->aff['desc'], $contents);
+    $contents = str_replace('##description##', $this->aff['description'], $contents);
     $contents = str_replace('##siteTitle##', $_ENV['SITE_TITLE'], $contents);
     $contents = str_replace('##SiteDescription##', $_ENV['SITE_DESC'], $contents);
     $contents = str_replace('##url##', $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_SERVER['REQUEST_URI'], $contents);
@@ -69,6 +70,7 @@ class setIndex
     $contents = str_replace('##components##', $this->config->components, $contents);
     $contents = str_replace('##menu##', $this->menu['template'], $contents);
     $contents = str_replace('##social##', siteInfo::getSocial(), $contents);
+    $contents = str_replace('##keywords##', $this->aff['keywords'], $contents);
     return $contents;
   }
   public function getFirstKeyName()
@@ -90,17 +92,18 @@ class setIndex
   {
     $name = $this->getNextKeyName();
     if($name == 'error404'){
-      $this->aff['title'] = 'Erreur 404';
-      $this->aff['desc'] = 'La page à laquelle vous essayer d\'accéder n\'existe pas ou n\'existe plus.';
+      $data = utilsMenu::errorPage(404, 'Erreur 404')['data'];
+      $this->aff = $data['meta'];
       return;
     }
     if($name == 'error403'){
-      $this->aff['title'] = 'Erreur 403';
-      $this->aff['desc'] = 'La page à laquelle vous essayer d\'accéder est réservée à l\'administration.';
+      $data = utilsMenu::errorPage(403, 'Erreur 403')['data'];
+      $this->aff = $data['meta'];
       return;
     }
     if($name == 'images'){
-      $this->aff['title'] = 'Images';
+      $data = $this->ctrlMenu->_getImagesParams();
+      $this->aff = $data['data']['meta'];
       return;
     }
     http_response_code(404);
@@ -115,10 +118,7 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCollectionData($uuid);
-    $this->aff['title'] = $data['doc']->name;
-    $this->aff['desc'] = $data['doc']->desc;
-    $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . $this->config->api->uri . $this->config->api->version;
-    $this->aff['image'] = $uri . '/imageThumb300/' . $data['doc']->imageUuid;
+    $this->aff = $data['meta'];
   }
   public function histoires()
   {
@@ -133,10 +133,16 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getHistoireData($uuid);
-    $this->aff['title'] = $data['doc']->title;
-    $this->aff['desc'] = $data['doc']->desc;
-    $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . $this->config->api->uri . $this->config->api->version;
-    $this->aff['image'] = $uri . '/imageThumb300/' . $data['doc']->imageUuid;
+    $this->aff = $data['meta'];
+    $cat = [];
+    foreach($data['categories'] as $name => $ar){
+      $cat[] = $name;
+    }
+    $t = explode(' ', $data['doc']->title);
+    foreach($t as $sub){
+      if(strlen($sub) > 4)
+        $cat[] = $sub;
+    }
   }
   public function categories()
   {
@@ -148,8 +154,7 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCategorieData($uuid);
-    $this->aff['title'] = 'Catégorie ' . $data['doc']->name;
-    $this->aff['desc'] = ' Liste des histoires de la catégorie ' . $data['doc']->name;
+    $this->aff = $data['meta'];
   }
 }
 

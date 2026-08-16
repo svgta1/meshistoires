@@ -1,5 +1,5 @@
 <div class="collections">
-  <h2>Collections</h2>
+  <h2>Liste des collections</h2>
   <div class="collections_prez">
     ##text##
     <p><span class="signature">Cocolst</span></p>

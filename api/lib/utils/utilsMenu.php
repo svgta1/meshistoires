@@ -263,10 +263,10 @@ class utilsMenu
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand], $error);
+      $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
-    $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/error_li.tpl');
     $html = '';
     $random = self::$dbRes['res']->oeuvres->aggregate([
@@ -283,23 +283,29 @@ class utilsMenu
     }
     $tpl = str_replace('##content##', $html, $tpl);
     $data = [
-      'ariane' => self::ariane([
-        [
-        'name' => 'Accueil',
-        'uri' => '/accueil',
-        ],
-        [
-          'name' => $libelle,
-          'uri' => '/accueil/' . $error,
-        ]
-      ]),
+      'data' => [],
       'template' => $tpl,
       'menuLi' => 'accueil',
       'isMenu' => false,
       'title' => $libelle,
-      'contents' => [
-        'desc' => 'Page non trouvée ou interdite.',
+    ];
+    $data['data']['ariane'] = [
+      [
+      'name' => 'Accueil',
+      'uri' => '/accueil',
       ],
+      [
+        'name' => $libelle,
+        'uri' => '/accueil/' . $error,
+      ]
+    ];
+    $data['ariane'] = self::ariane( $data['data']['ariane']);
+    $data['data']['meta'] = [
+      'title' => $libelle . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['data']['ariane'][1]['uri'],
+      'description' => htmlspecialchars('Page non trouvée ou interdite.'),
+      'keywords' => $libelle . ', ' . $_ENV['KEYWORDS'],
     ];
     return $data;
   }
@@ -332,19 +338,27 @@ class utilsMenu
       [
         'name' => $doc->title,
         'uri' => '/histoires/' . seo::seofy($doc->title),
-        //'uri' => '/histoires/' . $doc->uuid . '/' . seo::seofy($doc->title),
       ]
     ];
     $data['doc'] = self::_unset($doc);
     $data['collection'] = self::getCollectionData($doc->collectionUuid);
     $categories = [];
+    $data['meta'] = [
+      'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'description' => htmlspecialchars($data['doc']->desc),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
+    $keyw = [];
     foreach($doc->categorieUuid as $categorie){
       $cat = self::getCategorieData($categorie);
       $categories[$cat['doc']->name] = $cat;
+      $keyw[] = $cat['doc']->name;
     }
+    $data['meta']['keywords'] = implode(', ', $keyw) . ', ' . $data['meta']['keywords'];
     ksort($categories);
     $data['categories'] = $categories;
-    
     self::setCache($cacheKey, $data);
     return $data;
   }
@@ -396,6 +410,13 @@ class utilsMenu
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
     }
+    $data['meta'] = [
+      'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'description' => htmlspecialchars($data['doc']->desc),
+      'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
+    ];
     self::setCache($cacheKey, $data);
     return $data;
   }
@@ -443,6 +464,13 @@ class utilsMenu
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
     }
+    $data['meta'] = [
+      'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'description' => htmlspecialchars('Histoires de la catégorie ' . $data['doc']->name),
+      'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
+    ];
     self::setCache($cacheKey, $data);
     return $data;
   }

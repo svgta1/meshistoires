@@ -2,26 +2,29 @@
 <html lang="fr" dir="ltr" >
   <head>
     <title>##title##</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="all">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="robots" content="index, follow">
+    <meta name="revisit-after" content="2 days">
     <meta name="rating" content="adult">
     <meta name="Rating" content="mature">
     <meta name="RATING" content="RTA-5042-1996-1400-1577-RTA" />
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="description" content="##description##" id="__meta-description">
+    <meta name="keywords" content="##keywords##" id="__meta-keywords">
 
     <meta property="og:description" content="##description##" id="__meta-og:description">
     <meta property="og:image" content="##image##" id="__meta-og:image">
     <meta property="og:title" content="##title##" id="__meta-og:title">
     <meta property="og:url" content="##url##" id="__meta-og:url">
     <meta property="og:locale" content="fr_FR">
+    <meta property="og:type" content="book" />
 
     <meta name="twitter:title" content="##title##" id="__meta-twitter:title">
     <meta name="twitter:url" content="##url##" id="__meta-twitter:url">
     <meta name="twitter:description" content="##description##" id="__meta-twitter:desc">
     <meta name="twitter:image" content="##image##" id="__meta-twitter:image">
-    <meta name="twitter:card" content="summary_large_image" id="__meta-twitter:card">
+    <meta name="twitter:card" content="summary" id="__meta-twitter:card">
     <meta name="twitter:site" content="@Svgtafr" id="__meta-twitter:site">
 
     <meta property="fb:app_id" content="858156344525347" id="__meta-fb:id">
@@ -32,6 +35,11 @@
     <link rel="icon" type="image/png" sizes="64x64" href="##components##img/logo_mh_64.png">
     <link rel="icon" type="image/png" sizes="128x128" href="##components##img/logo_mh_128.png">
     <link rel="icon" type="image/png" href="##components##img/logo_mh.png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
     <link rel="manifest" href="/manifest.json" />
     <script rel="preload" src="##components##js/mh.js?v=##version##" as="script" defer></script>
     <link rel="stylesheet" type="text/css" href="##components##css/default.css?v=##version##" media="screen" defer>

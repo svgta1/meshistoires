@@ -21,8 +21,8 @@ class menu
   private static $cacheId = "Cache_Menus_";
   private static $menuL = [
     'Accueil' => 'accueil',
-    'Collections' => 'collections',
-    'Histoires' => 'histoires',
+    'Liste des collections' => 'collections',
+    'Liste des histoires' => 'histoires',
     'Images' => 'images'
   ];
   private static $menuLVisibility = [
@@ -45,6 +45,7 @@ class menu
     'menuLi' => null,
     'isMenu' => true,
     'title' => null,
+    'data' => []
   ];
 
   public function __construct(?array $scopes, array $request)
@@ -117,6 +118,11 @@ class menu
   {
     if(!$this->is_valid_token())
       response::json(403, 'Bad token or token not found');
+    $ret = $this->_getImagesParams();
+    response::json(200, $ret);
+  }
+  public function _getImagesParams()
+  {
     $imgList = [];
     $imgUuid = [];
     $cursor = utilsMenu::getImagesStatCursor();
@@ -212,6 +218,7 @@ class menu
         'uri' => '/accueil/images',
       ]
     ];
+    
     $ret = [
       'ariane' => utilsMenu::ariane($ariane),
       'isMenu' => false,
@@ -220,7 +227,17 @@ class menu
       'title' => 'images',
       'template' => $tpl
     ];
-    response::json(200, $ret);
+    $ret['data'] = [
+      'ariane' => $ariane,
+    ];
+    $ret['data']['meta'] = [
+      'title' => $ariane[1]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ariane[1]['uri'],
+      'description' => htmlspecialchars('Liste des images aléatoires des pages d\'accueil'),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
+    return $ret;
   }
   public function error403()
   {
@@ -234,7 +251,6 @@ class menu
   }
   public function getCategorieInfo()
   {
-    $ret = $this->modelRetMenu;
     if(request::validate_uuid($this->request['uuid'])){
       $uuid = $this->request['uuid'];
     }else{
@@ -251,9 +267,6 @@ class menu
     $ret['isMenu'] = false;
     $ret['title'] = $data['doc']->name;
     $ret['histoires'] = $data['histoires'];
-    $ret['contents'] = [
-      'desc' => 'Histoires de la catégorie ' . $data['doc']->name,
-    ];
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/categorie_info.tpl');
     $tpl = str_replace("##nbrHist##", $data['histoires']['nbr'], $tpl);
     $tpl = str_replace("##catName##", $data['doc']->name, $tpl);
@@ -261,12 +274,14 @@ class menu
     foreach($data['histoires']['list'] as $uuid){
       $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
     }
+    unset($data['histoires']);
+    unset($data['doc']);
+    $ret['data'] = $data;
     $ret['template'] = str_replace("##content##", $html, $tpl);
     response::json(200, $ret);
   }
   public function getHistoireInfo()
   {
-    $ret = $this->modelRetMenu;
     if(request::validate_uuid($this->request['uuid'])){
       $uuid = $this->request['uuid'];
     }else{
@@ -282,7 +297,7 @@ class menu
     $ret['menuLi'] = 'histoires';
     $ret['isMenu'] = false;
     $doc = $data['doc'];
-    $ret['title'] = $doc->title;
+    //$ret['title'] = $doc->title;
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
     $tpl = str_replace('##title##', $doc->title, $tpl);
     $tpl = str_replace('##imageId##', $doc->imageUuid, $tpl);
@@ -320,11 +335,12 @@ class menu
     }
     $tpl = str_replace("##content##", $html, $tpl);
     $tpl = str_replace("##contentsAltImg##", $htmlAlt, $tpl);
-    $ret['contents'] = [
+    /*$ret['contents'] = [
       "imageUuid" => $doc->imageUuid,
       "desc" => $doc->desc
-    ];
+    ];*/
     $ret['template'] = $tpl;
+    unset($data['doc']);
     $ret['data'] = $data;
     response::json(200, $ret);
   }
@@ -353,8 +369,10 @@ class menu
         $li = str_replace('##cptImg##', "Découvrir l'histoire et ses $cptImg illustrations.", $li);
       }
     }
+    unset($data['doc']);
     $ret = [
-      'html' => $li
+      'html' => $li,
+      'data' => $data
     ];
     response::json(200, $ret);
   }
@@ -365,7 +383,6 @@ class menu
       'template' => null,
       'histoires' => []
     ];
-    $col = "collections";
     if(request::validate_uuid($this->request['uuid'])){
       $uuid = $this->request['uuid'];
     }else{
@@ -392,11 +409,13 @@ class menu
     $ret['ariane'] = utilsMenu::ariane($dataCol['ariane']);
     $ret['menuLi'] = 'collections';
     $ret['isMenu'] = false;
-    $ret['title'] = 'Collection ' . $dataCol['doc']->name;
-    $ret['contents']=[
+    //$ret['title'] = 'Collection ' . $dataCol['doc']->name;
+    /*$ret['contents']=[
       'imageUuid' => $dataCol['doc']->imageUuid,
       'desc' => $dataCol['doc']->desc
-    ];
+    ];*/
+    unset($dataCol['doc']);
+    $ret['data'] = $dataCol;
     response::json(200, $ret);
   }
   private function setCollectionsTpl($contents)
@@ -437,6 +456,14 @@ class menu
       $ret['contents'][] = $data;
     }
     $ret['template'] = $this->setCollectionsTpl($ret['contents']);
+
+    $ret['data']['meta'] = [
+      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
+      'description' => htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt')),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
   }
   public function getHistoireFromHistoires()
   {
@@ -470,8 +497,6 @@ class menu
   private function getHistoires(&$ret)
   {
     $order = 'dateCreate';
-    //$this->request['order']
-    $ret = $this->modelRetMenu;
     $col = 'oeuvres';
     $ret['histoires'] = [
       'nbr' =>$cursor = $this->dbRes['class']::count(
@@ -501,25 +526,23 @@ class menu
       order: ['name' => 1],
       projection: ['uuid']
     );
-    $data = [
-      'categories' => []
-    ];
+    $ret['data']['categories'] = [];
+    $catName = [];
     foreach($cursorCat as $c){
       $cat = utilsMenu::getCategorieData($c->uuid);
-      if($cat['histoires']['nbr'] > 0)
+      if($cat['histoires']['nbr'] > 0){
         $data['categories'][] = $cat;
+        $catName[] = $cat['doc']->name;
+      }
     }
     $tpl = str_replace("##catList##", utilsMenu::setCategorieAff($data), $tpl);
     $ret['template'] = str_replace("##content##", $html, $tpl);
-    $ariane = [
-      [
-        'name' => 'Histoires',
-        'uri' => '/histoire',
-      ]
-    ];
-    $ret['ariane'] = utilsMenu::ariane($ariane);
-    $ret['contents'] = [
-      'desc' => 'Liste globale de mes histoires'
+    $ret['data']['meta'] = [
+      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
+      'description' => htmlspecialchars($txt),
+      'keywords' => implode(', ', $catName) . ', ' .$_ENV['KEYWORDS'],
     ];
   }
   private function getImages(&$ret)
@@ -600,6 +623,13 @@ class menu
     $tpl = str_replace('##content##', $html, $tpl);
     $tpl = str_replace('##globalNbr##', $globalNbr, $tpl);
     $ret['template'] = $tpl;
+    $ret['data']['meta'] = [
+      'title' => $data['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][0]['uri'],
+      'description' => htmlspecialchars('Liste des images des histoires'),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
   }
   private function getAccueil(&$ret)
   {
@@ -652,27 +682,43 @@ class menu
     $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     $tpl = str_replace('##content##', $html, $tpl);
     $ret['template'] = $tpl;
+    $ret['data']['meta'] = [
+      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
+      'description' => htmlspecialchars($txt),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
   }
   public function get()
   {
-    if(!in_array($this->request['uuid'], self::$menuL))
+    $uuid = $this->request['uuid'];
+    $ret = $this->_get($uuid);
+    response::json(200, $ret);
+  }
+  public function _get($uuid)
+  {
+    if(!in_array($uuid, self::$menuL))
       response::json(404, 'Menu non trouvé');
-    $method = $this->method[$this->request['uuid']];
+    $method = $this->method[$uuid];
     $sha1 = sha1($method);
     if(!is_null($method)){
       $ret = $this->modelRetMenu;
       $ariane = [
         [
-          'name' => array_search($this->request['uuid'], self::$menuL),
-          'uri' => $this->request['uuid']
+          'name' => array_search($uuid, self::$menuL),
+          'uri' => $uuid
         ]
       ];
       $ret['ariane'] = utilsMenu::ariane($ariane);
-      $ret['menuLi'] = $this->request['uuid'];
-      $ret['title'] = array_search($this->request['uuid'], self::$menuL);
+      $ret['menuLi'] = $uuid;
+      $ret['title'] = array_search($uuid, self::$menuL);
+      $ret['data'] = [
+        'ariane' => $ariane
+      ];
       $this->$method($ret);
     }
-    response::json(200, $ret);
+    return $ret;
   }
   public function list()
   {

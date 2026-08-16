@@ -41,6 +41,8 @@
     }
   }
   class Info {
+    static title = '';
+    static desc = '';
     constructor(){
       this.infoUrl = config.api.uri + '/info';
     }
@@ -52,8 +54,8 @@
       title.innerHTML = info.title;
       desc.innerHTML = info.description;
       document.title = info.title;
-      this.title = info.title;
-      this.desc = info.description;
+      Info.title = this.title = info.title;
+      Info.desc = this.desc = info.description;
       this.copyRight = info.copyRight;
       this.isBot = info.isBot;
       this.isAdult = info.adult_content;
@@ -348,10 +350,11 @@
           Image.open(e.src);
         })
       };
-      document.title = document.getElementById("__meta-og:title").content = document.getElementById("__meta-twitter:title").content = resp.title;
-      document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = location.origin + imgUrl + resp.contents.imageUuid;
-      document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = location;
-      document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.contents.desc;
+      document.title = document.getElementById("__meta-og:title").content = document.getElementById("__meta-twitter:title").content = resp.data.meta.title;
+      document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = resp.data.meta.image;
+      document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = resp.data.meta.url;
+      document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.data.meta.description;
+      document.getElementById("__meta-keywords").content = resp.data.meta.keywords;
       let delL = document.getElementsByTagName("span");
       for(let d of delL){
         if(!d.hasAttribute('action')){
@@ -380,7 +383,6 @@
         }
         if(uri !== null && action !== null){
           d.addEventListener('click', async ()=>{
-            console.log(d);
             let token = window.localStorage.getItem('_tokenImgs');
             let b = {};
             if(token !== null){
@@ -760,8 +762,5 @@
 
   if(window.mh == undefined)
     window.mh = {};
-  //window.mh.staticJose = Jose;
-  //window.mh.fetch = Fetch;
-  //window.mh.User = userLoad;
   new Init();
 })()

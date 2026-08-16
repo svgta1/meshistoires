@@ -45,7 +45,6 @@
     htmlHead.appendChild(script);
   }
   async function getConf(ress, version){
-    console.log(version);
     let resp = await ress;
     if(!resp.ok){
       console.error('config file not found');
