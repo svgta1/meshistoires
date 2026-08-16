@@ -1,7 +1,7 @@
 <?php
 use Google\Client;
 use Meshistoires\Api\backend\db;
-use Meshistoires\Api\controller\v2r0\menu;
+use Meshistoires\Api\utils\;
 
 require dirname(__FILE__, 2) . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2));
@@ -126,7 +126,7 @@ class indexGoogle
       return null;
     $list = [];
     foreach($ret['cursor'] as $c){
-      $data = menu::getHistoireData($c->uuid);
+      $data = utilsMenu::getHistoireData($c->uuid);
       $url = 'https://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'];
       $list[] = $url;
     }
@@ -139,7 +139,7 @@ class indexGoogle
       return null;
         $list = [];
     foreach($ret['cursor'] as $c){
-      $data = menu::getCollectionData($c->uuid);
+      $data = utilsMenu::getCollectionData($c->uuid);
       $url = 'https://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'];
       $list[] = $url;
     }
