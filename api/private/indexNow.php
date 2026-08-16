@@ -117,7 +117,7 @@ class indexNow
     $list = [];
     foreach($ret['cursor'] as $c){
       $data = menu::getHistoireData($c->uuid);
-      $url = 'https://' . $_ENV['DOMAIN'] . '/' . $data['ariane'][1]['uri'];
+      $url = 'https://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'];
       $list[] = $url;
     }
     return $list;
@@ -130,7 +130,7 @@ class indexNow
         $list = [];
     foreach($ret['cursor'] as $c){
       $data = menu::getCollectionData($c->uuid);
-      $url = 'https://' . $_ENV['DOMAIN'] . '/' . $data['ariane'][1]['uri'];
+      $url = 'https://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'];
       $list[] = $url;
     }
     return $list;
