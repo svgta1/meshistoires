@@ -351,7 +351,7 @@
         })
       };
       document.title = document.getElementById("__meta-og:title").content = document.getElementById("__meta-twitter:title").content = resp.data.meta.title;
-      document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = resp.data.meta.image.replace('/imageThumb300/', '/image/');
+      document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = resp.data.meta.image;
       document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = resp.data.meta.url;
       document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.data.meta.description;
       document.getElementById("__meta-keywords").content = resp.data.meta.keywords;
