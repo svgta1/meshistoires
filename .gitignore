@@ -11,3 +11,4 @@ html/index.html
 html/manifest.json
 html/.htaccess
 log
+html/*.txt
