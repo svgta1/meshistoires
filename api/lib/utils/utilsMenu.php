@@ -416,7 +416,7 @@ class utilsMenu
     }
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
-      'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => 'Collection ' . $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars($data['doc']->desc),
