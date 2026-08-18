@@ -55,7 +55,7 @@ class setIndex
   }
   public function setContents()
   {
-    $contents = opt::file_get_contents('index.html.template');
+    $contents = opt::file_get_contents($_ENV['INDEXHTML']);
     $contents = str_replace('##image##', $this->aff['image'], $contents);
     $contents = str_replace('##title##', $this->aff['title'], $contents);
     $contents = str_replace('##description##', $this->aff['description'], $contents);

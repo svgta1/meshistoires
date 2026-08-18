@@ -5,6 +5,7 @@ use Meshistoires\Api\backend\db;
 use Meshistoires\Api\model\siteParamsStats;
 use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\utils\opt;
+use Meshistoires\Api\controller\v2r0\menu;
 
 class utilsMenu
 {
@@ -289,9 +290,10 @@ class utilsMenu
       'isMenu' => false,
       'title' => $libelle,
     ];
+
     $data['data']['ariane'] = [
       [
-      'name' => 'Accueil',
+      'name' => array_search('accueil', menu::$menuL),
       'uri' => '/accueil',
       ],
       [
@@ -333,7 +335,7 @@ class utilsMenu
       return $doc;
     $data['ariane'] = [
       [
-        'name' => 'Histoires',
+        'name' => array_search('histoires', menu::$menuL),
         'uri' => '/histoires',
       ],
       [
@@ -384,7 +386,7 @@ class utilsMenu
       'doc' => self::_unset($collection),
       'ariane' => [
         [
-          'name' => 'Collections',
+          'name' => array_search('collections', menu::$menuL),
           'uri' => '/collections',
         ],
         [
@@ -444,7 +446,7 @@ class utilsMenu
     ];
     $data['ariane'] = [
       [
-        'name' => 'Histoires',
+        'name' => array_search('histoires', menu::$menuL),
         'uri' => '/histoires',
       ],
       [

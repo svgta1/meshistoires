@@ -19,7 +19,7 @@ class menu
   private $request = [];
   private static $cache = false;
   private static $cacheId = "Cache_Menus_";
-  private static $menuL = [
+  public static $menuL = [
     'Accueil' => 'accueil',
     'Liste des collections' => 'collections',
     'Liste des histoires' => 'histoires',
@@ -210,7 +210,7 @@ class menu
     $tpl = str_replace("##nbrAff##", $nbr['global']['aff'], $tpl);
     $ariane = [
       [
-      'name' => 'Accueil',
+      'name' => array_search('accueil', self::$menuL),
       'uri' => '/accueil',
       ],
       [
