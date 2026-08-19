@@ -1,5 +1,5 @@
 <div class="histoire">
-  <h2>Histoires de la catégorie ##catName##</h2>
+  <h1>Histoires de la catégorie ##catName##</h1>
   <p>##nbrHist## histoires, par odre de publication décroissant.</p>
   <div class="histoire_random">
     <ul>

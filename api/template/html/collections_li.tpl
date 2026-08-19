@@ -1,6 +1,6 @@
 <li property="itemListElement" typeod="ListItem" class="collections_li">
   <div class="div_desc">
-    <h3><a property="item" typeof="WebPage" href="##collectionUri##" id="##collectionId##">##collectionName##</a></h3>
+    <h2><a property="item" typeof="WebPage" href="##collectionUri##" id="##collectionId##">##collectionName##</a></h2>
     <div class="categorie"><a property="item" typeof="WebPage" href="##collectionUri##" id="##collectionId##">Nombre d'histoires dans la collection : ##histCount##</a></div>
     <a property="item" typeof="WebPage" href="##collectionUri##" id="##collectionId##"><img id="##imageId##" alt="##collectionName##" width="200" height="300"></a>
     <div class="desc_right">

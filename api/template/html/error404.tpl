@@ -1,5 +1,5 @@
 <div class="accueil">
-  <h2>Page non trouvée</h2>
+  <h1>Page non trouvée</h1>
   <div>
     <img id="##imageId##" alt="Error 404" width="200" height="300">
     <div class="desc_right">

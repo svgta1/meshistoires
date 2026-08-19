@@ -1,5 +1,5 @@
 <div class="collection">
-  <h2>Collection ##colName##</h2>
+  <h1>Collection ##colName##</h1>
   <div>
     <img id="##imageId##" alt="##colName##" width="200" height="300">
     <div class="desc_right">

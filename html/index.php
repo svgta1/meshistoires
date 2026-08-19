@@ -56,9 +56,12 @@ class setIndex
   public function setContents()
   {
     $contents = opt::file_get_contents($_ENV['INDEXHTML']);
-    $contents = str_replace('##image##', $this->aff['image'], $contents);
-    $contents = str_replace('##title##', $this->aff['title'], $contents);
-    $contents = str_replace('##description##', $this->aff['description'], $contents);
+    if(isset($this->aff['image']))
+      $contents = str_replace('##image##', $this->aff['image'], $contents);
+    if(isset($this->aff['title']))
+      $contents = str_replace('##title##', $this->aff['title'], $contents);
+     if(isset($this->aff['description']))
+      $contents = str_replace('##description##', $this->aff['description'], $contents);
     $contents = str_replace('##siteTitle##', $_ENV['SITE_TITLE'], $contents);
     $contents = str_replace('##SiteDescription##', $_ENV['SITE_DESC'], $contents);
     $contents = str_replace('##url##', $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_SERVER['REQUEST_URI'], $contents);
@@ -70,7 +73,8 @@ class setIndex
     $contents = str_replace('##components##', $this->config->components, $contents);
     $contents = str_replace('##menu##', $this->menu['template'], $contents);
     $contents = str_replace('##social##', siteInfo::getSocial(), $contents);
-    $contents = str_replace('##keywords##', $this->aff['keywords'], $contents);
+    if(isset($this->aff['keywords']))
+      $contents = str_replace('##keywords##', $this->aff['keywords'], $contents);
     return $contents;
   }
   public function getFirstKeyName()

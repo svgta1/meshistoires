@@ -1,6 +1,6 @@
 <div class="altImg" id="histImg">
   <hr>
-  <h3>Illustrations de l'histoire</h3>
+  <h2>Illustrations de l'histoire</h2>
   <div class="accueil_img_limit">
     <ul>
       ##contents##

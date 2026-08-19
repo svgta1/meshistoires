@@ -15,4 +15,6 @@ class oeuvre extends absModel
   public ?array $categorieUuid = null;
   public ?string $publicUuid = null;
   public string $sha = "";
+  public bool $visible = true;
+  public string $keywords = "";
 }

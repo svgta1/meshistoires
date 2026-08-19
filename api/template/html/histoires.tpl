@@ -1,5 +1,5 @@
 <div class="histoire">
-  <h2>Mes histoires</h2>
+  <h1>Mes histoires</h1>
   ##text##
   <p><span class="signature">Cocolst</span></p>
   <p>##nbrHist## histoires, par odre de publication décroissant.</p>

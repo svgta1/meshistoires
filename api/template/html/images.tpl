@@ -1,5 +1,5 @@
 <div class="accueil">
-  <h2>Images</h2>
+  <h1>Images</h1>
   <div class="accueil_list">
     <h3>Liste des ##globalNbr## images par type.</h3>
     <ul>

@@ -1,5 +1,5 @@
 <div>
-  <h3>Images de « ##name## »</h3>
+  <h2>Images de « ##name## »</h2>
   <div>
     Nombre d'images : ##nbrImages##
     <br>

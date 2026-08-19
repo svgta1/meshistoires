@@ -1,6 +1,6 @@
 
   <div class="div_desc">
-    <h3><a property="item" typeof="WebPage" href="##histUri##">##docTitle##</a></h3>
+    <h2><a property="item" typeof="WebPage" href="##histUri##">##docTitle##</a></h2>
     <div class="categorie">##categories##</div>
     <div>
       <img id="##histoireImageId##" alt="##docTitle##" width="200" height="300">

@@ -7,6 +7,7 @@ class mongo_index
   private static $res = null;
   public function createIndexes()
   {
+    $this->_creaInd($this->text());
     $this->_creaInd($this->siteParamsStats());
     $this->_creaInd($this->siteparams());
     $this->_creaInd($this->altImages());
@@ -21,21 +22,42 @@ class mongo_index
     $this->_creaInd($this->thmb300());
     $this->_creaInd($this->thmb());
   }
+  private function text(): array
+  {
+    $col = 'text';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['oeuvreUuid' => 1], 'unique' => true, 'name' => 'oeuvreUuid'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
+  }
   private function categories(): array
   {
-    $ar = $this->oeuvres();
+    $ar = $this->collections();
     $ar['col'] = 'categories';
     return $ar;
   }
   private function collections(): array
   {
-    $ar = $this->oeuvres();
-    $ar['col'] = 'collections';
-    return $ar;
+    $col = 'collections';
+    $ind = [
+      ['key' => ['uuid' => 1], 'unique' => true, 'name' => 'uuid'],
+      ['key' => ['gristuuid' => 1], 'unique' => true, 'name' => 'gristUuid'],
+      ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
+      ['key' => ['imageUuid' => 1], 'unique' => false, 'name' => 'imageUuid'],
+      ['key' => ['name' => 1], 'unique' => true, 'name' => 'name'],
+    ];
+    return [
+      'col' => $col,
+      'ind' => $ind,
+    ];
   }
   private function public(): array
   {
-    $ar = $this->oeuvres();
+    $ar = $this->collections();
     $ar['col'] = 'public';
     return $ar;
   }
@@ -87,6 +109,8 @@ class mongo_index
       ['key' => ['gristuuid' => 1], 'unique' => true, 'name' => 'gristUuid'],
       ['key' => ['dateUpdate' => -1], 'unique' => false, 'name' => 'dateUpdate'],
       ['key' => ['imageUuid' => 1], 'unique' => false, 'name' => 'imageUuid'],
+      ['key' => ['visible' => 1], 'unique' => false, 'name' => 'visible'],
+      ['key' => ['title' => 1], 'unique' => true, 'name' => 'title'],
     ];
     return [
       'col' => $col,

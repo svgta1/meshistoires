@@ -1,5 +1,5 @@
 <div class="accueil">
-  <h2>Accueil</h2>
+  <h1>Accueil</h1>
   <div class="accueil_img">
     <img src="" alt="inspiration" id="img_accueil">
   </div>
@@ -9,7 +9,7 @@
     <p><span class="signature">Cocolst</span></p>
   </div>
   <div class="accueil_list">
-    <h3>Dernières publications</h3>
+    <h2>Dernières publications</h2>
     <ul>
       ##content##
     </ul>

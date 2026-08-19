@@ -1,3 +1,33 @@
 body.hidden{
 	display: none;
 }
+div.top #header p.site_title{
+	margin-top: 5px;
+	font-size: 2em;
+	display: block;
+	text-align: center;
+	width: 100%;
+	color: var(--pantone_blue_fusion);
+	font-weight: bold;
+}
+h1{
+	margin-top: 5px;
+	font-size: 3em;
+	display: block;
+	text-align: center;
+	width: 100%;
+	color: var(--pantone_blue_fusion);
+	font-family: 'Allura', cursive;
+}
+
+@media screen and (min-width: 990px) {
+	div.top #header p.site_title {
+			margin-top: 5px;
+			font-size: 2em;
+			display: block;
+			text-align: center;
+			width: 100%;
+			color: var(--pantone_blue_fusion);
+			font-weight: bold;
+	}
+}

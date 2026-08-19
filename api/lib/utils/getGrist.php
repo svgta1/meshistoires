@@ -89,6 +89,10 @@ class getGrist
       }
       if($update){
         $m = new mCa();
+        foreach($doc as $k => $val){
+          if(isset($m->{$k}))
+            $m->{$k} = $val;
+        }
         $m->dateUpdate = time();
         $m->gristId = $v->id;
         $m->gristuuid = $v->fields->gristId;
@@ -145,6 +149,10 @@ class getGrist
       }
       if($update){
         $m = new mP();
+        foreach($doc as $k => $val){
+          if(isset($m->{$k}))
+            $m->{$k} = $val;
+        }
         $m->dateUpdate = time();
         $m->dateCreate = $doc->dateCreate;
         $m->gristId = $v->id;
@@ -216,12 +224,14 @@ class getGrist
       }
       if($update){
         $m = new mCo();
+        foreach($doc as $k => $val){
+          if(isset($m->{$k}))
+            $m->{$k} = $val;
+        }
         $m->uuid = $doc->uuid;
-        $m->dateCreate = $doc->dateCreate;
         $m->dateUpdate = $v->fields->lastUpdate;
         $m->name = $v->fields->Collection;
         $m->gristId = $v->id;
-        $m->gristuuid = $v->fields->gristId;
         $m->desc = $v->fields->Description;
         $m->distanteLink = $v->fields->Lien;
         $m->sha = $sha;
@@ -273,6 +283,7 @@ class getGrist
         $m->collectionUuid = $this->getColUuid($v->fields->Collection);
         $m->publicUuid = $this->getPublicUuid($v->fields->Public);
         $m->sha = $sha;
+        $m->keywords = $v->fields->keywords;
         if(isset($v->fields->Image))
           $m->imageUuid = $this->getAttachmentDl($v->fields->Image[1]);
         $aC = [];
@@ -292,6 +303,10 @@ class getGrist
       if($update){
         print_r('Mise à jour de ' . $v->fields->Titre . PHP_EOL);
         $m = new mO();
+        foreach($doc as $k => $val){
+          if(isset($m->{$k}))
+            $m->{$k} = $val;
+        }
         $m->uuid = $doc->uuid;
         $m->dateCreate = $v->fields->Date_publi;
         $m->dateUpdate = $v->fields->lastUpdate;
@@ -303,6 +318,7 @@ class getGrist
         $m->collectionUuid = $this->getColUuid($v->fields->Collection);
         $m->publicUuid = $this->getPublicUuid($v->fields->Public);
         $m->sha = $sha;
+        $m->keywords = $v->fields->keywords;
         if(isset($v->fields->Image))
           $m->imageUuid = $this->getAttachmentDl($v->fields->Image[1]);
         $aC = [];

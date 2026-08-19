@@ -104,6 +104,7 @@ class utilsMenu
         self::$dbRes = db::get_res();
       $cursor = self::$dbRes['class']->get(
         col: "oeuvres",
+        param: ['visible' => true],
         projection: ['imageUuid', 'title']
       );
       foreach($cursor as $doc){
@@ -352,7 +353,7 @@ class utilsMenu
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars($data['doc']->desc),
-      'keywords' => $_ENV['KEYWORDS'],
+      'keywords' => $doc->keywords . ', ' . $_ENV['KEYWORDS'],
     ];
     $keyw = [];
     foreach($doc->categorieUuid as $categorie){
@@ -621,6 +622,9 @@ class utilsMenu
   }
   public static function setImageStatAccess($uuid, $from = "accueil", $incAccess = true)
   {
+    if(Svgta\Lib\Utils::is_bot())
+      return;
+
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
 

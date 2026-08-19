@@ -1,5 +1,5 @@
 <div class="accueil">
-  <h2>Images</h2>
+  <h1>Images</h1>
   <div>
     <p>Nombre d'images : ##nbrImages##</p>
     <p>Nombre d'affichage : ##nbrAff##</p>

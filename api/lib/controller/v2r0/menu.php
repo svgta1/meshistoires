@@ -444,7 +444,6 @@ class menu
   private function getCollections(&$ret)
   {
     $col = "collections";
-    $colE = "oeuvres";
     $cursor = $this->dbRes['class']::get(
       col: $col,
       order: ['name' => 1],
@@ -624,9 +623,9 @@ class menu
     $tpl = str_replace('##globalNbr##', $globalNbr, $tpl);
     $ret['template'] = $tpl;
     $ret['data']['meta'] = [
-      'title' => $data['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
-      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $data['ariane'][0]['uri'],
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => htmlspecialchars('Liste des images des histoires'),
       'keywords' => $_ENV['KEYWORDS'],
     ];

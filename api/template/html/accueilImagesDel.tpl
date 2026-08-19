@@ -1,5 +1,5 @@
 <div>
-  <h3>Images Supprimées</h3>
+  <h2>Images Supprimées</h2>
   <div>
     Nombre d'images : ##nbrImages##
     <br>

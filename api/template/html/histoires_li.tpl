@@ -1,5 +1,5 @@
   <div class="div_desc">
-    <h3><a property="item" typeof="WebPage" href="##histUri##">##docTitle##</a></h3>
+    <h2><a property="item" typeof="WebPage" href="##histUri##">##docTitle##</a></h2>
     <div class="histoire_col">
       Collection : <i><a property="item" typeof="WebPage" href="##CollectionUri##">##collectionName##</a></i>
     </div>

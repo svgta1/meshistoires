@@ -1,5 +1,5 @@
 <div class="histoire">
-  <h2>##title##</h2>
+  <h1>##title##</h1>
   <div>
     <img id="##imageId##" alt="##title##" width="200" height="300">
     <div class="desc_right">
