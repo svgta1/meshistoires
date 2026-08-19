@@ -677,8 +677,8 @@ class menu
       utilsMenu::setImageStatAccess($l[$k][$rand]);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
+      $tpl = str_replace('##imageId##', '', $tpl);
     }
-    $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     $tpl = str_replace('##content##', $html, $tpl);
     $ret['template'] = $tpl;
     $ret['data']['meta'] = [
