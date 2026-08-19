@@ -622,7 +622,7 @@ class utilsMenu
   }
   public static function setImageStatAccess($uuid, $from = "accueil", $incAccess = true)
   {
-    if(\Svgta\Lib\Utils::is_bot() && $incAccess)
+    if($incAccess && \Svgta\Lib\Utils::is_bot())
       return;
 
     if(is_null(self::$dbRes))
