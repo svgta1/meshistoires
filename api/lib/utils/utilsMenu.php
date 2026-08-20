@@ -216,7 +216,7 @@ class utilsMenu
     }
     return $ar;
   }
-  public static function getAltImg($uuid, $canDelete = false)
+  public static function getAltImg($uuid, $canDelete = false, ?string $title = null)
   {
     $cursor = self::getAltImgData($uuid);
     if(is_null($cursor))
@@ -238,7 +238,7 @@ class utilsMenu
         $li = str_replace("##delete##", "", $tplLi);
       }
       $li = str_replace("##histoireImageId##", $doc->uuid, $li);
-      $li = str_replace("##name##", $doc->name, $li);
+      $li = str_replace("##name##", $title . ' ' . $doc->name, $li);
       $li = str_replace("##width##", $doc->thmbWidth, $li);
       $li = str_replace("##height##", $doc->thmbHeight, $li);
       $html .= $li;

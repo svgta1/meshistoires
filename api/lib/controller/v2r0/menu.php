@@ -325,7 +325,7 @@ class menu
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
       $html .= $li;
     }
-    $altImg = utilsMenu::getAltImg($doc->uuid, $this->is_valid_token());
+    $altImg = utilsMenu::getAltImg($doc->uuid, $this->is_valid_token(), $data['doc']->title);
     $htmlAlt = "";
     if(!is_null($altImg)){
       $htmlAlt .= $altImg;
