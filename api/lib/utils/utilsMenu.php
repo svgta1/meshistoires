@@ -348,12 +348,13 @@ class utilsMenu
     $data['collection'] = self::getCollectionData($doc->collectionUuid);
     $categories = [];
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
+    $keywords = isset($doc->keywords) ? $doc->keywords . ', ' : '';
     $data['meta'] = [
       'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => htmlspecialchars($data['doc']->desc),
-      'keywords' => $doc->keywords . ', ' . $_ENV['KEYWORDS'],
+      'keywords' => $keywords . $_ENV['KEYWORDS'],
     ];
     $keyw = [];
     foreach($doc->categorieUuid as $categorie){
