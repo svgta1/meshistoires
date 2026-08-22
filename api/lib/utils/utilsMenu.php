@@ -18,16 +18,33 @@ class utilsMenu
   private static $getImageFromCollections = null;
   private static $getImageFromOeuvres = null;
 
+  public static function getGenre()
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $cursor = self::$dbRes['class']::get(
+      col: 'categories',
+      projection: ['name']
+    );
+    $ret = [];
+    foreach($cursor as $doc){
+      $ret[] = $doc->name;
+    }
+    sort($ret);
+    return $ret;
+  }
   public static function setImgSrc($id)
   {
     $src = $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $id;
     return $src;
   }
-  public static function getCollectionHtml($data)
+  public static function getCollectionHtml(&$data)
   {
     $html = '';
     foreach($data['histoires']['list'] as $uuid){
       $h = self::getHistoireData($uuid);
+      if($data['doc']->dateUpdate < $h['doc']->dateUpdate)
+        $data['doc']->dateUpdate = $h['doc']->dateUpdate;
       $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'">' . self::getCollectionHistoireHtml($h, $uuid). '</li>';
     }
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
@@ -539,11 +556,16 @@ class utilsMenu
       col: 'oeuvres',
       param: ['collectionUuid' => $uuid],
       order: ['title' => 1],
-      projection: ['uuid']
+      projection: ['uuid', 'categorieUuid']
     );
+    $data['categories'] = [];
     foreach($cursor as $doc){
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
+      foreach($doc->categorieUuid as $cat){
+        if(!in_array($cat, $data['categories']))
+          $data['categories'][] = $cat;
+      }
     }
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
@@ -594,11 +616,13 @@ class utilsMenu
       col: 'oeuvres',
       param: ['categorieUuid' => $uuid],
       order: ['dateCreate' => -1],
-      projection: ['uuid']
+      projection: ['uuid', 'dateUpdate']
     );
     foreach($cursor as $doc){
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
+      if($data['doc']->dateUpdate < $doc->dateUpdate)
+        $data['doc']->dateUpdate = $doc->dateUpdate;
     }
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
@@ -690,7 +714,7 @@ class utilsMenu
     unset($doc->_id);
     unset($doc->gristId);
     unset($doc->gristuuid);
-    unset($doc->dateCreate);
+    //unset($doc->dateCreate);
     unset($doc->sha);
     return $doc;
   }

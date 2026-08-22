@@ -365,10 +365,18 @@ class menu
     $cursor = $this->dbRes['class']::get(
       col: $col,
       order: ['name' => 1],
-      projection: ['uuid']
+      projection: ['uuid', 'dateCreate', 'dateUpdate']
     );
     $ret['contents'] = [];
+    $dateUpdate = 0;
+    $dateCreate = null;
     foreach($cursor as $c){
+      if(is_null($dateCreate))
+        $dateCreate = $c->dateCreate;
+      if($dateCreate > $c->dateCreate)
+        $dateCreate = $c->dateCreate;
+      if($dateUpdate < $c->dateUpdate)
+        $dateUpdate = $c->dateUpdate;
       $data = utilsMenu::getCollectionData($c->uuid);
       $ret['contents'][] = $data;
     }
@@ -381,6 +389,8 @@ class menu
       'description' => htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt')),
       'keywords' => $_ENV['KEYWORDS'],
     ];
+    $ret['dateCreate'] = $dateCreate;
+    $ret['dateUpdate'] = $dateUpdate;
   }
   public function getHistoireFromHistoires()
   {
@@ -425,10 +435,18 @@ class menu
     $cursor = $this->dbRes['class']::get(
       col: $col,
       order: [$order => -1],
-      projection: ['uuid']
+      projection: ['uuid', 'dateCreate', 'dateUpdate']
     );
+    $dateUpdate = 0;
+    $dateCreate = null;
     $html = '';
     foreach($cursor as $c){
+      if(is_null($dateCreate))
+          $dateCreate = $c->dateCreate;
+      if($dateCreate > $c->dateCreate)
+        $dateCreate = $c->dateCreate;
+      if($dateUpdate < $c->dateUpdate)
+        $dateUpdate = $c->dateUpdate;
       $ret['histoires']['list'][] = $c->uuid;
       $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$c->uuid.'"></li>';
     }
@@ -462,6 +480,8 @@ class menu
       'description' => htmlspecialchars($txt),
       'keywords' => implode(', ', $catName) . ', ' .$_ENV['KEYWORDS'],
     ];
+    $ret['dateCreate'] = $dateCreate;
+    $ret['dateUpdate'] = $dateUpdate;
   }
   private function getImages(&$ret)
   {
@@ -556,14 +576,22 @@ class menu
       col: $col,
       order: ['dateCreate' => -1],
       limit: $_ENV['AC_HIST_LIMIT'],
-      projection: ['uuid']
+      projection: ['uuid', 'dateUpdate', 'dateCreate']
     );
     $ret['contents'] = [];
     $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueil_li.tpl');
     $html = '';
+    $dateUpdate = 0;
+    $dateCreate = null;
     foreach($cursor as $c){
       $data= utilsMenu::getHistoireData($c->uuid);
       $doc = $data['doc'];
+      if(is_null($dateCreate))
+          $dateCreate = $doc->dateCreate;
+      if($dateCreate > $doc->dateCreate)
+        $dateCreate = $doc->dateCreate;
+      if($dateUpdate < $doc->dateUpdate)
+        $dateUpdate = $doc->dateUpdate;
       $collection = $data['collection']['doc'];
       $li = str_replace("##histoireTitle##", $doc->title, $tplLi);
       $li = str_replace("##histoireUri##", $data['ariane'][1]['uri'], $li);
@@ -609,7 +637,11 @@ class menu
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => htmlspecialchars($txt),
       'keywords' => $_ENV['KEYWORDS'],
+      'dateCreate' => $dateCreate,
+      'dateUpdate' => $dateUpdate
     ];
+    $ret['dateCreate'] = $dateCreate;
+    $ret['dateUpdate'] = $dateUpdate;
   }
   public function get()
   {
