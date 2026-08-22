@@ -19,6 +19,7 @@ class CreativeWork
       ],
       'description' => '',
       'genre' => [],
+      'image' => [],
       'inCollection' => [
         '@type' => "PublicationSeries",
         'name' => '',

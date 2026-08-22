@@ -114,6 +114,11 @@ class setIndex
       $creative['@type'][] = 'Book';
     }
     $creative['url'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_SERVER['REQUEST_URI'];
+    $creative['image'][] = $this->aff['image'];
+    if(str_contains($this->aff['image'], 'imageThumb300')){
+      $creative['image'][] = str_replace('imageThumb300', 'image', $this->aff['image']);
+      $creative['image'][] = str_replace('imageThumb300', 'imagethumb', $this->aff['image']);
+    }
     if(isset($this->aff['datePublished']))
       $creative['datePublished'] = date('Y-m-d', (int)$this->aff['datePublished']);
     if(isset($this->aff['dateModified']))
