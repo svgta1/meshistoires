@@ -1,6 +1,7 @@
 <?php
 namespace Meshistoires\Api\utils;
 use Meshistoires\Api\utils\opt;
+use Svgta\Lib\Utils;
 
 class security
 {
@@ -10,31 +11,54 @@ class security
       return true;
     $rules = opt::yaml_parse_file($_ENV['SECURITY_YAML'])['rules'];
     $sure = true;
+    $block = [
+      'libelle' => '',
+      'value' => '',
+    ];
     foreach($rules as $k => $v){
       if(str_contains($query, $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
       if(str_contains(strtolower($query), $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
       if(str_contains(urldecode($query), $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
       if(str_contains(self::unicodeConv($query), $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
       if(str_contains(self::hex2bin($query), $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
       if(str_contains(html_entity_decode($query), $k) !== false){
         $sure = false;
+        $block['libelle'] = $v;
+        $block['value'] = $k;
         break;
       }
+    }
+    if(!$sure){
+      Utils::setLogLevel(LOG_ERR);
+      Utils::log(LOG_ERR, [
+        'query' => $query,
+        'block' => $block
+      ]);
     }
     return $sure;
   }

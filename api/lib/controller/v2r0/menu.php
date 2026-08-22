@@ -307,6 +307,7 @@ class menu
     $tpl = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $tpl);
     $tpl = str_replace("##collectionName##", $data['collection']['doc']->name, $tpl);
     $tpl = str_replace("##categories##", utilsMenu::setCategorieAff($data), $tpl);
+    $tpl = str_replace("##keywords##", $data['keywords'], $tpl);
     $random = $this->dbRes['res']->oeuvres->aggregate([
       ['$match' => [
         'collectionUuid' => $doc->collectionUuid,
@@ -323,6 +324,7 @@ class menu
       $li = str_replace("##histTitle##", $_data['doc']->title, $li);
       $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
+      $li = str_replace("##categories##", utilsMenu::setCategorieAff($_data), $li);
       $html .= $li;
     }
     $altImg = utilsMenu::getAltImg($doc->uuid, $this->is_valid_token(), $data['doc']->title);

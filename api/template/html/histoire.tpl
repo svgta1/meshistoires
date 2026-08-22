@@ -12,6 +12,7 @@
         <div class="histoire_cat_col">
           <p>Collection : <a property="item" typeof="WebPage" href="##collectionUri##">##collectionName##</a></p>
           <p>##categories##</p>
+          <p>Mots clés : ##keywords##</p>
           <p>&nbsp</p>
           <p class="##hidden##"><a property="item" typeof="WebPage" href="#histImg" att="anchor">Voir les illustrations de l'histoire</a></p>
         </div>

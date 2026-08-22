@@ -329,7 +329,8 @@ class utilsMenu
     $data = [
       'doc' => null,
       'collection' => null,
-      'categories' => null
+      'categories' => null,
+      'keywords' => null
     ];
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
@@ -371,6 +372,7 @@ class utilsMenu
     $data['meta']['keywords'] = implode(', ', $keyw) . ', ' . $data['meta']['keywords'];
     ksort($categories);
     $data['categories'] = $categories;
+    $data['keywords'] = isset($doc->keywords) ? $doc->keywords : '';
     self::setCache($cacheKey, $data);
     return $data;
   }

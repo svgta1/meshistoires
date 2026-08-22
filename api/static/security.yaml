@@ -71,7 +71,6 @@ rules :
   '${': SSTI
   '#{': SSTI
   'php': SSTI
-  '$': SSTI
   'X-': Web Cache Poisoning
   'Cache-Control': Web Cache Poisoning
   'User-Agent:': User-Agent

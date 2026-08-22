@@ -9,11 +9,11 @@ class trace
 
   public static function set($o): void
   {
+    if(is_null($o))
+      return;
     if($o instanceof \MongoDB\Model\BSONDocument){
       $o = json_decode(\MongoDB\BSON\toJSON(\MongoDB\BSON\fromPHP($o)), TRUE);
     }
-    if(is_null($o))
-      return;
     self::$traces[] = $o;
     if(isset($_ENV['DEBUG']) && $_ENV['DEBUG']){
       Utils::setLogLevel(LOG_DEBUG);
