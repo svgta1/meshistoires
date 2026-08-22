@@ -23,6 +23,17 @@ class setIndex
 
   public function __construct()
   {
+    if(in_array($_SERVER['REQUEST_METHOD'], [
+      'POST',
+      'PUT',
+      'DELETE',
+      'PATCH',
+      'CONNECT'
+    ])){
+      http_response_code(403);
+      header('Cache-Control: no-cache');
+      header("X-Robots-Tag: all", true);
+    }
     $this->config = json_decode(file_get_contents('config/config.json'));
     $this->version = json_decode(file_get_contents('config/version.json'));
     $this->menu = menu::_menuList();
