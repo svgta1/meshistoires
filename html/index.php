@@ -38,6 +38,7 @@ class setIndex
     $this->version = json_decode(file_get_contents('config/version.json'));
     $this->menu = menu::_menuList();
     if($_SERVER['REQUEST_URI'] == '/'){
+      header("HTTP/1.1 308 Redirect Permanently");
       header('Location: ' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . '/accueil');
       die();
     }
