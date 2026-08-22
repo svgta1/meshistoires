@@ -33,10 +33,10 @@ class utilsMenu
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
     $tpl = str_replace("##colName##", $data['doc']->name, $tpl);
     $tpl = str_replace("##imageId##", $data['doc']->imageUuid, $tpl);
+    $tpl = str_replace('##imageSrc##', self::setImgSrc($data['doc']->imageUuid), $tpl);
     $tpl = str_replace("##content##", $html, $tpl);
     $desc = '<p>' . $data['doc']->desc . '</p>';
     $tpl = str_replace("##colDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
-    $tpl = str_replace('##imageSrc##', self::setImgSrc($data['doc']->imageUuid), $tpl);
     return $tpl;
   }
 
@@ -45,7 +45,7 @@ class utilsMenu
     $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
     $histoire = $data['doc'];
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
-    $li = str_replace('##imageSrc##', self::setImgSrc($data['doc']->imageUuid), $li);
+    $li = str_replace('##imageSrc##', self::setImgSrc($histoire->imageUuid), $li);
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
     $li = str_replace("##docTitle##", $histoire->title, $li);
     $desc = '<p>' . $histoire->desc . '</p>';
@@ -111,6 +111,7 @@ class utilsMenu
       $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
       $li = str_replace("##histTitle##", $_data['doc']->title, $li);
       $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
+      $li = str_replace("##imageSrc##", self::setImgSrc($_data['doc']->imageUuid), $li);
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
       $li = str_replace("##categories##", utilsMenu::setCategorieAff($_data), $li);
       $html .= $li;
@@ -362,6 +363,7 @@ class utilsMenu
         $li = str_replace("##delete##", "", $tplLi);
       }
       $li = str_replace("##histoireImageId##", $doc->uuid, $li);
+      $li = str_replace("##imageSrc##", self::setImgSrc($doc->uuid), $li);
       $li = str_replace("##name##", $title . ' ' . $doc->name, $li);
       $li = str_replace("##width##", $doc->thmbWidth, $li);
       $li = str_replace("##height##", $doc->thmbHeight, $li);
@@ -388,8 +390,8 @@ class utilsMenu
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
+            $tpl = str_replace('##setImgSrc##', self::setImgSrc($l[$k][$rand]), $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand], $error);
-      $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
     }
@@ -404,6 +406,7 @@ class utilsMenu
       $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
       $li = str_replace("##histTitle##", $_data['doc']->title, $li);
       $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
+      $li = str_replace('##setImgSrc##', self::setImgSrc($_data['doc']->imageUuid), $tpl);
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
       $html .= $li;
     }
