@@ -55,7 +55,7 @@ class kernel
     if(isset($_ENV[$env]) && \boolval($_ENV[$env])){
       return request::JWE_dec($req, true);
     }
-    return $req;
+    return request::validate_security($req, true);
   }
 
   private function verifyRoute(string $method, string $uri): array

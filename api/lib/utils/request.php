@@ -2,6 +2,7 @@
 namespace Meshistoires\Api\utils;
 use Meshistoires\Api\utils\response;
 use Svgta\Lib\JWT;
+use Meshistoires\Api\utils\security;
 
 class request
 {
@@ -23,7 +24,32 @@ class request
       $res = json_decode($res, $jsonArray);
     unset($request['cypher']);
     unset($request['kid']);
+
+    return self::validate_security($request, $jsonArray, $res);
     foreach($request as $k=>$v){
+      if(!security::is_protectedQuery($v)){
+        response::json('403', 'Blocage de sécurité');
+      }
+      if($jsonArray)
+        $res[$k] = $v;
+      else
+        $res->{$k} = $v;
+    }
+    return $res;
+  }
+  public static function validate_security($request, $jsonArray = false, $res = null)
+  {
+    if(is_null($res)){
+      if($jsonArray){
+        $res = [];
+      }else{
+        $res = new stdClass();
+      }
+    }
+    foreach($request as $k=>$v){
+      if(!security::is_protectedQuery($v)){
+        response::json('403', 'Blocage de sécurité');
+      }
       if($jsonArray)
         $res[$k] = $v;
       else

@@ -1,0 +1,10 @@
+rules :
+  '$ne': NoSql injection
+  '$or': NoSql injection
+  '$in': NoSql injection
+  '$gt': NoSql injection
+  '$where': NoSql injection
+  '$regex': NoSql injection
+  '$lt': NoSql injection
+  '$expr': NoSql injection
+  '$and': NoSql injection
