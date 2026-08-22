@@ -329,9 +329,9 @@ class menu
     $htmlAlt = "";
     if(!is_null($altImg)){
       $htmlAlt .= $altImg;
-      $htmlAlt = str_replace("##hidden##", "", $htmlAlt);
+      $tpl = str_replace("##hidden##", "", $tpl);
     }else{
-      $htmlAlt = str_replace("##hidden##", "hidden", $htmlAlt);
+      $tpl = str_replace("##hidden##", "hidden", $tpl);
     }
     $tpl = str_replace("##content##", $html, $tpl);
     $tpl = str_replace("##contentsAltImg##", $htmlAlt, $tpl);

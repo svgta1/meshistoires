@@ -224,6 +224,12 @@ class utilsMenu
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg.tpl');
     $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoireAltImg_li.tpl');
     $d = opt::file_get_contents($_ENV['HTML_TPL'] . '/image_delete.tpl');
+    $cpt = self::$dbRes['class']->count(
+      col: "altImages",
+      param: ['oeuvreUuid' => $uuid, 'deleted' => false],
+    );
+    if($cpt == 0)
+      return null;
     $cursor = self::$dbRes['class']->get(
       col: "altImages",
       param: ['oeuvreUuid' => $uuid, 'deleted' => false],
