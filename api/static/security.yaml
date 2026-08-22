@@ -8,3 +8,70 @@ rules :
   '$lt': NoSql injection
   '$expr': NoSql injection
   '$and': NoSql injection
+  ' OR ': Sql injection
+  ' DROP ': Sql injection
+  ' TABLE ': Sql injection
+  ' LIMIT ': Sql injection
+  ' EXISTS(': Sql injection
+  ' SELECT ': Sql injection
+  'SELECT(': Sql injection
+  ' UPDATE ': Sql injection
+  'UPDATE(': Sql injection
+  ' INSERT ': Sql injection
+  'INSERT(': Sql injection
+  ' CONCAT ': Sql injection
+  'CONCAT(': Sql injection
+  '1=1': Sql injection
+  'admin': Sql injection
+  'UNION': Sql injection
+  'WAITFOR': Sql injection
+  '<script>': XSS
+  '<script ': XSS
+  '<img': XSS
+  '<body': XSS
+  '<a': XSS
+  '<svg': XSS
+  '<iframe': XSS
+  '<math': XSS
+  'javascript': XSS
+  'alert(': XSS
+  'onstart': XSS
+  'onfocus': XSS
+  '<ontoggle>': XSS
+  'etc/': Path Traversal
+  'passwd': Path Traversal
+  '..%': Path Traversal
+  '..\': Path Traversal
+  ' whoami': Command Injection
+  'cat ': Command Injection
+  ' nc ': Command Injection
+  ' ls ': Command Injection
+  ' ping ': Command Injection
+  'sudo ': Command Injection
+  '| ': Command Injection
+  '; ': Command Injection
+  '& ': Command Injection
+  'printf': Command Injection
+  '://': SSRF
+  '.oast.live': SSRF
+  'proc': Local File Inclusion
+  'index.php': Local File Inclusion
+  'php:': Local File Inclusion
+  '(objectClass=': LDAP Injection
+  '(uid=': LDAP Injection
+  'Transfer-Encoding: ': HTTP Request Smuggling
+  'HTTP/': HTTP Request Smuggling
+  '/login': Open Redirect
+  'Redirect=': Open Redirect
+  'Set-Cookie:': CRLF Injection
+  'Content-Length:': CRLF Injection
+  '<?xml': XXE
+  '<%=': SSTI
+  '{{': SSTI
+  '${': SSTI
+  '#{': SSTI
+  'php': SSTI
+  '$': SSTI
+  'X-': Web Cache Poisoning
+  'Cache-Control': Web Cache Poisoning
+  'User-Agent:': User-Agent
