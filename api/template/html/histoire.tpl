@@ -2,7 +2,7 @@
   <h1>##title##</h1>
   <section>
     <div>
-      <img id="##imageId##" alt="##title##" title="##title##" width="200" height="300">
+      <img src="##imageSrc##" id="##imageId##" alt="##title##" title="##title##" width="200" height="300">
       <div class="desc_right">
         <div>
           <p>##desc##</p>

@@ -4,7 +4,7 @@
       Collection : <i><a property="item" typeof="WebPage" href="##CollectionUri##">##collectionName##</a></i>
     </div>
     <div>
-      <a property="item" typeof="WebPage" href="##histUri##"><img id="##histoireImageId##" alt="##docTitle##" title="##docTitle##" width="200" height="300"></a>
+      <a property="item" typeof="WebPage" href="##histUri##"><img src="##imageSrc##" id="##histoireImageId##" alt="##docTitle##" title="##docTitle##" width="200" height="300"></a>
     </div>
     <div class="histoire_cat">
       ##categories##

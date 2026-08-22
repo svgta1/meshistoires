@@ -13,6 +13,8 @@ $error404 = false;
 class setIndex
 {
   private $aff = [];
+  private $contents = "";
+  private $ariane = "";
   private $config = null;
   private $version = null;
   private $menu = null;
@@ -34,14 +36,14 @@ class setIndex
       header('Cache-Control: no-cache');
       header("X-Robots-Tag: all", true);
     }
-    $this->config = json_decode(file_get_contents('config/config.json'));
-    $this->version = json_decode(file_get_contents('config/version.json'));
-    $this->menu = menu::_menuList();
     if($_SERVER['REQUEST_URI'] == '/'){
       header("HTTP/1.1 308 Redirect Permanently");
       header('Location: ' . $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . '/accueil');
       die();
     }
+    $this->config = json_decode(file_get_contents('config/config.json'));
+    $this->version = json_decode(file_get_contents('config/version.json'));
+    $this->menu = menu::_menuList();
     $this->reqUri = explode('/',$_SERVER['REQUEST_URI']);
     unset($this->reqUri[0]);
     $this->firstKey = array_key_first($this->reqUri);
@@ -55,6 +57,8 @@ class setIndex
     }
     if(count($this->reqUri) == 1 && $this->reqUri[$this->firstKey] !== "images"){
       $ret = $this->ctrlMenu->_get($this->reqUri[$this->firstKey]);
+      $this->ariane = $ret['ariane'];
+      $this->contents = $ret['template'];
       $this->aff = $ret['data']['meta'];
     }
     
@@ -87,6 +91,8 @@ class setIndex
     $contents = str_replace('##social##', siteInfo::getSocial(), $contents);
     if(isset($this->aff['keywords']))
       $contents = str_replace('##keywords##', $this->aff['keywords'], $contents);
+    $contents = str_replace('##ariane##', $this->ariane, $contents);
+    $contents = str_replace('##contents##', $this->contents, $contents);
     return $contents;
   }
   public function getFirstKeyName()
@@ -108,17 +114,23 @@ class setIndex
   {
     $name = $this->getNextKeyName();
     if($name == 'error404'){
-      $data = utilsMenu::errorPage(404, 'Erreur 404')['data'];
-      $this->aff = $data['meta'];
+      $data = utilsMenu::errorPage('error403', 'Erreur 404');
+      $this->ariane = $data['ariane'];
+      $this->contents = $data['template'];
+      $this->aff = $data['data']['meta'];
       return;
     }
     if($name == 'error403'){
-      $data = utilsMenu::errorPage(403, 'Erreur 403')['data'];
-      $this->aff = $data['meta'];
+      $data = utilsMenu::errorPage('error403', 'Erreur 403');
+      $this->ariane = $data['ariane'];
+      $this->contents = $data['template'];
+      $this->aff = $data['data']['meta'];
       return;
     }
     if($name == 'images'){
       $data = $this->ctrlMenu->_getImagesParams();
+      $this->ariane = utilsMenu::ariane($data['data']['ariane']);
+      $this->contents = $data['template'];
       $this->aff = $data['data']['meta'];
       return;
     }
@@ -134,6 +146,8 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCollectionData($uuid);
+    $this->ariane = utilsMenu::ariane($data['ariane']);
+    $this->contents = utilsMenu::getCollectionHtml($data);
     $this->aff = $data['meta'];
   }
   public function histoires()
@@ -149,6 +163,9 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getHistoireData($uuid);
+    $tpl = utilsMenu::getHistoireHtml($data);
+    $this->ariane = utilsMenu::ariane($data['ariane']);
+    $this->contents = $tpl;
     $this->aff = $data['meta'];
     $cat = [];
     foreach($data['categories'] as $name => $ar){
@@ -170,6 +187,8 @@ class setIndex
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCategorieData($uuid);
+    $this->ariane = utilsMenu::ariane($data['ariane']);
+    $this->contents = utilsMenu::getCategorieHtml($data);
     $this->aff = $data['meta'];
   }
 }

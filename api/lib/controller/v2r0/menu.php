@@ -61,10 +61,7 @@ class menu
   {
     if(!isset($this->request['token']))
       return false;
-    $admin = opt::yaml_parse_file($_ENV['ADMIN_YAML']);
-    if(!isset($admin['tokenList'][$this->request['token']]))
-      return false;
-    return true;
+    return utilsMenu::is_valid_token($this->request['token']);
   }
   Public function deleteImage()
   {
@@ -170,6 +167,7 @@ class menu
       foreach($imgs as $img){
         $li = str_replace('##delete##', $d, $tplLi);
         $li = str_replace('##histoireImageId##', $img['uuid'], $li);
+        $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($img['uuid']), $li);
         $li = str_replace('##nbr##', $img['nbrAff'], $li);
         $nbr['global']['aff'] += $img['nbrAff'];
         $nbr['global']['images'] += 1;
@@ -194,6 +192,7 @@ class menu
     foreach($imgDel as $img){
       $li = str_replace('##delete##', $dr, $tplLiDel);
       $li = str_replace('##histoireImageId##', $img->uuid, $li);
+      $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($img->uuid), $li);
       $li = str_replace('##nbr##', $img->nbrAccess, $li);
       $li = str_replace('##from##', $img->from, $li);
       $nbr["del"]['aff'] += $img->nbrAccess;
@@ -267,17 +266,10 @@ class menu
     $ret['isMenu'] = false;
     $ret['title'] = $data['doc']->name;
     $ret['histoires'] = $data['histoires'];
-    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/categorie_info.tpl');
-    $tpl = str_replace("##nbrHist##", $data['histoires']['nbr'], $tpl);
-    $tpl = str_replace("##catName##", $data['doc']->name, $tpl);
-    $html = "";
-    foreach($data['histoires']['list'] as $uuid){
-      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
-    }
+    $ret['template'] = utilsMenu::getCategorieHtml($data);
     unset($data['histoires']);
     unset($data['doc']);
     $ret['data'] = $data;
-    $ret['template'] = str_replace("##content##", $html, $tpl);
     response::json(200, $ret);
   }
   public function getHistoireInfo()
@@ -296,51 +288,8 @@ class menu
     $ret['ariane'] = utilsMenu::ariane($data['ariane']);
     $ret['menuLi'] = 'histoires';
     $ret['isMenu'] = false;
-    $doc = $data['doc'];
-    //$ret['title'] = $doc->title;
-    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
-    $tpl = str_replace('##title##', $doc->title, $tpl);
-    $tpl = str_replace('##imageId##', $doc->imageUuid, $tpl);
-    $desc = '<p>' . $doc->desc . '</p>';
-    $tpl = str_replace('##desc##', str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
-    $tpl = str_replace("##distantLink##", $doc->distanteLink, $tpl);
-    $tpl = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $tpl);
-    $tpl = str_replace("##collectionName##", $data['collection']['doc']->name, $tpl);
-    $tpl = str_replace("##categories##", utilsMenu::setCategorieAff($data), $tpl);
-    $tpl = str_replace("##keywords##", $data['keywords'], $tpl);
-    $random = $this->dbRes['res']->oeuvres->aggregate([
-      ['$match' => [
-        'collectionUuid' => $doc->collectionUuid,
-        'uuid' => ['$ne' => $doc->uuid]
-      ]],
-      ['$sample' => ["size" => (int)$_ENV['AC_HIST_LIMIT']]],
-      ['$project' => ["uuid" => 1]]
-    ]);
-    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire_li.tpl');
-    $html = '';
-    foreach($random as $rand){
-      $_data = utilsMenu::getHistoireData($rand->uuid);
-      $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
-      $li = str_replace("##histTitle##", $_data['doc']->title, $li);
-      $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
-      $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
-      $li = str_replace("##categories##", utilsMenu::setCategorieAff($_data), $li);
-      $html .= $li;
-    }
-    $altImg = utilsMenu::getAltImg($doc->uuid, $this->is_valid_token(), $data['doc']->title);
-    $htmlAlt = "";
-    if(!is_null($altImg)){
-      $htmlAlt .= $altImg;
-      $tpl = str_replace("##hidden##", "", $tpl);
-    }else{
-      $tpl = str_replace("##hidden##", "hidden", $tpl);
-    }
-    $tpl = str_replace("##content##", $html, $tpl);
-    $tpl = str_replace("##contentsAltImg##", $htmlAlt, $tpl);
-    /*$ret['contents'] = [
-      "imageUuid" => $doc->imageUuid,
-      "desc" => $doc->desc
-    ];*/
+    $token = isset($this->request['token']) ? $this->request['token'] : null;
+    $tpl = utilsMenu::getHistoireHtml($data);
     $ret['template'] = $tpl;
     unset($data['doc']);
     $ret['data'] = $data;
@@ -351,26 +300,7 @@ class menu
     $data = utilsMenu::getHistoireData($this->request['uuid']);
     if(is_null($data))
       response::json(404, 'Histoire de collection non trouvée');
-    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
-    $histoire = $data['doc'];
-    $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
-    $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
-    $li = str_replace("##docTitle##", $histoire->title, $li);
-    $desc = '<p>' . $histoire->desc . '</p>';
-    $li = str_replace("##docDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $li);
-    $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
-    $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
-    $cptImg = utilsMenu::getAltImgDataCpt($this->request['uuid']);
-    if($cptImg == 0){
-      $li = str_replace('##hiden##', 'hidden', $li);
-    }else{
-      $li = str_replace('##hiden##', '', $li);
-      if($cptImg == 1){
-        $li = str_replace('##cptImg##', "Découvrir l'histoire et son illustration.", $li);
-      }else{
-        $li = str_replace('##cptImg##', "Découvrir l'histoire et ses $cptImg illustrations.", $li);
-      }
-    }
+    $li = utilsMenu::getCollectionHistoireHtml($data, $this->request['uuid']);
     unset($data['doc']);
     $ret = [
       'html' => $li,
@@ -397,25 +327,10 @@ class menu
     if(is_null($dataCol))
       response::json(404, 'Collection non trouvée');
     $ret['histoires'] = $dataCol['histoires'];
-    $html = '';
-    foreach($ret['histoires']['list'] as $uuid){
-      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
-    }
-    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
-    $tpl = str_replace("##colName##", $dataCol['doc']->name, $tpl);
-    $tpl = str_replace("##imageId##", $dataCol['doc']->imageUuid, $tpl);
-    $tpl = str_replace("##content##", $html, $tpl);
-    $desc = '<p>' . $dataCol['doc']->desc . '</p>';
-    $tpl = str_replace("##colDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
-    $ret['template'] = $tpl;
+    $ret['template'] = utilsMenu::getCollectionHtml($dataCol);
     $ret['ariane'] = utilsMenu::ariane($dataCol['ariane']);
     $ret['menuLi'] = 'collections';
     $ret['isMenu'] = false;
-    //$ret['title'] = 'Collection ' . $dataCol['doc']->name;
-    /*$ret['contents']=[
-      'imageUuid' => $dataCol['doc']->imageUuid,
-      'desc' => $dataCol['doc']->desc
-    ];*/
     unset($dataCol['doc']);
     $ret['data'] = $dataCol;
     response::json(200, $ret);
@@ -428,6 +343,7 @@ class menu
       $doc = $data['doc'];
       $li = $tplLi;
       $li = str_replace("##imageId##", $doc->imageUuid, $tplLi);
+      $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($doc->imageUuid), $li);
       $li = str_replace("##collectionName##", $doc->name, $li);
       $desc = '<p>' . $doc->desc . '</p>';
       $li = str_replace("##collectionDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $li);
@@ -483,6 +399,7 @@ class menu
     $histoire = $data['doc'];
     $collection = $data['collection'];
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
+    $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($histoire->imageUuid), $li);
     $li = str_replace("##docTitle##", $histoire->title, $li);
     $desc = '<p>' . $histoire->desc . '</p>';
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
@@ -651,6 +568,7 @@ class menu
       $li = str_replace("##histoireTitle##", $doc->title, $tplLi);
       $li = str_replace("##histoireUri##", $data['ariane'][1]['uri'], $li);
       $li = str_replace('##histoireImageId##', $doc->imageUuid, $li);
+      $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($doc->imageUuid), $li);
       $li = str_replace('##distantLink##', $doc->distanteLink, $li);
       $li = str_replace("##collectionName##", $data['collection']['doc']->name, $li);
       $li = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $li);
@@ -676,10 +594,12 @@ class menu
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
+      $tpl = str_replace('##imageSrc##', utilsMenu::setImgSrc($l[$k][$rand]), $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand]);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
       $tpl = str_replace('##imageId##', '', $tpl);
+      $tpl = str_replace('##imageSrc##', '', $tpl);
     }
     $tpl = str_replace('##content##', $html, $tpl);
     $ret['template'] = $tpl;

@@ -18,6 +18,124 @@ class utilsMenu
   private static $getImageFromCollections = null;
   private static $getImageFromOeuvres = null;
 
+  public static function setImgSrc($id)
+  {
+    $src = $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $id;
+    return $src;
+  }
+  public static function getCollectionHtml($data)
+  {
+    $html = '';
+    foreach($data['histoires']['list'] as $uuid){
+      $h = self::getHistoireData($uuid);
+      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'">' . self::getCollectionHistoireHtml($h, $uuid). '</li>';
+    }
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
+    $tpl = str_replace("##colName##", $data['doc']->name, $tpl);
+    $tpl = str_replace("##imageId##", $data['doc']->imageUuid, $tpl);
+    $tpl = str_replace("##content##", $html, $tpl);
+    $desc = '<p>' . $data['doc']->desc . '</p>';
+    $tpl = str_replace("##colDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
+    $tpl = str_replace('##imageSrc##', self::setImgSrc($data['doc']->imageUuid), $tpl);
+    return $tpl;
+  }
+
+  public static function getCollectionHistoireHtml($data, $uuid)
+  {
+    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
+    $histoire = $data['doc'];
+    $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
+    $li = str_replace('##imageSrc##', self::setImgSrc($data['doc']->imageUuid), $li);
+    $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
+    $li = str_replace("##docTitle##", $histoire->title, $li);
+    $desc = '<p>' . $histoire->desc . '</p>';
+    $li = str_replace("##docDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $li);
+    $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
+    $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
+    $cptImg = utilsMenu::getAltImgDataCpt($uuid);
+    if($cptImg == 0){
+      $li = str_replace('##hiden##', 'hidden', $li);
+    }else{
+      $li = str_replace('##hiden##', '', $li);
+      if($cptImg == 1){
+        $li = str_replace('##cptImg##', "Découvrir l'histoire et son illustration.", $li);
+      }else{
+        $li = str_replace('##cptImg##', "Découvrir l'histoire et ses $cptImg illustrations.", $li);
+      }
+    }
+    return $li;
+  }
+  public static function getCategorieHtml($data)
+  {
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/categorie_info.tpl');
+    $tpl = str_replace("##nbrHist##", $data['histoires']['nbr'], $tpl);
+    $tpl = str_replace("##catName##", $data['doc']->name, $tpl);
+    $html = "";
+    foreach($data['histoires']['list'] as $uuid){
+      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
+    }
+    $tpl = str_replace("##content##", $html, $tpl);
+    return $tpl;
+  }
+  public static function getHistoireHtml($data, $token = null)
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+    $doc = $data['doc'];
+
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
+    $tpl = str_replace('##title##', $doc->title, $tpl);
+    $tpl = str_replace('##imageId##', $doc->imageUuid, $tpl);
+    $tpl = str_replace('##imageSrc##', self::setImgSrc($doc->imageUuid), $tpl);
+    $desc = '<p>' . $doc->desc . '</p>';
+    $tpl = str_replace('##desc##', str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
+    $tpl = str_replace("##distantLink##", $doc->distanteLink, $tpl);
+    $tpl = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $tpl);
+    $tpl = str_replace("##collectionName##", $data['collection']['doc']->name, $tpl);
+    $tpl = str_replace("##categories##", utilsMenu::setCategorieAff($data), $tpl);
+    $tpl = str_replace("##keywords##", $data['keywords'], $tpl);
+
+    $random = self::$dbRes['res']->oeuvres->aggregate([
+      ['$match' => [
+        'collectionUuid' => $doc->collectionUuid,
+        'uuid' => ['$ne' => $doc->uuid]
+      ]],
+      ['$sample' => ["size" => (int)$_ENV['AC_HIST_LIMIT']]],
+      ['$project' => ["uuid" => 1]]
+    ]);
+
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire_li.tpl');
+    $html = '';
+    foreach($random as $rand){
+      $_data = utilsMenu::getHistoireData($rand->uuid);
+      $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
+      $li = str_replace("##histTitle##", $_data['doc']->title, $li);
+      $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
+      $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
+      $li = str_replace("##categories##", utilsMenu::setCategorieAff($_data), $li);
+      $html .= $li;
+    }
+    $altImg = utilsMenu::getAltImg($doc->uuid, self::is_valid_token($token), $data['doc']->title);
+    $htmlAlt = "";
+    if(!is_null($altImg)){
+      $htmlAlt .= $altImg;
+      $tpl = str_replace("##hidden##", "", $tpl);
+    }else{
+      $tpl = str_replace("##hidden##", "hidden", $tpl);
+    }
+    $tpl = str_replace("##content##", $html, $tpl);
+    $tpl = str_replace("##contentsAltImg##", $htmlAlt, $tpl);
+    return $tpl;
+  }
+  public static function is_valid_token($token = null)
+  {
+    if(is_null($token))
+      return false;
+    $admin = opt::yaml_parse_file($_ENV['ADMIN_YAML']);
+    if(!isset($admin['tokenList'][$token]))
+      return false;
+    return true;
+  }
   public static function searcheImageCol($uuid, $deleted = false)
   {
     if(is_null(self::$dbRes))
