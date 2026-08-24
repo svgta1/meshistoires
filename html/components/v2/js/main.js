@@ -285,6 +285,10 @@
       let histoire = await Fetch.get(url);
       let liHist = document.getElementById('histoire_' + uuid);
       liHist.innerHTML = histoire.resp.html;
+      let la = liHist.getElementsByTagName('a');
+      for(let a of la){
+        Utils.aPreventDefault(a)
+      }
       let imgs = liHist.getElementsByTagName('img');
       let imgUrl = config.api.uri + config.api.version + '/imageThumb300/';
       for(let e of imgs){
@@ -355,7 +359,7 @@
       document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = resp.data.meta.url;
       document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.data.meta.description;
       document.getElementById("__meta-keywords").content = resp.data.meta.keywords;
-      document.getElementById("CreativeWork").innerHTML = resp.creative;
+      document.getElementById("CreativeWork").innerHTML = JSON.stringify(resp.creative);
       let delL = document.getElementsByTagName("span");
       for(let d of delL){
         if(!d.hasAttribute('action')){
@@ -449,20 +453,18 @@
       }
     }
     static aPreventDefault(a){
-      if(!a.target.length && !(a.getAttribute('att') == 'anchor')){
-        a.addEventListener('click', (event) => {
-          event.preventDefault();
-          window.history.pushState(window.location.pathname, '', a.href);
-        }); 
-      }
-      if(a.getAttribute('att') == 'anchor'){
-        a.addEventListener('click', (event) => {
-          event.preventDefault();
+      if(a.target)
+        return;
+      a.addEventListener('click', (event) => {
+        event.preventDefault();
+        if(a.getAttribute('att') == 'anchor'){
           document.getElementById("histImg").scrollIntoView({
             behavior: 'smooth'
           });
-        }); 
-      }
+        }else{
+          window.history.pushState(window.location.pathname, '', a.href);
+        }
+      });
     }
     static email_validation(email){
       return email.match(

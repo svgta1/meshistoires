@@ -271,7 +271,7 @@ class menu
     unset($data['histoires']);
     unset($data['doc']);
     $ret['data'] = $data;
-    $ret['creative'] = json_encode(CreativeWork::setCategorie($uuid));
+    $ret['creative'] = CreativeWork::setCategorie($uuid);
     response::json(200, $ret);
   }
   public function getHistoireInfo()
@@ -295,7 +295,7 @@ class menu
     $ret['template'] = $tpl;
     unset($data['doc']);
     $ret['data'] = $data;
-    $ret['creative'] = json_encode(CreativeWork::setHistoire($uuid));
+    $ret['creative'] = CreativeWork::setHistoire($uuid);
     response::json(200, $ret);
   }
   public function getCollectionHistoire()
@@ -336,7 +336,7 @@ class menu
     $ret['isMenu'] = false;
     unset($dataCol['doc']);
     $ret['data'] = $dataCol;
-    $ret['creative'] = json_encode(CreativeWork::setCollection($uuid));
+    $ret['creative'] = CreativeWork::setCollection($uuid);
     response::json(200, $ret);
   }
   private function setCollectionsTpl($contents)
@@ -598,7 +598,7 @@ class menu
   {
     $uuid = $this->request['uuid'];
     $ret = $this->_get($uuid);
-    $ret['creative'] = json_encode(CreativeWork::setMenuAccueil($uuid));
+    $ret['creative'] = CreativeWork::setMenuAccueil($uuid);
     response::json(200, $ret);
   }
   public function _get($uuid)
