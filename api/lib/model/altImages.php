@@ -9,5 +9,5 @@ class altImages extends absModel
   public bool $deleted = false;
   public string $name = "";
   public int $thmbWidth = 0;
-  public int $thmbHeight = 0;
+  public ?int $thmbHeight = 0;
 }

@@ -45,8 +45,8 @@ class uploadImgAlt{
 
           $retImg = $this->uploadImg($altImgDir . '/' . $file);
           $altImg->uuid = $retImg['uuid'];
-          $altImg->thmbWidth = $retImg['thumb']->metadata->width ?? 200;
-          $altImg->thmbHeight = $retImg['thumb']->metadata->height ?? 300;
+          $altImg->thmbWidth = $retImg['thumb']->metadata->width ?? null;
+          $altImg->thmbHeight = $retImg['thumb']->metadata->height ?? null;
           $cptAltImg = $this->dbRes['class']::count(
             col: 'altImages',
             param: ['uuid' => $altImg->uuid, "oeuvreUuid" => $altImg->oeuvreUuid]

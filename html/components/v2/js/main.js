@@ -150,10 +150,7 @@
         return;
       let menu = document.getElementById('menu');
       menu.innerHTML = this.menuTop.template;
-      let la = menu.getElementsByTagName('a');
-      for(let a of la){
-        Utils.aPreventDefault(a)
-      }
+      Utils.allAPreventDefault('menu');
       this.storeMenuTop();
     }
     async get_menuContent(name){
@@ -285,21 +282,12 @@
       let histoire = await Fetch.get(url);
       let liHist = document.getElementById('histoire_' + uuid);
       liHist.innerHTML = histoire.resp.html;
-      let la = liHist.getElementsByTagName('a');
-      for(let a of la){
-        Utils.aPreventDefault(a)
-      }
+      Utils.allAPreventDefault('histoire_' + uuid);
       let imgs = liHist.getElementsByTagName('img');
       let imgUrl = config.api.uri + config.api.version + '/imageThumb300/';
       for(let e of imgs){
         e.src = imgUrl + e.id;
-        if(e.parentElement.tagName == 'A' || e.parentElement.tagName == 'a'){
-          Utils.aPreventDefault(e.parentElement);
-          continue;
-        }
-        e.addEventListener("click",()=>{
-          Image.open(e.src);
-        })
+        Utils.imgPreventDefault(e);
       };
     }
     async histoires(ress){
@@ -332,27 +320,15 @@
     defaultContent(resp){
       let dAriane = document.getElementById('ariane')
       dAriane.innerHTML = resp.ariane;
-      let la = dAriane.getElementsByTagName('a');
-      for(let a of la){
-        Utils.aPreventDefault(a)
-      }
+      Utils.allAPreventDefault('ariane');
       let content = document.getElementById('content');
       content.innerHTML = resp.template;
-      la = content.getElementsByTagName('a');
-      for(let a of la){
-        Utils.aPreventDefault(a)
-      }
+      Utils.allAPreventDefault('content');
       let imgs = content.getElementsByTagName('img');
       let imgUrl = config.api.uri + config.api.version + '/imageThumb300/';
       for(let e of imgs){
         e.src = imgUrl + e.id;
-        if(e.parentElement.tagName == 'A' || e.parentElement.tagName == 'a'){
-          Utils.aPreventDefault(e.parentElement);
-          continue;
-        }
-        e.addEventListener("click",()=>{
-          Image.open(e.src);
-        })
+        Utils.imgPreventDefault(e);
       };
       document.title = document.getElementById("__meta-og:title").content = document.getElementById("__meta-twitter:title").content = resp.data.meta.title;
       document.getElementById("__meta-og:image").content = document.getElementById("__meta-twitter:image").content = resp.data.meta.image;
@@ -451,6 +427,29 @@
       }else{
         setTimeout(() => { respInfo.classList.remove('generalInfo');}, 3000);
       }
+    }
+    static allImgPrenventDefault(id){
+      let contents = document.getElementById(id);
+      let imgs = contents.getElementsByTagName('img');
+      for(let img of imgs){
+        Utils.imgPreventDefault(img);
+      }
+    }
+    static allAPreventDefault(id){
+      let contents = document.getElementById(id);
+      let la = contents.getElementsByTagName('a');
+      for(let a of la){
+        Utils.aPreventDefault(a)
+      }
+    }
+    static imgPreventDefault(img){
+      if(img.parentElement.tagName == 'A' || img.parentElement.tagName == 'a'){
+		    Utils.aPreventDefault(img.parentElement);
+		    return;
+	    }
+	    img.addEventListener("click",()=>{
+		    Image.open(img.src);
+	    })
     }
     static aPreventDefault(a){
       if(a.target)
@@ -760,6 +759,9 @@
       if(lM[1] == 'images'){
         contentClass.contentMenu();
       }
+      Utils.allAPreventDefault('ariane');
+      Utils.allAPreventDefault('content');
+      Utils.allImgPrenventDefault('content');
     }
     end(){
       let d = new Date();
