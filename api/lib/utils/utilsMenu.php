@@ -549,7 +549,7 @@ class utilsMenu
       'title' => $libelle . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['data']['ariane'][1]['uri'],
-      'description' => htmlspecialchars('Page non trouvée ou interdite.', ENT_NOQUOTES),
+      'description' => seo::descMinify('Page non trouvée ou interdite.'),
       'keywords' => $libelle . ', ' . $_ENV['KEYWORDS'],
     ];
     return $data;
@@ -595,7 +595,7 @@ class utilsMenu
       'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars($data['doc']->desc, ENT_NOQUOTES),
+      'description' => seo::descMinify($data['doc']->desc),
       'keywords' => $keywords . $_ENV['KEYWORDS'],
     ];
     $keyw = [];
@@ -669,7 +669,7 @@ class utilsMenu
       'title' => 'Collection ' . $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars($data['doc']->desc, ENT_NOQUOTES),
+      'description' => seo::descMinify($data['doc']->desc),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
     self::setCache($cacheKey, $data);
@@ -726,7 +726,7 @@ class utilsMenu
       'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars('Histoires de la catégorie ' . $data['doc']->name, ENT_NOQUOTES),
+      'description' => seo::descMinify('Histoires de la catégorie ' . $data['doc']->name),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
     self::setCache($cacheKey, $data);

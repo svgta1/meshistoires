@@ -22,4 +22,21 @@ class seo
 
     return $sString;
   }
+  public static function descOpt(string $str)
+  {
+    $str = str_replace('<p>', '', $str);
+    $str = str_replace('</p>', '\n', $str);
+    $str = str_replace('\n\n','\n', $str);
+    $str = htmlspecialchars($str, ENT_NOQUOTES);
+    return $str;
+  }
+  public static function descMinify(string $str)
+  {
+    $str = self::descOpt($str);
+    $len = strlen($str);
+    if($len > 160){
+      $str = substr($str, 0, 155) . '...';
+    }
+    return $str;
+  }
 }

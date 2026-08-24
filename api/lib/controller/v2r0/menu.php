@@ -234,7 +234,7 @@ class menu
       'title' => $ariane[1]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ariane[1]['uri'],
-      'description' => htmlspecialchars('Liste des images aléatoires des pages d\'accueil', ENT_NOQUOTES),
+      'description' => seo::descMinify('Liste des images aléatoires des pages d\'accueil'),
       'keywords' => $_ENV['KEYWORDS'],
     ];
     return $ret;
@@ -379,7 +379,7 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt', ENT_NOQUOTES)),
+      'description' => seo::descMinify(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt')),
       'keywords' => 'Liste des collections, ' . $_ENV['KEYWORDS'],
     ];
   }
@@ -448,7 +448,7 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars($txt, ENT_NOQUOTES),
+      'description' => seo::descMinify($txt),
       'keywords' => implode(', ', $catName) . ', ' .$_ENV['KEYWORDS'],
     ];
   }
@@ -534,7 +534,7 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars('Liste des images des histoires', ENT_NOQUOTES),
+      'description' => seo::descMinify('Liste des images des histoires'),
       'keywords' => $_ENV['KEYWORDS'],
     ];
   }
@@ -590,7 +590,7 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars($txt, ENT_NOQUOTES),
+      'description' => seo::descMinify($txt),
       'keywords' => $_ENV['KEYWORDS'],
     ];
   }

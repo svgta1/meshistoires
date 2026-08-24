@@ -3,6 +3,7 @@ namespace Meshistoires\Api\utils;
 use Meshistoires\Api\utils\utilsMenu;
 use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\utils\siteInfo;
+use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\controller\v2r0\menu;
 
 class CreativeWork
@@ -15,7 +16,7 @@ class CreativeWork
     $creative['@id'] = $scheme . '://' . $_ENV['DOMAIN'] . '_' . $uuid;
     $creative['name'] = $data['meta']['title'];
     $creative['keywords'] = explode(', ', $data['meta']['keywords']);
-    $creative['description'] = $data['meta']['description'];
+    $creative['description'] = seo::descOpt($data['doc']->desc);
     foreach($data['categories'] as $catName => $cat){
       $creative['genre'][] = $catName;
     }
@@ -77,7 +78,7 @@ class CreativeWork
     }
     $creative['@id'] .= $uuid;
     $creative['name'] = $data['meta']['title'];
-    $creative['description'] = $data['meta']['description'];
+    $creative['description'] = seo::descOpt($data['doc']->desc);
     foreach($data['categories'] as $catName => $cat){
       $catData = utilsMenu::getCategorieData($cat);
       $creative['genre'][] = $catData['doc']->name;
@@ -109,7 +110,7 @@ class CreativeWork
       $cre['item']['@id'] .= $uuid;
       $cre['item']['name'] = $h['meta']['title'];
       $cre['item']['url'] = $h['meta']['url'];
-      $cre['item']['description'] = $h['meta']['description'];
+      $cre['item']['description'] = seo::descOpt($h['doc']->desc);
       foreach(utilsMenu::setImgsSrc($h['doc']->imageUuid) as $img){
         $cre['item']['image'][] = $img;
       }
@@ -137,7 +138,7 @@ class CreativeWork
     }
     $creative['@id'] .= $uuid;
     $creative['name'] = $data['meta']['title'];
-    $creative['description'] = $data['meta']['description'];
+    $creative['description'] = seo::descMinify('Histoires de la catégorie ' . $data['doc']->name);
     $creative['url'] = $data['meta']['url'];
 
     if(!$context)
@@ -161,7 +162,7 @@ class CreativeWork
       $cre['item']['@id'] .= $uuid;
       $cre['item']['name'] = $h['meta']['title'];
       $cre['item']['url'] = $h['meta']['url'];
-      $cre['item']['description'] = $h['meta']['description'];
+      $cre['item']['description'] = seo::descOpt($h['doc']->desc);
       foreach(utilsMenu::setImgsSrc($h['doc']->imageUuid) as $img){
         $cre['item']['image'][] = $img;
       }
@@ -190,7 +191,7 @@ class CreativeWork
       $cre['item']['@id'] .= $doc->uuid;
       $cre['item']['name'] = $h['meta']['title'];
       $cre['item']['url'] = $h['meta']['url'];
-      $cre['item']['description'] = $h['meta']['description'];
+      $cre['item']['description'] = seo::descOpt($h['doc']->desc);
       foreach(utilsMenu::setImgsSrc($h['doc']->imageUuid) as $img){
         $cre['item']['image'][] = $img;
       }
@@ -230,7 +231,7 @@ class CreativeWork
       $cre['item']['@id'] .= $doc->uuid;
       $cre['item']['name'] = $h['meta']['title'];
       $cre['item']['url'] = $h['meta']['url'];
-      $cre['item']['description'] = $h['meta']['description'];
+      $cre['item']['description'] = seo::descOpt($h['doc']->desc);
       foreach(utilsMenu::setImgsSrc($h['doc']->imageUuid) as $img){
         $cre['item']['image'][] = $img;
       }
@@ -271,7 +272,7 @@ class CreativeWork
     $creative[0]['@id'] .= $uuid;
     $creative[0]['name'] = $data['meta']['title'];
     $creative[0]['url'] .= $url;
-    $creative[0]['description'] = htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/' . $uuid . '.txt'), ENT_NOQUOTES);
+    $creative[0]['description'] = seo::descOpt(opt::file_get_contents($_ENV['HTML_TPL'] . '/' . $uuid . '.txt'));
 
     $cursor = utilsMenu::getCursorLastHistoires();
     foreach($cursor as $k => $doc){
@@ -281,7 +282,7 @@ class CreativeWork
       $cre['item']['@id'] .= $doc->uuid;
       $cre['item']['name'] = $h['meta']['title'];
       $cre['item']['url'] = $h['meta']['url'];
-      $cre['item']['description'] = $h['meta']['description'];
+      $cre['item']['description'] = seo::descOpt($h['doc']->desc);
       foreach(utilsMenu::setImgsSrc($h['doc']->imageUuid) as $img){
         $cre['item']['image'][] = $img;
       }
