@@ -412,9 +412,9 @@ class utilsMenu
     );
   }
 
-  public static function getAltImgData($uuid)
+  public static function getAltImgData($uuid, $limit = 0)
   {
-    $cacheKey = 'getAltImgData' .$uuid;
+    $cacheKey = 'getAltImgData' .$uuid . '-' . $limit;
     $cache = self::getCache($cacheKey);
     if($cache){
       return $cache;
@@ -430,7 +430,8 @@ class utilsMenu
       col: "altImages",
       param: ['oeuvreUuid' => $uuid, 'deleted' => false],
       order: ['name' => 1],
-      projection: ['uuid', 'name', 'thmbWidth', 'thmbHeight']
+      projection: ['uuid', 'name', 'thmbWidth', 'thmbHeight'],
+      limit: $limit
     );
     foreach($cursor as $doc){
       unset($doc->_uid);
@@ -502,7 +503,7 @@ class utilsMenu
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
-      $tpl = str_replace('##setImgSrc##', self::setImgSrc($l[$k][$rand]), $tpl);
+      $tpl = str_replace('##imageSrc##', self::setImgSrc($l[$k][$rand]), $tpl);
       $tpl = str_replace('##txt##', $text, $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand], $error);
     }else{
@@ -519,7 +520,7 @@ class utilsMenu
       $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
       $li = str_replace("##histTitle##", $_data['doc']->title, $li);
       $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
-      $li = str_replace('##setImgSrc##', self::setImgSrc($_data['doc']->imageUuid), $tpl);
+      $li = str_replace('##imageSrc##', self::setImgSrc($_data['doc']->imageUuid), $li);
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
       $html .= $li;
     }
@@ -795,11 +796,9 @@ class utilsMenu
   }
   public static function getCache($key)
   {
-    $key = self::$cacheId . $key;
+    $key = $_ENV['DOMAIN'] . self::$cacheId . $key;
     if(isset(self::$internalCache[$key]))
       return self::$internalCache[$key];
-    if($cache = apcu_fetch($key))
-      return $cache;
 
     $cache = cache::_get($key);
     if(!$cache)
@@ -808,9 +807,8 @@ class utilsMenu
   }
   public static function setCache($key, $data)
   {
-    $key = self::$cacheId . $key;
+    $key = $_ENV['DOMAIN'] . self::$cacheId . $key;
     self::$internalCache[$key] = $data;
-    apcu_store($key, $data, $_ENV['EXP_CACHE']);
     cache::set($key, serialize($data));
   }
   public static function _unset($doc){

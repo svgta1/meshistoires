@@ -9,7 +9,6 @@ use Meshistoires\Api\controller\v2r0\menu as ctrlMenu;
 require dirname(__FILE__, 2) . '/api/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2) . '/api/');
 $dotenv->load();
-$error404 = false;
 
 class setIndex
 {
@@ -33,9 +32,7 @@ class setIndex
       'PATCH',
       'CONNECT'
     ])){
-      http_response_code(403);
-      header('Cache-Control: no-cache');
-      header("X-Robots-Tag: all", true);
+      $this->set403Error();
     }
     if($_SERVER['REQUEST_URI'] == '/'){
       header("HTTP/1.1 308 Redirect Permanently");
@@ -50,11 +47,36 @@ class setIndex
     $this->firstKey = array_key_first($this->reqUri);
     $this->ctrlMenu = new ctrlMenu([], []);
   }
+  private function set404Error()
+  {
+      header('HTTP/1.1 404 Not Found');
+      header('Cache-Control: no-cache');
+      header("X-Robots-Tag: all", true);
+      $data = utilsMenu::errorPage('error404', 'Erreur 404');
+      $this->ariane = $data['ariane'];
+      $this->contents = $data['template'];
+      $this->aff = $data['data']['meta'];
+      $this->aff['creative'] = CreativeWork::setMenuAccueil('error404');
+      echo $this->setContents();
+      die();
+  }
+  private function set403Error()
+  {
+      header('HTTP/1.1 403 Forbidden');
+      header('Cache-Control: no-cache');
+      header("X-Robots-Tag: all", true);
+      $data = utilsMenu::errorPage('error403', 'Erreur 403');
+      $this->ariane = $data['ariane'];
+      $this->contents = $data['template'];
+      $this->aff = $data['data']['meta'];
+      $this->aff['creative'] = CreativeWork::setMenuAccueil('error403');
+      echo $this->setContents();
+      die();
+  }
   public function verifyMenu()
   {
     if(!isset($this->menu['list'][$this->reqUri[$this->firstKey]])){
-      http_response_code(404);
-      return false;
+      $this->set404Error();
     }
     if(count($this->reqUri) == 1 && $this->reqUri[$this->firstKey] !== "images"){
       $data = $this->ctrlMenu->_get($this->reqUri[$this->firstKey]);
@@ -122,20 +144,10 @@ class setIndex
   {
     $name = $this->getNextKeyName();
     if($name == 'error404'){
-      $data = utilsMenu::errorPage($name, 'Erreur 404');
-      $this->ariane = $data['ariane'];
-      $this->contents = $data['template'];
-      $this->aff = $data['data']['meta'];
-      $this->aff['creative'] = CreativeWork::setMenuAccueil($name);
-      return;
+      $this->set404Error();
     }
     if($name == 'error403'){
-      $data = utilsMenu::errorPage($name, 'Erreur 403');
-      $this->ariane = $data['ariane'];
-      $this->contents = $data['template'];
-      $this->aff = $data['data']['meta'];
-      $this->aff['creative'] = CreativeWork::setMenuAccueil($name);
-      return;
+      $this->set403Error();
     }
     if($name == 'images'){
       $data = $this->ctrlMenu->_getImagesParams();
@@ -145,15 +157,14 @@ class setIndex
       $this->aff['creative'] = '{}';
       return;
     }
-    http_response_code(404);
+    $this->set404Error();
   }
   public function collections()
   {
     $list = utilsMenu::getSeoCollections();
     $name = $this->getNextKeyName();
     if(!isset($list[$name])){
-      http_response_code(404);
-      return;
+      $this->set404Error();
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCollectionData($uuid);
@@ -170,8 +181,7 @@ class setIndex
     }
     $list = utilsMenu::getSeoHistoires();
     if(!isset($list[$name])){
-      http_response_code(404);
-      return;
+      $this->set404Error();
     }
     $uuid = $list[$name];
     $data = utilsMenu::getHistoireData($uuid);
@@ -185,9 +195,8 @@ class setIndex
   {
     $name = $this->getNextKeyName();
     $list = utilsMenu::getSeoCategories();
-        if(!isset($list[$name])){
-      http_response_code(404);
-      return;
+    if(!isset($list[$name])){
+      $this->set404Error();
     }
     $uuid = $list[$name];
     $data = utilsMenu::getCategorieData($uuid);

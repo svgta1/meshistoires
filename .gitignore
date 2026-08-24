@@ -12,3 +12,4 @@ html/manifest.json
 html/.htaccess
 log
 html/*.txt
+api/test

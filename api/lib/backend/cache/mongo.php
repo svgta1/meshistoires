@@ -8,8 +8,15 @@ class mongo extends cacheAbs implements cacheInt
 
   public static function get(string $id): ?string
   {
+    if(!(bool)$_ENV['USE_CACHE'])
+      return false;
+
     if(isset(self::$cacheData[$id]))
       return self::$cacheData[$id];
+
+    $apcuKey = $_ENV['DOMAIN'].$id;
+    if($cache = apcu_fetch($apcuKey))
+      return $cache;
 
     self::deleteTs();
     $col = 'cache';
@@ -25,6 +32,7 @@ class mongo extends cacheAbs implements cacheInt
   public static function clean()
   {
     self::$cacheData = [];
+    apcu_clear_cache();
     $col = 'cache';
     self::get_res()->{$col}->deleteMany(['type' => 'cache']);
   }
@@ -32,6 +40,9 @@ class mongo extends cacheAbs implements cacheInt
   {
     if(isset(self::$cacheData[$id]))
       unset(self::$cacheData[$id]);
+
+    $apcuKey = $_ENV['DOMAIN'].$id;
+    apcu_delete($apcuKey);
 
     $col = 'cache';
     self::get_res()->{$col}->deleteOne(['uuid' => $id]);
@@ -43,7 +54,12 @@ class mongo extends cacheAbs implements cacheInt
   }
   public static function add(string $id, string $data, int $lifetTime = 3600, string $type = 'cache')
   {
+    if(!(bool)$_ENV['USE_CACHE'])
+      return;
+
     self::$cacheData[$id] = $data;
+    $apcuKey = $_ENV['DOMAIN'].$id;
+    apcu_store($apcuKey, $data, $_ENV['EXP_CACHE']);
     $data = self::enc($data);
     $col = 'cache';
     $cpt = self::get_res()->{$col}->count(['uuid' => $id]);

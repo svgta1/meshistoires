@@ -31,7 +31,7 @@ class CreativeWork
       $creative['isPartOf'][] = self::setCategorie($catUuid, false);
     }
 
-    $illustrations = utilsMenu::getAltImgData($uuid);
+    $illustrations = utilsMenu::getAltImgData($uuid, 10);
     if(!is_null($illustrations)){
       $creative['hasPart'] = [];
       foreach($illustrations as $k => $ill){
