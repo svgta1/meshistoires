@@ -43,6 +43,10 @@
     <link rel="manifest" href="/manifest.json" />
     <script rel="preload" src="##components##js/mh.js?v=##version##" as="script" defer></script>
     <link rel="stylesheet" type="text/css" href="##components##css/default.css?v=##version##" media="screen" defer>
+
+    <script type="application/ld+json" id="CreativeWork">
+      ##creativework##
+    </script>
   </head>
   <body class="hidden">
     <div id="top" class="top">
@@ -56,8 +60,10 @@
     </div>
     <div id="wrap" role="main">
       <div class="ariane" id="ariane">
+        ##ariane##
       </div>
       <div id="content" class="minHeight">
+        ##contents##
       </div>
       <div class="footer" id="footer" role="contentinfo">
         <div id="div_copyright">

@@ -46,11 +46,24 @@ class siteInfo
     $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/social_li.tpl');
     $html = "";
     foreach($social as $k => $s){
+      if(!isset($s['visible']))
+        continue;
+      if($s['visible'] == false)
+        continue;
       $li = str_replace('##socialHref##', $s['url'], $tplLi);
       $li = str_replace('##socialTitle##', $s['title'], $li);
       $li = str_replace('##social##', $k, $li);
       $html .= $li;
     }
     return $html;
+  }
+  public static function getSocialAr()
+  {
+    $social = opt::yaml_parse_file($_ENV['SOCIAL_YAML']);
+    $ar = [];
+    foreach($social as $k => $s){
+      $ar[] = $s['url'];
+    }
+    return $ar;
   }
 }

@@ -61,12 +61,7 @@ class setIndex
       $this->ariane = $data['ariane'];
       $this->contents = $data['template'];
       $this->aff = $data['data']['meta'];
-      if(isset($data['dateCreate']))
-        $this->aff['datePublished'] = $data['dateCreate'];
-      if(isset($data['dateUpdate']))
-        $this->aff['dateModified'] = $data['dateUpdate'];
-      $cat = utilsMenu::getGenre();
-      $this->aff['genre'] = $cat;
+      $this->aff['creative'] = CreativeWork::setMenuAccueil($data['menuName']);
     }
     
     $this->nextKey = $this->firstKey;
@@ -100,33 +95,11 @@ class setIndex
       $contents = str_replace('##keywords##', $this->aff['keywords'], $contents);
     $contents = str_replace('##ariane##', $this->ariane, $contents);
     $contents = str_replace('##contents##', $this->contents, $contents);
-    $creative = CreativeWork::gen();
-    $creative['name'] = $this->aff['title'];
-    $creative['description'] = $this->aff['description'];
-    $creative['genre'] = [];
-    if(isset($this->aff['genre']))
-      $creative['genre'] = $this->aff['genre'];
-    if(!isset($this->aff['collection'])){
-      unset($creative['inCollection']);
-    }else{
-      $creative['inCollection']['name'] = $this->aff['collection']['name'];
-      $creative['inCollection']['url'] = $this->aff['collection']['url'];
-      $creative['@type'][] = 'Book';
+    if(isset($this->aff['creative'])){
+      if(is_array($this->aff['creative']))
+        $this->aff['creative'] = json_encode($this->aff['creative']);
+      $contents = str_replace('##creativework##', $this->aff['creative'], $contents);
     }
-    $creative['url'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $_SERVER['REQUEST_URI'];
-    $creative['image'][] = $this->aff['image'];
-    if(str_contains($this->aff['image'], 'imageThumb300')){
-      $creative['image'][] = str_replace('imageThumb300', 'image', $this->aff['image']);
-      $creative['image'][] = str_replace('imageThumb300', 'imagethumb', $this->aff['image']);
-    }
-    if(isset($this->aff['datePublished']))
-      $creative['datePublished'] = date('Y-m-d', (int)$this->aff['datePublished']);
-    if(isset($this->aff['dateModified']))
-      $creative['dateModified'] = date('Y-m-d',(int)$this->aff['dateModified']);
-
-    $contents = str_replace('##creativework##', json_encode($creative, JSON_PRETTY_PRINT), $contents);
-
-    //echo '<pre>'; print_r($creative); die();
 
     return $contents;
   }
@@ -149,19 +122,19 @@ class setIndex
   {
     $name = $this->getNextKeyName();
     if($name == 'error404'){
-      $data = utilsMenu::errorPage('error403', 'Erreur 404');
+      $data = utilsMenu::errorPage($name, 'Erreur 404');
       $this->ariane = $data['ariane'];
       $this->contents = $data['template'];
       $this->aff = $data['data']['meta'];
-      $this->aff['genre'] = "Erreur 404";
+      $this->aff['creative'] = CreativeWork::setMenuAccueil($name);
       return;
     }
     if($name == 'error403'){
-      $data = utilsMenu::errorPage('error403', 'Erreur 403');
+      $data = utilsMenu::errorPage($name, 'Erreur 403');
       $this->ariane = $data['ariane'];
       $this->contents = $data['template'];
       $this->aff = $data['data']['meta'];
-      $this->aff['genre'] = "Erreur 403";
+      $this->aff['creative'] = CreativeWork::setMenuAccueil($name);
       return;
     }
     if($name == 'images'){
@@ -169,7 +142,7 @@ class setIndex
       $this->ariane = utilsMenu::ariane($data['data']['ariane']);
       $this->contents = $data['template'];
       $this->aff = $data['data']['meta'];
-      $this->aff['genre'] = "Acueil images";
+      $this->aff['creative'] = '{}';
       return;
     }
     http_response_code(404);
@@ -186,15 +159,8 @@ class setIndex
     $data = utilsMenu::getCollectionData($uuid);
     $this->ariane = utilsMenu::ariane($data['ariane']);
     $this->contents = utilsMenu::getCollectionHtml($data);
-    //echo '<pre>'; print_r($data); die();
     $this->aff = $data['meta'];
-    $this->aff['datePublished'] = $data['doc']->dateCreate;
-    $this->aff['dateModified'] = $data['doc']->dateUpdate;
-    $this->aff['genre'] = [];
-    foreach($data['categories'] as $cat){
-      $catData = utilsMenu::getCategorieData($cat);
-      $this->aff['genre'][] = $catData['doc']->name;
-    }
+    $this->aff['creative'] = CreativeWork::setCollection($uuid);
   }
   public function histoires()
   {
@@ -213,25 +179,7 @@ class setIndex
     $this->ariane = utilsMenu::ariane($data['ariane']);
     $this->contents = $tpl;
     $this->aff = $data['meta'];
-    $genre = [];
-    foreach($data['categories'] as $k => $v)
-      $genre[] = $k;
-    $this->aff['genre'] = $genre;
-    $this->aff['collection'] = [
-      'name' => $data['collection']['doc']->name,
-      'url' =>  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['DOMAIN'] . $data['collection']['ariane'][1]['uri'],
-    ];
-    $this->aff['datePublished'] = $data['doc']->dateCreate;
-    $this->aff['dateModified'] = $data['doc']->dateUpdate;
-    $cat = [];
-    foreach($data['categories'] as $name => $ar){
-      $cat[] = $name;
-    }
-    $t = explode(' ', $data['doc']->title);
-    foreach($t as $sub){
-      if(strlen($sub) > 4)
-        $cat[] = $sub;
-    }
+    $this->aff['creative'] = CreativeWork::setHistoire($uuid);
   }
   public function categories()
   {
@@ -246,9 +194,7 @@ class setIndex
     $this->ariane = utilsMenu::ariane($data['ariane']);
     $this->contents = utilsMenu::getCategorieHtml($data);
     $this->aff = $data['meta'];
-    $this->aff['genre'] = $data['doc']->name;
-    $this->aff['datePublished'] = $data['doc']->dateCreate;
-    $this->aff['dateModified'] = $data['doc']->dateUpdate;
+    $this->aff['creative'] = CreativeWork::setCategorie($uuid);
   }
 }
 

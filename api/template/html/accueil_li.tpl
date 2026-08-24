@@ -1,4 +1,4 @@
-<li property="itemListElement" typeod="ListItem">
+<li property="itemListElement" typeof="ListItem">
   <div class="div_desc">
     <h3><a property="item" typeof="WebPage" href="##histoireUri##">##histoireTitle##</a></h3>
     <div class="accueil_col">

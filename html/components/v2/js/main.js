@@ -355,6 +355,7 @@
       document.getElementById("__meta-og:url").content = document.getElementById("__meta-twitter:url").content = resp.data.meta.url;
       document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.data.meta.description;
       document.getElementById("__meta-keywords").content = resp.data.meta.keywords;
+      document.getElementById("CreativeWork").innerHTML = resp.creative;
       let delL = document.getElementsByTagName("span");
       for(let d of delL){
         if(!d.hasAttribute('action')){
@@ -751,7 +752,12 @@
           contentClass.contentMenu();
         }
       }, 60);
-      contentClass.contentMenu();
+      //contentClass.contentMenu();
+      let lM = window.location.pathname.split('/');
+      Menu.addClassMenu(lM[1]);
+      if(lM[1] == 'images'){
+        contentClass.contentMenu();
+      }
     }
     end(){
       let d = new Date();

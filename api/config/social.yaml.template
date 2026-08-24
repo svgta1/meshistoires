@@ -3,6 +3,7 @@ instagram:
   title: Ma page Instagram
   url: https://www.instagram.com/name/
   icon: https://domain.tld/pathTo/instagram-icon.png
+  visible: true
 
 twitter:
   name: X
@@ -10,6 +11,7 @@ twitter:
   url: https://twitter.com/name
   id: id
   icon: https://domain.tld/pathTo/X-logo-white.png
+  visible: true
 
 facebook:
   name: Facebook
@@ -17,3 +19,4 @@ facebook:
   url: https://www.facebook.com/name
   id: id
   icon: https://domain.tld/pathTo/fb-logo.png
+  visible: true

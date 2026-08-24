@@ -144,13 +144,6 @@ routes:
     class: menu
     class_method: getCollectionInfo
     scopes:
-  - desc: get Collection
-    method: GET
-    uri: /v2/collections/{uuid}/
-    version: v2r0
-    class: menu
-    class_method: getCollectionInfo
-    scopes:
 ##categories
   - desc: get histoire from categorie
     method: GET
@@ -159,7 +152,7 @@ routes:
     class: menu
     class_method: getCategorieInfo
     scopes:
-  - desc: get histoire from categorie
+  - desc: get gategorie
     method: GET
     uri: /v2/histoires/categories/{uuid}/
     version: v2r0
@@ -177,13 +170,6 @@ routes:
   - desc: get histoire
     method: GET
     uri: /v2/histoires/{uuid}
-    version: v2r0
-    class: menu
-    class_method: getHistoireInfo
-    scopes:
-  - desc: get histoire
-    method: GET
-    uri: /v2/histoires/{uuid}/
     version: v2r0
     class: menu
     class_method: getHistoireInfo

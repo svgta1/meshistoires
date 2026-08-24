@@ -11,6 +11,7 @@ class utilsMenu
 {
   private static $cache = false;
   private static $cacheId = "Cache_Menus_";
+  private static $internalCache = [];
   private static $dbRes = null;
   private static $getImageFromCache = [];
   private static $getImageFromAltImages = null;
@@ -18,8 +19,54 @@ class utilsMenu
   private static $getImageFromCollections = null;
   private static $getImageFromOeuvres = null;
 
+  public static function getCursorHistoires()
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+
+    $order = 'dateCreate';
+    $col = 'oeuvres';
+    $cursor = self::$dbRes['class']::get(
+      col: $col,
+      order: [$order => -1],
+      projection: ['uuid', 'dateCreate', 'dateUpdate', 'title', 'desc', 'imageUuid']
+    );
+    return $cursor;
+  }
+  public static function getCursorCollections()
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+
+    $col = "collections";
+    $cursor = self::$dbRes['class']::get(
+      col: $col,
+      order: ['name' => 1],
+      projection: ['uuid', 'dateUpdate', 'dateCreate', 'name']
+    );
+    return $cursor;
+  }
+  public static function getCursorLastHistoires()
+  {
+    if(is_null(self::$dbRes))
+      self::$dbRes = db::get_res();
+
+    $col = "oeuvres";
+    $cursor = self::$dbRes['class']::get(
+      col: $col,
+      order: ['dateCreate' => -1],
+      limit: $_ENV['AC_HIST_LIMIT'],
+      projection: ['uuid', 'dateUpdate', 'dateCreate', 'title']
+    );
+    return $cursor;
+  }
   public static function getGenre()
   {
+    $cacheKey = 'getGenre';
+    $cache = self::getCache($cacheKey);
+    if($cache){
+      return $cache;
+    }
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
     $cursor = self::$dbRes['class']::get(
@@ -31,12 +78,23 @@ class utilsMenu
       $ret[] = $doc->name;
     }
     sort($ret);
+    self::setCache($cacheKey, $ret);
     return $ret;
+  }
+  public static function setImgsSrc($id)
+  {
+    $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
+    $ar = [
+      'img' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/image/' . $id,
+      'thumb300' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $id,
+      'thumb' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb/' . $id
+    ];
+    return $ar;
   }
   public static function setImgSrc($id)
   {
-    $src = $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $id;
-    return $src;
+    $a = self::setImgsSrc($id);
+    return $a['thumb300'];
   }
   public static function getCollectionHtml(&$data)
   {
@@ -45,7 +103,7 @@ class utilsMenu
       $h = self::getHistoireData($uuid);
       if($data['doc']->dateUpdate < $h['doc']->dateUpdate)
         $data['doc']->dateUpdate = $h['doc']->dateUpdate;
-      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'">' . self::getCollectionHistoireHtml($h, $uuid). '</li>';
+      $html .= '<li property="itemListElement" typeof="ListItem" id="histoire_'.$uuid.'">' . self::getCollectionHistoireHtml($h, $uuid). '</li>';
     }
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection.tpl');
     $tpl = str_replace("##colName##", $data['doc']->name, $tpl);
@@ -56,7 +114,6 @@ class utilsMenu
     $tpl = str_replace("##colDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
     return $tpl;
   }
-
   public static function getCollectionHistoireHtml($data, $uuid)
   {
     $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
@@ -89,10 +146,28 @@ class utilsMenu
     $tpl = str_replace("##catName##", $data['doc']->name, $tpl);
     $html = "";
     foreach($data['histoires']['list'] as $uuid){
-      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$uuid.'"></li>';
+      $hdata = utilsMenu::getHistoireData($uuid);
+      $h = utilsMenu::getHistoiresHistoireHtml($hdata);
+      $html .= '<li property="itemListElement" typeof="ListItem" id="histoire_'.$uuid.'">'.$h.'</li>';
     }
     $tpl = str_replace("##content##", $html, $tpl);
     return $tpl;
+  }
+  Public static function getHistoiresHistoireHtml($data)
+  {
+    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires_li.tpl');
+    $histoire = $data['doc'];
+    $collection = $data['collection'];
+    $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
+    $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($histoire->imageUuid), $li);
+    $li = str_replace("##docTitle##", $histoire->title, $li);
+    $desc = '<p>' . $histoire->desc . '</p>';
+    $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
+    $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
+    $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
+    $li = str_replace("##CollectionUri##", $collection['ariane'][1]['uri'], $li);
+    $li = str_replace("##collectionName##", $collection['doc']->name, $li);
+    return $li;
   }
   public static function getHistoireHtml($data, $token = null)
   {
@@ -156,6 +231,11 @@ class utilsMenu
   }
   public static function searcheImageCol($uuid, $deleted = false)
   {
+    $cacheKey = 'searcheImageCol_' .$uuid . '_' . (string) $deleted;
+    $cache = self::getCache($cacheKey);
+    if($cache){
+      return $cache;
+    }
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
     $col = 'altImages';
@@ -172,6 +252,7 @@ class utilsMenu
     }
     if(is_null($doc))
       return null;
+    self::setCache($cacheKey, $col);
     return $col;
   }
   public static function getImageFromAltImages($uuid)
@@ -333,6 +414,11 @@ class utilsMenu
 
   public static function getAltImgData($uuid)
   {
+    $cacheKey = 'getAltImgData' .$uuid;
+    $cache = self::getCache($cacheKey);
+    if($cache){
+      return $cache;
+    }
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
     $cpt = self::getAltImgDataCpt($uuid);
@@ -350,6 +436,7 @@ class utilsMenu
       unset($doc->_uid);
       $ar[] = json_decode(json_encode($doc));
     }
+    self::setCache($cacheKey, $ar);
     return $ar;
   }
   public static function getAltImg($uuid, $canDelete = false, ?string $title = null)
@@ -389,12 +476,20 @@ class utilsMenu
     $tpl = str_replace('##contents##', $html, $tpl);
     return $tpl;
   }
-  public static function errorPage($error, $libelle)
+  public static function errorPage($error, $libelle = '')
   {
+    if($libelle == ''){
+      if($error == 'error404')
+        $libelle = 'Erreur 404';
+      if($error == 'error403')
+        $libelle = 'Erreur 403';
+    }
     if(is_null(self::$dbRes))
       self::$dbRes = db::get_res();
 
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/' . $error . '.tpl');
+    $txt = opt::file_get_contents($_ENV['HTML_TPL'] . '/' . $error . '.txt');
+    $text = '<p>' . str_replace(PHP_EOL, '</p><p>', $txt) . '</p>';
     $res = utilsMenu::getImagesStatsInfo($error);
     if($res['nbr'] > 0){
       $l = [];
@@ -407,7 +502,8 @@ class utilsMenu
       $k = array_key_first($l);
       $rand = random_int(0, count($l[$k]) - 1);
       $tpl = str_replace('##imageId##', $l[$k][$rand], $tpl);
-            $tpl = str_replace('##setImgSrc##', self::setImgSrc($l[$k][$rand]), $tpl);
+      $tpl = str_replace('##setImgSrc##', self::setImgSrc($l[$k][$rand]), $tpl);
+      $tpl = str_replace('##txt##', $text, $tpl);
       utilsMenu::setImageStatAccess($l[$k][$rand], $error);
     }else{
       $tpl = str_replace('##class##', "hidden", $tpl);
@@ -452,7 +548,7 @@ class utilsMenu
       'title' => $libelle . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['data']['ariane'][1]['uri'],
-      'description' => htmlspecialchars('Page non trouvée ou interdite.'),
+      'description' => htmlspecialchars('Page non trouvée ou interdite.', ENT_NOQUOTES),
       'keywords' => $libelle . ', ' . $_ENV['KEYWORDS'],
     ];
     return $data;
@@ -498,7 +594,7 @@ class utilsMenu
       'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars($data['doc']->desc),
+      'description' => htmlspecialchars($data['doc']->desc, ENT_NOQUOTES),
       'keywords' => $keywords . $_ENV['KEYWORDS'],
     ];
     $keyw = [];
@@ -572,7 +668,7 @@ class utilsMenu
       'title' => 'Collection ' . $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars($data['doc']->desc),
+      'description' => htmlspecialchars($data['doc']->desc, ENT_NOQUOTES),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
     self::setCache($cacheKey, $data);
@@ -629,7 +725,7 @@ class utilsMenu
       'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => htmlspecialchars('Histoires de la catégorie ' . $data['doc']->name),
+      'description' => htmlspecialchars('Histoires de la catégorie ' . $data['doc']->name, ENT_NOQUOTES),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
     ];
     self::setCache($cacheKey, $data);
@@ -700,6 +796,11 @@ class utilsMenu
   public static function getCache($key)
   {
     $key = self::$cacheId . $key;
+    if(isset(self::$internalCache[$key]))
+      return self::$internalCache[$key];
+    if($cache = apcu_fetch($key))
+      return $cache;
+
     $cache = cache::_get($key);
     if(!$cache)
       return $cache;
@@ -708,6 +809,8 @@ class utilsMenu
   public static function setCache($key, $data)
   {
     $key = self::$cacheId . $key;
+    self::$internalCache[$key] = $data;
+    apcu_store($key, $data, $_ENV['EXP_CACHE']);
     cache::set($key, serialize($data));
   }
   public static function _unset($doc){

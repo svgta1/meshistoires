@@ -9,6 +9,7 @@ use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\backend\stockage;
 use Meshistoires\Api\utils\utilsMenu;
+use Meshistoires\Api\utils\CreativeWork;
 
 class menu
 {
@@ -233,7 +234,7 @@ class menu
       'title' => $ariane[1]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ariane[1]['uri'],
-      'description' => htmlspecialchars('Liste des images aléatoires des pages d\'accueil'),
+      'description' => htmlspecialchars('Liste des images aléatoires des pages d\'accueil', ENT_NOQUOTES),
       'keywords' => $_ENV['KEYWORDS'],
     ];
     return $ret;
@@ -270,6 +271,7 @@ class menu
     unset($data['histoires']);
     unset($data['doc']);
     $ret['data'] = $data;
+    $ret['creative'] = json_encode(CreativeWork::setCategorie($uuid));
     response::json(200, $ret);
   }
   public function getHistoireInfo()
@@ -293,6 +295,7 @@ class menu
     $ret['template'] = $tpl;
     unset($data['doc']);
     $ret['data'] = $data;
+    $ret['creative'] = json_encode(CreativeWork::setHistoire($uuid));
     response::json(200, $ret);
   }
   public function getCollectionHistoire()
@@ -333,6 +336,7 @@ class menu
     $ret['isMenu'] = false;
     unset($dataCol['doc']);
     $ret['data'] = $dataCol;
+    $ret['creative'] = json_encode(CreativeWork::setCollection($uuid));
     response::json(200, $ret);
   }
   private function setCollectionsTpl($contents)
@@ -361,22 +365,11 @@ class menu
   }
   private function getCollections(&$ret)
   {
-    $col = "collections";
-    $cursor = $this->dbRes['class']::get(
-      col: $col,
-      order: ['name' => 1],
-      projection: ['uuid', 'dateCreate', 'dateUpdate']
-    );
+    $cursor = utilsMenu::getCursorCollections();
     $ret['contents'] = [];
     $dateUpdate = 0;
     $dateCreate = null;
     foreach($cursor as $c){
-      if(is_null($dateCreate))
-        $dateCreate = $c->dateCreate;
-      if($dateCreate > $c->dateCreate)
-        $dateCreate = $c->dateCreate;
-      if($dateUpdate < $c->dateUpdate)
-        $dateUpdate = $c->dateUpdate;
       $data = utilsMenu::getCollectionData($c->uuid);
       $ret['contents'][] = $data;
     }
@@ -386,11 +379,9 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt')),
-      'keywords' => $_ENV['KEYWORDS'],
+      'description' => htmlspecialchars(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt', ENT_NOQUOTES)),
+      'keywords' => 'Liste des collections, ' . $_ENV['KEYWORDS'],
     ];
-    $ret['dateCreate'] = $dateCreate;
-    $ret['dateUpdate'] = $dateUpdate;
   }
   public function getHistoireFromHistoires()
   {
@@ -405,21 +396,11 @@ class menu
     $data = utilsMenu::getHistoireData($uuid);
     if(is_null($data))
       response::json(404, 'Histoire des histoires non trouvée');
-    $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoires_li.tpl');
-    $histoire = $data['doc'];
-    $collection = $data['collection'];
-    $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
-    $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($histoire->imageUuid), $li);
-    $li = str_replace("##docTitle##", $histoire->title, $li);
-    $desc = '<p>' . $histoire->desc . '</p>';
-    $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
-    $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
-    $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
-    $li = str_replace("##CollectionUri##", $collection['ariane'][1]['uri'], $li);
-    $li = str_replace("##collectionName##", $collection['doc']->name, $li);
+    $li = utilsMenu::getHistoiresHistoireHtml($data);
     $ret = [
       'html' => $li
     ];
+    
     response::json(200, $ret);
   }
   private function getHistoires(&$ret)
@@ -432,23 +413,13 @@ class menu
         ),
       'list' => []
     ];
-    $cursor = $this->dbRes['class']::get(
-      col: $col,
-      order: [$order => -1],
-      projection: ['uuid', 'dateCreate', 'dateUpdate']
-    );
-    $dateUpdate = 0;
-    $dateCreate = null;
+    $cursor = utilsMenu::getCursorHistoires();
     $html = '';
     foreach($cursor as $c){
-      if(is_null($dateCreate))
-          $dateCreate = $c->dateCreate;
-      if($dateCreate > $c->dateCreate)
-        $dateCreate = $c->dateCreate;
-      if($dateUpdate < $c->dateUpdate)
-        $dateUpdate = $c->dateUpdate;
       $ret['histoires']['list'][] = $c->uuid;
-      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$c->uuid.'"></li>';
+      $hdata = utilsMenu::getHistoireData($c->uuid);
+      $h = utilsMenu::getHistoiresHistoireHtml($hdata);
+      $html .= '<li property="itemListElement" typeod="ListItem" id="histoire_'.$c->uuid.'">'.$h.'</li>';
     }
     $ret['menuLi'] = "histoires";
     $ret['title'] = "Mes histoires";
@@ -477,11 +448,9 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars($txt),
+      'description' => htmlspecialchars($txt, ENT_NOQUOTES),
       'keywords' => implode(', ', $catName) . ', ' .$_ENV['KEYWORDS'],
     ];
-    $ret['dateCreate'] = $dateCreate;
-    $ret['dateUpdate'] = $dateUpdate;
   }
   private function getImages(&$ret)
   {
@@ -565,33 +534,19 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars('Liste des images des histoires'),
+      'description' => htmlspecialchars('Liste des images des histoires', ENT_NOQUOTES),
       'keywords' => $_ENV['KEYWORDS'],
     ];
   }
   private function getAccueil(&$ret)
   {
-    $col = "oeuvres";
-    $cursor = $this->dbRes['class']::get(
-      col: $col,
-      order: ['dateCreate' => -1],
-      limit: $_ENV['AC_HIST_LIMIT'],
-      projection: ['uuid', 'dateUpdate', 'dateCreate']
-    );
+    $cursor = utilsMenu::getCursorLastHistoires();
     $ret['contents'] = [];
     $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/accueil_li.tpl');
     $html = '';
-    $dateUpdate = 0;
-    $dateCreate = null;
     foreach($cursor as $c){
       $data= utilsMenu::getHistoireData($c->uuid);
       $doc = $data['doc'];
-      if(is_null($dateCreate))
-          $dateCreate = $doc->dateCreate;
-      if($dateCreate > $doc->dateCreate)
-        $dateCreate = $doc->dateCreate;
-      if($dateUpdate < $doc->dateUpdate)
-        $dateUpdate = $doc->dateUpdate;
       $collection = $data['collection']['doc'];
       $li = str_replace("##histoireTitle##", $doc->title, $tplLi);
       $li = str_replace("##histoireUri##", $data['ariane'][1]['uri'], $li);
@@ -635,18 +590,15 @@ class menu
       'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
-      'description' => htmlspecialchars($txt),
+      'description' => htmlspecialchars($txt, ENT_NOQUOTES),
       'keywords' => $_ENV['KEYWORDS'],
-      'dateCreate' => $dateCreate,
-      'dateUpdate' => $dateUpdate
     ];
-    $ret['dateCreate'] = $dateCreate;
-    $ret['dateUpdate'] = $dateUpdate;
   }
   public function get()
   {
     $uuid = $this->request['uuid'];
     $ret = $this->_get($uuid);
+    $ret['creative'] = json_encode(CreativeWork::setMenuAccueil($uuid));
     response::json(200, $ret);
   }
   public function _get($uuid)
@@ -660,7 +612,7 @@ class menu
       $ariane = [
         [
           'name' => array_search($uuid, self::$menuL),
-          'uri' => $uuid
+          'uri' => '/' . $uuid
         ]
       ];
       $ret['ariane'] = utilsMenu::ariane($ariane);
@@ -669,6 +621,7 @@ class menu
       $ret['data'] = [
         'ariane' => $ariane
       ];
+      $ret['menuName'] = $uuid;
       $this->$method($ret);
     }
     return $ret;
