@@ -71,7 +71,8 @@ class image
 		header("Content-length: " . $doc['metadata']->length);
     header('Expires: ' . gmdate('D, d M Y H:i:s', time() + self::HEADER_EXPIRE) . ' GMT', true);
     $name = seo::seofy($_ENV['SITE_TITLE'] . '_'.$doc['metadata']->metadata->title);
-    header('Content-Disposition:inline;filename="'.$name.'.'.$doc['metadata']->metadata->ctype.'"');
+    $pathInfo = pathinfo($doc['metadata']->filename);
+    header('Content-Disposition:inline;filename="'.$name.'.'.$pathInfo['extension'].'"');
 
     echo $this->stockageRes['class']::getStream($doc['stream']);
   }
