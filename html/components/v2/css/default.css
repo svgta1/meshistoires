@@ -36,6 +36,9 @@ div.div_desc div.categorie{
 	z-index: 2;
 	position: relative;
 }
+#img_div {
+	z-index: 100;
+}
 
 @media screen and (min-width: 990px) {
 	div.top #header p.site_title {
