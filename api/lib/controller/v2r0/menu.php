@@ -371,8 +371,9 @@ class menu
     $dateCreate = null;
     foreach($cursor as $c){
       $data = utilsMenu::getCollectionData($c->uuid);
-      $ret['contents'][] = $data;
+      $ret['contents'][$data['histoires']['lastPublishDate']] = $data;
     }
+    krsort($ret['contents']);
     $ret['template'] = $this->setCollectionsTpl($ret['contents']);
 
     $ret['data']['meta'] = [

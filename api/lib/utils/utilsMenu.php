@@ -41,7 +41,7 @@ class utilsMenu
     $col = "collections";
     $cursor = self::$dbRes['class']::get(
       col: $col,
-      order: ['name' => 1],
+      order: ['dateUpdate' => -1],
       projection: ['uuid', 'dateUpdate', 'dateCreate', 'name']
     );
     return $cursor;
@@ -647,18 +647,21 @@ class utilsMenu
     ];
     $data['histoires'] = [
       'nbr' => 0,
-      'list' => []
+      'list' => [],
+      'lastPublishDate' => 0
     ];
     $cursor = self::$dbRes['class']->get(
       col: 'oeuvres',
       param: ['collectionUuid' => $uuid],
-      order: ['title' => 1],
-      projection: ['uuid', 'categorieUuid']
+      order: ['dateCreate' => -1],
+      projection: ['uuid', 'categorieUuid', 'dateCreate']
     );
     $data['categories'] = [];
     foreach($cursor as $doc){
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
+      if($data['histoires']['lastPublishDate'] < $doc->dateCreate)
+        $data['histoires']['lastPublishDate'] = $doc->dateCreate;
       foreach($doc->categorieUuid as $cat){
         if(!in_array($cat, $data['categories']))
           $data['categories'][] = $cat;

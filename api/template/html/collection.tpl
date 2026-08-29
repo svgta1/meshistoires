@@ -5,6 +5,7 @@
     <div class="desc_right">
       <p>##colDesc##</p>
       <p><span class="signature">Cocolst</span></p>
+      <p><center><i>Par ordre de dernière publication</i></center></p>
     </div>
   </div>
   <div>
