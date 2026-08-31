@@ -6,6 +6,7 @@ use Meshistoires\Api\model\siteParamsStats;
 use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\controller\v2r0\menu;
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
 class utilsMenu
 {
@@ -880,7 +881,8 @@ class utilsMenu
   }
   public static function setImageStatAccess($uuid, $from = "accueil", $incAccess = true)
   {
-    if($incAccess && \Svgta\Lib\Utils::is_bot())
+    $crawlerDetect = new CrawlerDetect;
+    if($incAccess && $crawlerDetect->isCrawler())
       return;
 
     if(is_null(self::$dbRes))

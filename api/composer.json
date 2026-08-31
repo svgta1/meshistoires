@@ -11,7 +11,8 @@
         "mongodb/mongodb": "^2.1",
         "google/apiclient": "^2.15.0",
         "ext-xml": "*",
-        "svgta/svgta-lib": "^1.3"
+        "svgta/svgta-lib": "^1.3",
+        "jaybizzle/crawler-detect": "^1.4"
     },
     "license": "GPL-3.0-only",
     "autoload": {
