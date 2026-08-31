@@ -9,8 +9,9 @@ $cursor = $dbRes['class']::get(
   col: "siteParamsStats"
 );
 foreach($cursor as $doc){
-  $dbRes['class']::delete(
+  $dbRes['class']::putMany(
     col: "siteParamsStats",
-    uuid: $doc->uuid
+    filter: ['deleted' => false],
+    param: ['nbrAccess' => 0, 'dateUpdate' => time()]
   );
 }

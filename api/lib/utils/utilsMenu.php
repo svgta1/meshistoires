@@ -19,6 +19,7 @@ class utilsMenu
   private static $getImageFromSiteParamsStats = null;
   private static $getImageFromCollections = null;
   private static $getImageFromOeuvres = null;
+  private static $imageStateUuid = null;
 
   public static function getCursorHistoires()
   {
@@ -881,8 +882,11 @@ class utilsMenu
   }
   public static function setImageStatAccess($uuid, $from = "accueil", $incAccess = true)
   {
+    if(!is_null(self::$imageStateUuid))
+      return;
+    self::$imageStateUuid = $uuid;
     $crawlerDetect = new CrawlerDetect;
-    if($incAccess && $crawlerDetect->isCrawler())
+    if($crawlerDetect->isCrawler())
       return;
 
     if(is_null(self::$dbRes))
@@ -919,7 +923,7 @@ class utilsMenu
       $m->from = $from;
       if($incAccess)
         $m->nbrAccess = 1;
-     self::$dbRes['class']->post(
+      self::$dbRes['class']->post(
         col: 'siteParamsStats',
         param: $m->_toArray()
       );
