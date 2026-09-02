@@ -53,7 +53,7 @@
       info = JSON.parse(info);
       title.innerHTML = info.title;
       desc.innerHTML = info.description;
-      document.title = info.title;
+      //document.title = info.title;
       Info.title = this.title = info.title;
       Info.desc = this.desc = info.description;
       this.copyRight = info.copyRight;

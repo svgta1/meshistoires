@@ -231,7 +231,7 @@ class menu
       'ariane' => $ariane,
     ];
     $ret['data']['meta'] = [
-      'title' => $ariane[1]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ariane[1]['name'] . ' - Images de accueil',
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ariane[1]['uri'],
       'description' => seo::descMinify('Liste des images aléatoires des pages d\'accueil'),
@@ -377,7 +377,7 @@ class menu
     $ret['template'] = $this->setCollectionsTpl($ret['contents']);
 
     $ret['data']['meta'] = [
-      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ret['data']['ariane'][0]['name'],
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => seo::descMinify(opt::file_get_contents($_ENV['HTML_TPL'] . '/collections.txt')),
@@ -446,7 +446,7 @@ class menu
     $tpl = str_replace("##catList##", utilsMenu::setCategorieAff($data), $tpl);
     $ret['template'] = str_replace("##content##", $html, $tpl);
     $ret['data']['meta'] = [
-      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . implode(' - ', $catName),
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => seo::descMinify($txt),
@@ -532,7 +532,7 @@ class menu
     $tpl = str_replace('##globalNbr##', $globalNbr, $tpl);
     $ret['template'] = $tpl;
     $ret['data']['meta'] = [
-      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ret['data']['ariane'][0]['name'] . ' - Liste des images',
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => seo::descMinify('Liste des images des histoires'),
@@ -588,7 +588,7 @@ class menu
     $tpl = str_replace('##content##', $html, $tpl);
     $ret['template'] = $tpl;
     $ret['data']['meta'] = [
-      'title' => $ret['data']['ariane'][0]['name'] . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => $ret['data']['ariane'][0]['name'] . ' - Liste des dernières publications',
       'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
       'description' => seo::descMinify($txt),

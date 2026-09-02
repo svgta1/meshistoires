@@ -593,19 +593,19 @@ class utilsMenu
     $categories = [];
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $keywords = isset($doc->keywords) ? $doc->keywords . ', ' : '';
-    $data['meta'] = [
-      'title' => $data['doc']->title . ' - ' . $_ENV['SITE_TITLE'],
-      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
-      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
-      'description' => seo::descMinify($data['doc']->desc),
-      'keywords' => $keywords . $_ENV['KEYWORDS'],
-    ];
     $keyw = [];
     foreach($doc->categorieUuid as $categorie){
       $cat = self::getCategorieData($categorie);
       $categories[$cat['doc']->name] = $cat;
       $keyw[] = $cat['doc']->name;
     }
+    $data['meta'] = [
+      'title' => $data['doc']->title . ' - ' . implode(' - ', $keyw),
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
+      'description' => seo::descMinify($data['doc']->desc),
+      'keywords' => $keywords . $_ENV['KEYWORDS'],
+    ];
     $data['meta']['keywords'] = implode(', ', $keyw) . ', ' . $data['meta']['keywords'];
     ksort($categories);
     $data['categories'] = $categories;
@@ -659,19 +659,24 @@ class utilsMenu
       projection: ['uuid', 'categorieUuid', 'dateCreate']
     );
     $data['categories'] = [];
+    $catName = [];
     foreach($cursor as $doc){
       $data['histoires']['nbr'] += 1;
       $data['histoires']['list'][] = $doc->uuid;
       if($data['histoires']['lastPublishDate'] < $doc->dateCreate)
         $data['histoires']['lastPublishDate'] = $doc->dateCreate;
       foreach($doc->categorieUuid as $cat){
-        if(!in_array($cat, $data['categories']))
+        if(!in_array($cat, $data['categories'])){
           $data['categories'][] = $cat;
+          $catData = self::getCategorieData($cat);
+          $catName[] = $catData['doc']->name;
+        }
       }
     }
+    sort($catName);
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
-      'title' => 'Collection ' . $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => 'Collection ' . $data['doc']->name . ' - ' . implode(' - ', $catName),
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => seo::descMinify($data['doc']->desc),
@@ -728,7 +733,7 @@ class utilsMenu
     }
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
-      'title' => $data['doc']->name . ' - ' . $_ENV['SITE_TITLE'],
+      'title' => 'Catégorie ' . $data['doc']->name . ' - Liste des histoires',
       'image' => $scheme . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => seo::descMinify('Histoires de la catégorie ' . $data['doc']->name),
