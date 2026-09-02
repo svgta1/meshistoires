@@ -336,46 +336,7 @@
       document.getElementById("__meta-description").content = document.getElementById("__meta-og:description").content = document.getElementById("__meta-twitter:desc").content = resp.data.meta.description;
       document.getElementById("__meta-keywords").content = resp.data.meta.keywords;
       document.getElementById("CreativeWork").innerHTML = JSON.stringify(resp.creative);
-      let delL = document.getElementsByTagName("span");
-      for(let d of delL){
-        if(!d.hasAttribute('action')){
-          continue;
-        }
-        let id = null;
-        let uri = null;
-        let action = null;
-        let reload = false;
-        if(d.getAttribute('action') == "delete"){
-          id = d.id.replace('span_imageId_', '');
-          uri = this.apiUrl + '/image/' + id;
-          action = 'delete';
-        }
-        if(d.getAttribute('action') == "deleteDefitive"){
-          id = d.id.replace('span_imageId_del_', '');
-          uri = this.apiUrl + '/image/definitive/' + id;
-          action = 'delete';
-          reload = true;
-        }
-        if(d.getAttribute('action') == "restore"){
-          id = d.id.replace('span_imageId_rest_', '');
-          uri = this.apiUrl + '/image/' + id;
-          action = 'put';
-          reload = true;
-        }
-        if(uri !== null && action !== null){
-          d.addEventListener('click', async ()=>{
-            let token = window.localStorage.getItem('_tokenImgs');
-            let b = {};
-            if(token !== null){
-              b.body = JSON.stringify({token: token});
-            }
-            let res = await Fetch[action](uri, b);
-            if(res.ok){
-              document.getElementById('li_' + id).remove();
-            }
-          });
-        }
-      }
+      Utils.addAction('content');
     }
     async loadConfig(){
       config = window.mh.config;
@@ -406,6 +367,50 @@
         menu.get_ApiMenu();
         gArticle.get_ApiArticle();
       }*/
+    }
+    static addAction(id){
+      let doc = document.getElementById(id);
+      let delL = doc.getElementsByTagName('span');
+      for(let d of delL){
+        if(!d.hasAttribute('action')){
+          continue;
+        }
+        let id = null;
+        let uri = null;
+        let action = null;
+        let reload = false;
+        let apiUrl = config.api.uri + config.api.version;
+        if(d.getAttribute('action') == "delete"){
+          id = d.id.replace('span_imageId_', '');
+          uri = apiUrl + '/image/' + id;
+          action = 'delete';
+        }
+        if(d.getAttribute('action') == "deleteDefitive"){
+          id = d.id.replace('span_imageId_del_', '');
+          uri = apiUrl + '/image/definitive/' + id;
+          action = 'delete';
+          reload = true;
+        }
+        if(d.getAttribute('action') == "restore"){
+          id = d.id.replace('span_imageId_rest_', '');
+          uri = apiUrl + '/image/' + id;
+          action = 'put';
+          reload = true;
+        }
+        if(uri !== null && action !== null){
+          d.addEventListener('click', async ()=>{
+            let token = window.localStorage.getItem('_tokenImgs');
+            let b = {};
+            if(token !== null){
+              b.body = JSON.stringify({token: token});
+            }
+            let res = await Fetch[action](uri, b);
+            if(res.ok){
+              document.getElementById('li_' + id).remove();
+            }
+          });
+        }
+      }
     }
     static resp(msg, id){
       if(id == undefined)
@@ -762,6 +767,7 @@
       Utils.allAPreventDefault('ariane');
       Utils.allAPreventDefault('content');
       Utils.allImgPrenventDefault('content');
+      Utils.addAction('content');
     }
     end(){
       let d = new Date();
