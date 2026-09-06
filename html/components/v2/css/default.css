@@ -1,3 +1,7 @@
+:root{
+	--Plastic_Chip:#fbbea1;
+
+}
 body.hidden{
 	display: none;
 }
@@ -38,6 +42,22 @@ div.div_desc div.categorie{
 }
 #img_div {
 	z-index: 100;
+}
+i.fa-backward, i.fa-forward{
+	position: absolute;
+	z-index: 101;
+	cursor: pointer;
+	color: var(--Plastic_Chip);
+	opacity: 0.8;
+}
+i.fa-backward:hover, i.fa-forward:hover{
+	opacity: 1;
+}
+i.fa-backward{
+	left: 5vw;
+}
+i.fa-forward{
+	right: 3vw;
 }
 
 @media screen and (min-width: 990px) {

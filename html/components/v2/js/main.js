@@ -10,7 +10,8 @@
   var userLoad = null;
 
   class Image {
-    static open(src){
+    static open(src, id){
+      console.log('src', src);console.log('id', id);
       let body = document.body;
       if(document.getElementById('img_div') != null)
         return;
@@ -34,9 +35,52 @@
         img.classList.add("small");
         div.classList.add("close");
         setTimeout(() => { div.remove(); }, 100);
-        //this.remove();
       });
+
+      let curImg = document.getElementById(id);
+      let parent = curImg.parentElement.parentElement;
+      let next = parent.nextSibling;
+      let prev = parent.previousSibling;
+      console.log(prev);
+
+      if(prev && prev.classList && prev.classList.contains('image')){
+        let prevImg = document.createElement('i');
+        prevImg.classList.add('fa');
+        prevImg.classList.add('fa-thin');
+        prevImg.classList.add('fa-backward');
+        prevImg.classList.add('fa-4x');
+        div.appendChild(prevImg);
+        let prevId = prev.id.replace('li_', '');
+        let prevSrc = src.replace(id, prevId);
+        prevImg.addEventListener('click', function (e) {
+          img.classList.add("small");
+          div.classList.add("close");
+          setTimeout(() => { 
+            div.remove(); 
+            Image.open(prevSrc, prevId);
+          }, 100);
+        });
+      }
       div.appendChild(img);
+
+      if(next && next.classList && next.classList.contains('image')){
+        let nextImg = document.createElement('i');
+        nextImg.classList.add('fa');
+        nextImg.classList.add('fa-thin');
+        nextImg.classList.add('fa-forward');
+        nextImg.classList.add('fa-4x');
+        div.appendChild(nextImg);
+        let nextId = next.id.replace('li_', '');
+        let nextSrc = src.replace(id, nextId);
+        nextImg.addEventListener('click', function (e) {
+          img.classList.add("small");
+          div.classList.add("close");
+          setTimeout(() => { 
+            div.remove(); 
+            Image.open(nextSrc, nextId);
+          }, 100);
+        });
+      }
       body.appendChild(div);
     }
   }
@@ -453,7 +497,7 @@
 		    return;
 	    }
 	    img.addEventListener("click",()=>{
-		    Image.open(img.src);
+		    Image.open(img.src, img.id);
 	    })
     }
     static aPreventDefault(a){

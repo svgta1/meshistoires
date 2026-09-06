@@ -601,7 +601,7 @@ class utilsMenu
     }
     $data['meta'] = [
       'title' => $data['doc']->title . ' - ' . implode(' - ', $keyw),
-      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/image/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => seo::descMinify($data['doc']->desc),
       'keywords' => $keywords . $_ENV['KEYWORDS'],
@@ -677,7 +677,7 @@ class utilsMenu
     $scheme = isset($_SERVER['REQUEST_SCHEME']) ? $_SERVER['REQUEST_SCHEME'] : 'https';
     $data['meta'] = [
       'title' => 'Collection ' . $data['doc']->name . ' - ' . implode(' - ', $catName),
-      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/imageThumb300/' . $data['doc']->imageUuid,
+      'image' => $scheme . '://' . $_ENV['DOMAIN'] . $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/image/' . $data['doc']->imageUuid,
       'url' => $scheme . '://' . $_ENV['DOMAIN'] . $data['ariane'][1]['uri'],
       'description' => seo::descMinify($data['doc']->desc),
       'keywords' => $data['doc']->name . ', ' . $_ENV['KEYWORDS'],
