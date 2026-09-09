@@ -37,8 +37,10 @@ class sitemap
       $shem = 'https';
     $this->uriSite = $shem .'://' . $_ENV['DOMAIN'];
   }
-  private static function setDateFormat(int $timestamp)
+  private static function setDateFormat(?int $timestamp = null)
   {
+    if(is_null($timestamp))
+      $timestamp = time();
     $date = \DateTimeImmutable::createFromFormat('U', (string)$timestamp);
     $date = $date->setTimezone(new \DateTimeZone('UTC'));
     return $date->format('Y-m-d\TH:i:s.v') . 'Z';
@@ -121,7 +123,7 @@ class sitemap
       $xw->text($imgUri);
       $xw->endElement(); //image:loc
       $xw->endElement(); //image:image
-      $dataImgs = utilsMenu::getAltImgData($c->uuid);
+      /*$dataImgs = utilsMenu::getAltImgData($c->uuid);
       if(!is_null($dataImgs)){
         foreach($dataImgs as $img){
           $xw->startElement('image:image');
@@ -131,7 +133,7 @@ class sitemap
           $xw->endElement(); //image:loc
           $xw->endElement(); //image:image
         }
-      }
+      }*/
       $xw->startElement('lastmod');
       //$xw->text(\date('Y-m-d', $data['doc']->dateUpdate));
       $xw->text(self::setDateFormat($data['doc']->dateUpdate));
