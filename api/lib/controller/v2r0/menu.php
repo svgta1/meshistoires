@@ -26,7 +26,7 @@ class menu
     'Liste des histoires' => 'histoires',
     'Images' => 'images'
   ];
-  private static $menuLVisibility = [
+  public static $menuLVisibility = [
     'accueil' => true,
     'collections' => true,
     'histoires' => true,

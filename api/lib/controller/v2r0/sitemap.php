@@ -56,7 +56,9 @@ class sitemap
 
     //menu
     $list = menu::_menuList();
-    foreach($list['list'] as $menu){
+    foreach($list['list'] as $k => $menu){
+      if(!menu::$menuLVisibility[$k])
+        continue;
       $uri = $self->uriSite . '/' . $menu['uri'];
       $xw->startElement('url');
       $xw->startElement('loc');
