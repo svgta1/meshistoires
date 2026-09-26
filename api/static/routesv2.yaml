@@ -57,6 +57,14 @@ routes:
     class: sitemap
     class_method: images
     scopes:
+##video
+  - desc: Get Image
+    method: GET
+    uri: /v2/video/{uuid}
+    version: v2r0
+    class: video
+    class_method: get
+    scopes:
 ##image
   - desc: Get Images Accueil
     method: GET
@@ -65,6 +73,7 @@ routes:
     class: menu
     class_method: getImagesParams
     scopes:
+      - admin:read
   - desc: Get Image
     method: GET
     uri: /v2/image/{uuid}
@@ -93,13 +102,15 @@ routes:
     class: menu
     class_method: deleteImage
     scopes:
-  - desc: Delete Image  def
+      - admin:delete
+  - desc: Delete Image definitely
     method: DELETE
     uri: /v2/image/definitive/{uuid}
     version: v2r0
     class: menu
     class_method: delImageDef
     scopes:
+      - admin:delete
   - desc: restaure Image  def
     method: PUT
     uri: /v2/image/{uuid}
@@ -107,6 +118,7 @@ routes:
     class: menu
     class_method: restaureImage
     scopes:
+      - admin:write
 ##menu
   - desc: get Menu
     method: GET

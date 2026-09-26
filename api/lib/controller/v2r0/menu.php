@@ -9,6 +9,7 @@ use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\backend\db;
 use Meshistoires\Api\backend\stockage;
 use Meshistoires\Api\utils\utilsMenu;
+use Meshistoires\Api\utils\auth as utilsAuth;
 use Meshistoires\Api\utils\CreativeWork;
 
 class menu
@@ -24,19 +25,22 @@ class menu
     'Accueil' => 'accueil',
     'Liste des collections' => 'collections',
     'Liste des histoires' => 'histoires',
-    'Images' => 'images'
+    'Images' => 'images',
+    'Vidéos' => 'videos',
   ];
   public static $menuLVisibility = [
     'accueil' => true,
     'collections' => true,
     'histoires' => true,
-    'images' => false
+    'images' => false,
+    'videos' => true,
   ];
   private $method = [
     'accueil' => 'getAccueil',
     'collections' => 'getCollections',
     'histoires' => 'getHistoires',
     'images' => 'getImages',
+    'videos' => 'getVideos',
   ];
 
   private $modelRetMenu =[
@@ -57,8 +61,11 @@ class menu
     $this->className = \array_pop($c);
     $this->dbRes = db::get_res();
     $this->dbStockage = stockage::get_res();
+    if(!is_array($this->scopes))
+      $this->scopes = [];
+    $this->valid_token();
   }
-  private function is_valid_token()
+  private function valid_token()
   {
     if(!isset($this->request['token']))
       return false;
@@ -66,8 +73,7 @@ class menu
   }
   Public function deleteImage()
   {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
+    utilsAuth::verifyScope($this->scopes);
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
     $col = utilsMenu::searcheImageCol($this->request['uuid']);
@@ -82,8 +88,7 @@ class menu
   }
   public function restaureImage()
   {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
+    utilsAuth::verifyScope($this->scopes);
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
     $col = utilsMenu::searcheImageCol($this->request['uuid'], true);
@@ -98,8 +103,7 @@ class menu
   }
   public function delImageDef()
   {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
+    utilsAuth::verifyScope($this->scopes);
     if(!isset($this->request['uuid']))
       response::json(400, 'uuid not given');
     $col = utilsMenu::searcheImageCol($this->request['uuid'], true);
@@ -114,8 +118,7 @@ class menu
   }
   public function getImagesParams()
   {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
+    utilsAuth::verifyScope($this->scopes);
     $ret = $this->_getImagesParams();
     response::json(200, $ret);
   }
@@ -453,10 +456,59 @@ class menu
       'keywords' => implode(', ', $catName) . ', ' .$_ENV['KEYWORDS'],
     ];
   }
+  private function getVideos(&$ret)
+  {
+    utilsAuth::verifyScope(['admin:read']);
+    $col = "videos.files";
+    $cursor = $this->dbRes['class']::get(
+      col: $col,
+      projection: ['filename', 'metadata'],
+      order: ['metadata.name' => 1]
+    );
+    $ag = [];
+    foreach($cursor as $doc){
+      if(!isset($ag[$doc->metadata->name]))
+        $ag[$doc->metadata->name] = [];
+
+      $ar = $doc;
+      if(!is_null($doc->metadata->oeuvreUuid)){
+        $doc->histoire = utilsMenu::getHistoireData($doc->metadata->oeuvreUuid);
+      }else{
+        $doc->histoire = null;
+      }
+      $ag[$doc->metadata->name][] = $doc;
+    }
+    $tplLi = opt::file_get_contents($_ENV['HTML_TPL'] . '/videos_li.tpl');
+    $tplCpt = opt::file_get_contents($_ENV['HTML_TPL'] . '/video_type.tpl');
+    $html = '';
+    foreach($ag as $name => $ar){
+      $li = str_replace('##videoid##', $name, $tplLi);
+      $contents = '';
+      foreach($ar as $doc){
+        $filename = $_ENV['BASE_PATH'] . '/' . $_ENV['VERSION_CTRL'] . '/video/' . $doc->filename;
+        $type = str_replace('##videosrc##', $filename, $tplCpt);
+        $type = str_replace('##videotype##', $doc->metadata->type, $type);
+        $contents .= $type;
+      }
+      $li = str_replace('##videocpt##', $contents, $li);
+      $html .= $li;
+    }
+    $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/videos.tpl');
+    $tpl = str_replace('##content##', $html, $tpl);
+
+    $ret['contents'] =  [];
+    $ret['template'] = $tpl;
+    $ret['data']['meta'] = [
+      'title' => $ret['data']['ariane'][0]['name'] . ' - Liste des vidéos',
+      'image' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . '/components/' . $_ENV['VERSION_CTRL'] . '/img/inspiration.webp',
+      'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_ENV['DOMAIN'] . $ret['data']['ariane'][0]['uri'],
+      'description' => seo::descMinify('Liste des vidéos du site'),
+      'keywords' => $_ENV['KEYWORDS'],
+    ];
+  }
   private function getImages(&$ret)
   {
-    if(!$this->is_valid_token())
-      response::json(403, 'Bad token or token not found');
+    utilsAuth::verifyScope(['admin:read']);
     $col = "thumb300.files";
     $cursor = $this->dbRes['class']::get(
       col: $col,

@@ -7,6 +7,7 @@ use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\controller\v2r0\menu;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
+use Meshistoires\Api\utils\auth as utilsAuth;
 
 class utilsMenu
 {
@@ -229,6 +230,8 @@ class utilsMenu
     $admin = opt::yaml_parse_file($_ENV['ADMIN_YAML']);
     if(!isset($admin['tokenList'][$token]))
       return false;
+
+    utilsAuth::$scopes = $admin['tokenList'][$token]['scopes'];
     return true;
   }
   public static function searcheImageCol($uuid, $deleted = false)

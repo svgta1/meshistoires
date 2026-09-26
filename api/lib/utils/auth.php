@@ -13,6 +13,8 @@ class auth
     $verify = [];
     foreach($scopes as $v)
       $verify[$v] = false;
+    if($verify == [])
+      response::json($retCode, ['error' => true, 'reason' => 'Not authorized']);
     foreach(self::$scopes as $v){
       if(in_array($v, $scopes))
         $verify[$v] = true;

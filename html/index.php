@@ -78,7 +78,10 @@ class setIndex
     if(!isset($this->menu['list'][$this->reqUri[$this->firstKey]])){
       $this->set404Error();
     }
-    if(count($this->reqUri) == 1 && $this->reqUri[$this->firstKey] !== "images"){
+    if(count($this->reqUri) == 1 
+      && $this->reqUri[$this->firstKey] !== "images"
+      && $this->reqUri[$this->firstKey] !== "videos"
+    ){
       $data = $this->ctrlMenu->_get($this->reqUri[$this->firstKey]);
       $this->ariane = $data['ariane'];
       $this->contents = $data['template'];

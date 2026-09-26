@@ -344,6 +344,21 @@
       }
       this.defaultContent(res.resp);
     }
+    async videos(ress){
+      let res = await ress;
+      if(!res.ok){
+        if(res.responseCode == 404){
+          window.location = '/accueil/error404';
+          return;
+        }
+        if(res.responseCode == 403){
+          window.location = '/accueil/error403';
+          return;
+        }
+        return;
+      }
+      this.defaultContent(res.resp);
+    }
     async getHistoire(url, uuid){
       let histoire = await Fetch.get(url);
       let liHist = document.getElementById('histoire_' + uuid);
@@ -827,7 +842,7 @@
       //contentClass.contentMenu();
       let lM = window.location.pathname.split('/');
       Menu.addClassMenu(lM[1]);
-      if(lM[1] == 'images'){
+      if(lM[1] == 'images' || lM[1] == 'videos'){
         contentClass.contentMenu();
       }
       Utils.allAPreventDefault('ariane');
