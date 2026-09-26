@@ -14,7 +14,8 @@
         "ext-xml": "*",
         "svgta/svgta-lib": "^1.3",
         "jaybizzle/crawler-detect": "^1.4",
-        "cache/filesystem-adapter": "^3.0"
+        "cache/filesystem-adapter": "^3.0",
+        "php-ffmpeg/php-ffmpeg": "^1.4"
     },
     "license": "GPL-3.0-only",
     "autoload": {
