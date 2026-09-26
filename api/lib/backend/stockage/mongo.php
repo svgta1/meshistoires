@@ -11,6 +11,35 @@ class mongo implements stockageInt
   const THUMB="thumb";
   const THUMB300="thumb300";
   const PDF = "pdf";
+  const VIDEO = "videos";
+
+  public static function postVideo(
+    string $file, 
+    string $name, 
+    int $height,
+    int $width,
+    ?string $oeuvreUuid = null
+  ): string
+  {
+    $bucket = self::get_res()->selectGridFSBucket(['bucketName' => self::VIDEO]);
+    $info = pathinfo($file);
+    $fileName = $info['filename'] . '.' . $info['extension'];
+    $doc = $bucket->findOne(['filename' => $fileName]);
+    if(!is_null($doc))
+      return $name;
+
+    $metadata = [
+      'name' => $name,
+      'type' => mime_content_type($file),
+      'oeuvreUuid' => $oeuvreUuid,
+      'width' => $width,
+      'height' => $height,
+    ];
+
+    $bucket->uploadFromStream($fileName, \fopen($file, 'rb'), ['metadata' => $metadata]);
+
+    return $name;
+  }
 
   public static function delete(string $file)
   {
@@ -171,6 +200,16 @@ class mongo implements stockageInt
 		$exif = \json_decode($exif,true);
 		return $exif;
 	}
+  public static function getVideoInfo(string $filename):array
+  {
+    $bucket = self::get_res()->selectGridFSBucket(['bucketName' => self::VIDEO]);
+    $doc = $bucket->findOne(['filename' => $filename]);
+
+    return [
+      'metadata' => $doc,
+      'stream' => $bucket->openDownloadStreamByName($filename, ['revision' => 0])
+    ];
+  }
   public static function getImageInfo(string $uuid): array
   {
     $bucket = self::get_res()->selectGridFSBucket(['bucketName' => self::IMG]);
