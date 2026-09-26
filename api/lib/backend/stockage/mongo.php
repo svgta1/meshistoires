@@ -126,7 +126,7 @@ class mongo implements stockageInt
 
         return $output_file;
     } elseif (class_exists('Imagick')) {
-        $image = new Imagick();
+        $image = new \Imagick();
         $image->readImage($file);
 
         if ($file_type === 'png') {
