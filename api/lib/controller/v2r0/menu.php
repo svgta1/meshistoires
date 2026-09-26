@@ -33,7 +33,7 @@ class menu
     'collections' => true,
     'histoires' => true,
     'images' => false,
-    'videos' => true,
+    'videos' => false,
   ];
   private $method = [
     'accueil' => 'getAccueil',
