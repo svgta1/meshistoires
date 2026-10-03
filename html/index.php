@@ -5,6 +5,7 @@ use Meshistoires\Api\utils\utilsMenu;
 use Meshistoires\Api\utils\opt;
 use Meshistoires\Api\utils\CreativeWork;
 use Meshistoires\Api\controller\v2r0\menu as ctrlMenu;
+use Meshistoires\Api\utils\security;
 
 require dirname(__FILE__, 2) . '/api/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__FILE__, 2) . '/api/');
@@ -209,7 +210,7 @@ class setIndex
     $this->aff['creative'] = CreativeWork::setCategorie($uuid);
   }
 }
-
+security::is_protectedQuery($_SERVER['SCRIPT_URL']);
 $index = new setIndex();
 if(!$index->verifyMenu()){
   echo $index->setContents();

@@ -26,7 +26,7 @@ class request
     unset($request['kid']);
 
     return self::validate_security($request, $jsonArray, $res);
-    foreach($request as $k=>$v){
+    /*foreach($request as $k=>$v){
       if(!security::is_protectedQuery($v)){
         response::json('403', 'Blocage de sécurité');
       }
@@ -35,7 +35,7 @@ class request
       else
         $res->{$k} = $v;
     }
-    return $res;
+    return $res;*/
   }
   public static function validate_security($request, $jsonArray = false, $res = null)
   {

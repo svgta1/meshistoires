@@ -74,3 +74,14 @@ rules :
   'X-': Web Cache Poisoning
   'Cache-Control': Web Cache Poisoning
   'User-Agent:': User-Agent
+  '.git': HACK
+  '.env': HACK
+  '.env': HACK
+  '/wp-includes': HACK
+  '/wp-manager.php': HACK
+  '/wp.php': HACK
+  '/xkSudf.php': HACK
+  '/red.php': HACK
+  '/666.php': HACK
+  '/mac.php': HACK
+  '/xiugai.php': HACK

@@ -54,11 +54,16 @@ class security
       }
     }
     if(!$sure){
-      Utils::setLogLevel(LOG_ERR);
-      Utils::log(LOG_ERR, [
+      //Utils::setLogLevel(LOG_ERR);
+      /*Utils::log(LOG_ERR, [
         'query' => $query,
         'block' => $block
-      ]);
+      ]);*/
+      $ip = Utils::getIP();
+      $date = date('Y-m-d H:i:s');
+      $logMessage = "[$date] Security block for IP $ip" . PHP_EOL;
+      if(isset($_ENV['LOG_SECURITY']))
+        error_log($logMessage, 3, $_ENV['LOG_SECURITY']);
     }
     return $sure;
   }

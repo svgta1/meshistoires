@@ -24,6 +24,9 @@ class opt
   }
 
   public static function yaml_parse_file(string $fileName){
+    if($_ENV['USE_CACHE'] == '0'){
+      return yaml_parse_file($fileName);
+    }
     $key = md5($fileName);
     if(isset(self::$yamlFileContents[$key]))
         return self::$yamlFileContents[$key];
