@@ -7,9 +7,9 @@ $dotenv->load();
 
 
 
-$api_Key = "a8a72d54c1cdf9990e4e9e394b0762dd9632adef";
-$api_id = "kGffiemftFSKTyWXTpiJje";
-$uri = "https://docs.getgrist.com/api/docs";
+$api_Key = $_ENV['GRIST_API_KEY'];
+$api_id = $_ENV['GRIST_API_ID'];
+$uri = $_ENV['GRIST_API_URI'];
 
 
 $api = new getGrist(
