@@ -21,7 +21,7 @@ class getGrist
     'public' => 'Public',
     'categories' => 'Categories'
   ];
-  private $uri = [];
+  public $uri = [];
   private $gClient = null;
   private $stockage = null;
   private $collections = [
@@ -402,7 +402,7 @@ class getGrist
   private function setUriTable($table){
     $this->uri[$table] = $this->api_uri . '/' . $this->api_id . '/tables/' . $this->tables[$table] . '/records';
   }
-  private function getClient($api_uri){
+  public function getClient($api_uri){
     $ret = $this->gClient->get($api_uri,[
       'headers' => [
         'Authorization' => "Bearer " . $this->api_key
