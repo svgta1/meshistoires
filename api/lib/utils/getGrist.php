@@ -211,7 +211,7 @@ class getGrist
         $m->gristId = $v->id;
         $m->name = $v->fields->Collection;
         $m->desc = $v->fields->Description;
-        $m->distanteLink = $v->fields->Lien;
+        $m->distanteLink = isset($v->fields->Lien) ? $v->fields->Lien : $v->fields->Lien_Atra;
         $m->sha = $sha;
         if(isset($v->fields->Image))
           $m->imageUuid = $this->getAttachmentDl($v->fields->Image[1]);
@@ -233,7 +233,7 @@ class getGrist
         $m->name = $v->fields->Collection;
         $m->gristId = $v->id;
         $m->desc = $v->fields->Description;
-        $m->distanteLink = $v->fields->Lien;
+        $m->distanteLink = isset($v->fields->Lien) ? $v->fields->Lien : $v->fields->Lien_Atra;
         $m->sha = $sha;
         if(isset($v->fields->Image))
           $m->imageUuid = $this->getAttachmentDl($v->fields->Image[1]);
@@ -279,7 +279,8 @@ class getGrist
         $m->gristId = $v->id;
         $m->title = $v->fields->Titre;
         $m->desc = $v->fields->Accroche;
-        $m->distanteLink = $v->fields->Lien;
+        $m->distanteLink = isset($v->fields->Lien) ? $v->fields->Lien : $v->fields->Lien_Atra;
+        $m->distanteLinkXStory = $v->fields->Lien_XStory;
         $m->collectionUuid = $this->getColUuid($v->fields->Collection);
         $m->publicUuid = $this->getPublicUuid($v->fields->Public);
         $m->sha = $sha;
@@ -314,7 +315,8 @@ class getGrist
         $m->gristId = $v->id;
         $m->desc = $v->fields->Accroche;
         $m->gristuuid = $v->fields->gristId;
-        $m->distanteLink = $v->fields->Lien;
+        $m->distanteLink = isset($v->fields->Lien) ? $v->fields->Lien : $v->fields->Lien_Atra;
+        $m->distanteLinkXStory = $v->fields->Lien_XStory;
         $m->collectionUuid = $this->getColUuid($v->fields->Collection);
         $m->publicUuid = $this->getPublicUuid($v->fields->Public);
         $m->sha = $sha;

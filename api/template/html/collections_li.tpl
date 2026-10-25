@@ -8,7 +8,6 @@
         <p>##collectionDesc##</p>
         <p><span class="signature">Cocolst</span></p>
       </div>
-      <div class="extLink hidden"><a property="item" typeof="WebPage" href="##distantLink##" target="_distant">Découvrir la collection sur Atramenta <i class="fa fa-external-link" aria-hidden="true"></i></a></div>
     </div>
   </div>
 </li>

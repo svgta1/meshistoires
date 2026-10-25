@@ -5,6 +5,10 @@ use Svgta\Lib\Utils;
 
 class security
 {
+  public static function is_validUrl(string $url)
+  {
+    return filter_var($url, FILTER_VALIDATE_URL);
+  }
   public static function is_protectedQuery($query)
   {
     if(!isset($_ENV['SECURITY_YAML']) || !is_file($_ENV['SECURITY_YAML']))

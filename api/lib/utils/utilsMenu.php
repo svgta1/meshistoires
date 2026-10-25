@@ -5,6 +5,7 @@ use Meshistoires\Api\backend\db;
 use Meshistoires\Api\model\siteParamsStats;
 use Meshistoires\Api\utils\seo;
 use Meshistoires\Api\utils\opt;
+use Meshistoires\Api\utils\security;
 use Meshistoires\Api\controller\v2r0\menu;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Meshistoires\Api\utils\auth as utilsAuth;
@@ -121,13 +122,36 @@ class utilsMenu
   {
     $li = opt::file_get_contents($_ENV['HTML_TPL'] . '/collection_li.tpl');
     $histoire = $data['doc'];
+    $link = [];
+    $lastLink = '';
+    if(isset($histoire->distanteLink) && security::is_validUrl($histoire->distanteLink)){
+      $link[] = $histoire->distanteLink;
+      $lastLink = "Atramenta";
+    }
+    if(isset($histoire->distanteLinkXStory) && security::is_validUrl($histoire->distanteLinkXStory)){
+      $link[] = $histoire->distanteLinkXStory;
+      $lastLink = "XStory";
+    }
+    if(count($link) == 0){
+      $li = str_replace("##links##", "", $li);
+    }else if(count($link) == 1){
+      $tplLink = opt::file_get_contents($_ENV['HTML_TPL'] . '/distLinkSolo.tpl');
+      $tplLink = str_replace('##distantLink##', $link[0], $tplLink);
+      $tplLink = str_replace('##distSite##', $lastLink, $tplLink);
+      $li = str_replace("##links##", $tplLink, $li);
+    }else{
+      $tplLink = opt::file_get_contents($_ENV['HTML_TPL'] . '/distLinkMulti.tpl');
+      $tplLink = str_replace('##distantLinkAtra##', $link[0], $tplLink);
+      $tplLink = str_replace('##distantLinkXStory##', $link[1], $tplLink);
+      $li = str_replace("##links##", $tplLink, $li);
+    }
+      
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
     $li = str_replace('##imageSrc##', self::setImgSrc($histoire->imageUuid), $li);
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
     $li = str_replace("##docTitle##", $histoire->title, $li);
     $desc = '<p>' . $histoire->desc . '</p>';
     $li = str_replace("##docDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $li);
-    $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
     $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
     $cptImg = utilsMenu::getAltImgDataCpt($uuid);
     if($cptImg == 0){
@@ -179,12 +203,34 @@ class utilsMenu
     $doc = $data['doc'];
 
     $tpl = opt::file_get_contents($_ENV['HTML_TPL'] . '/histoire.tpl');
+    $link = [];
+    $lastLink = '';
+    if(isset($doc->distanteLink) && security::is_validUrl($doc->distanteLink)){
+      $link[] = $doc->distanteLink;
+      $lastLink = "Atramenta";
+    }
+    if(isset($doc->distanteLinkXStory) && security::is_validUrl($doc->distanteLinkXStory)){
+      $link[] = $doc->distanteLinkXStory;
+      $lastLink = "XStory";
+    }
+    if(count($link) == 0){
+      $tpl = str_replace("##links##", "", $tpl);
+    }else if(count($link) == 1){
+      $tplLink = opt::file_get_contents($_ENV['HTML_TPL'] . '/distLinkSolo.tpl');
+      $tplLink = str_replace('##distantLink##', $link[0], $tplLink);
+      $tplLink = str_replace('##distSite##', $lastLink, $tplLink);
+      $tpl = str_replace("##links##", $tplLink, $tpl);
+    }else{
+      $tplLink = opt::file_get_contents($_ENV['HTML_TPL'] . '/distLinkMulti.tpl');
+      $tplLink = str_replace('##distantLinkAtra##', $link[0], $tplLink);
+      $tplLink = str_replace('##distantLinkXStory##', $link[1], $tplLink);
+      $tpl = str_replace("##links##", $tplLink, $tpl);
+    }
     $tpl = str_replace('##title##', $doc->title, $tpl);
     $tpl = str_replace('##imageId##', $doc->imageUuid, $tpl);
     $tpl = str_replace('##imageSrc##', self::setImgSrc($doc->imageUuid), $tpl);
     $desc = '<p>' . $doc->desc . '</p>';
     $tpl = str_replace('##desc##', str_replace(PHP_EOL, "</p><p>", $desc), $tpl);
-    $tpl = str_replace("##distantLink##", $doc->distanteLink, $tpl);
     $tpl = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $tpl);
     $tpl = str_replace("##collectionName##", $data['collection']['doc']->name, $tpl);
     $tpl = str_replace("##categories##", utilsMenu::setCategorieAff($data), $tpl);

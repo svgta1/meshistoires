@@ -11,6 +11,7 @@ class oeuvre extends absModel
   public int $dateCreate = 0;
   public int $dateUpdate = 0;
   public ?string $distanteLink = null;
+  public ?string $distanteLinkXStory = null;
   public ?string $imageUuid = null;
   public ?array $categorieUuid = null;
   public ?string $publicUuid = null;

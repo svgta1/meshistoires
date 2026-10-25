@@ -1,0 +1,1 @@
+<span>En exclusivité sur <a property="item" typeof="WebPage" href="##distantLink##" target="_distant"> ##distSite## <i class="fa fa-external-link" aria-hidden="true"></i></a></span>

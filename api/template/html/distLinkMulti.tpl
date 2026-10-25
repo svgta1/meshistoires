@@ -1,0 +1,1 @@
+<span>A découvrir sur <a property="item" typeof="WebPage" href="##distantLinkAtra##" target="_distant"> Atramenta <i class="fa fa-external-link" aria-hidden="true"></i></a><br> ou sur <a property="item" typeof="WebPage" href="##distantLinkXStory##" target="_distant"> XStory <i class="fa fa-external-link" aria-hidden="true"></i></a></span>
