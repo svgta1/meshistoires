@@ -506,9 +506,13 @@ class CreativeWork
     ];
     return $col;
   }
-  public static function setDate(int $time)
+  public static function setDate(?int $timestamp = null)
   {
-    return date('Y-m-d', $time);
+    if(is_null($timestamp))
+      $timestamp = time();
+    $date = \DateTimeImmutable::createFromFormat('U', (string)$timestamp);
+    $date = $date->setTimezone(new \DateTimeZone('UTC'));
+    return $date->format('Y-m-d\TH:i:s.v') . 'Z';
   }
   public static function genHistoire()
   {
