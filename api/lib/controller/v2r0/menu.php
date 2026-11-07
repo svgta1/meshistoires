@@ -609,6 +609,7 @@ class menu
       $li = str_replace("##collectionName##", $data['collection']['doc']->name, $li);
       $li = str_replace("##collectionUri##", $data['collection']['ariane'][1]['uri'], $li);
       $li = str_replace('##categories##', utilsMenu::setCategorieAff($data), $li);
+      $li = str_replace('##docTitle##', seo::seofy($doc->title . ' couverture'), $li);
       $html .= $li;
       $doc = utilsMenu::_unset($doc);
       $ret['contents'][] = $data;

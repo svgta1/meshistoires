@@ -3,7 +3,7 @@
     <h2><a property="item" typeof="WebPage" href="##histUri##">##docTitle##</a></h2>
     <div class="categorie">##categories##</div>
     <div class="relativeTop">
-      <img src="##imageSrc##" id="##histoireImageId##" alt="##docTitle##" title="##docTitle##" width="200">
+      <img src="##imageSrc##" id="##histoireImageId##" alt="##docTitleImg##" title="##docTitle##" width="200">
       <div class="desc_right">
         <p>##docDesc##</p>
         <p><span class="signature">Cocolst</span></p>

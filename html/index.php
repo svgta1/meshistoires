@@ -123,7 +123,7 @@ class setIndex
     $contents = str_replace('##contents##', $this->contents, $contents);
     if(isset($this->aff['creative'])){
       if(is_array($this->aff['creative']))
-        $this->aff['creative'] = json_encode($this->aff['creative']);
+        $this->aff['creative'] = json_encode($this->aff['creative'], JSON_UNESCAPED_SLASHES);
       $contents = str_replace('##creativework##', $this->aff['creative'], $contents);
     }
 

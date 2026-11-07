@@ -21,8 +21,16 @@ class CreativeWork
       $creative['genre'][] = $catName;
     }
     $creative['url'] = $data['meta']['url'];
+    $creative['mainEntityOfPage'] = $data['meta']['url'];
     $creative['datePublished'] = self::setDate($data['doc']->dateCreate);
     $creative['dateModified'] = self::setDate($data['doc']->dateUpdate);
+    $creative['sameAs'] = [];
+    if($data['doc']->distanteLink)
+      $creative['sameAs'][] = $data['doc']->distanteLink;
+    if($data['doc']->distanteLinkXStory)
+      $creative['sameAs'][] = $data['doc']->distanteLinkXStory;
+    if(count($creative['sameAs']) == 0)
+      unset($creative['sameAs']);
     foreach(utilsMenu::setImgsSrc($data['doc']->imageUuid) as $img){
       $creative['image'][] = $img;
     }
@@ -84,7 +92,7 @@ class CreativeWork
       $creative['genre'][] = $catData['doc']->name;
     }
     $creative['url'] = $data['meta']['url'];
-    $creative['startDate'] = self::setDate($data['doc']->dateCreate);
+    $creative['dateCreated '] = self::setDate($data['doc']->dateCreate);
     foreach(utilsMenu::setImgsSrc($data['doc']->imageUuid) as $img){
       $creative['image'][] = $img;
     }
@@ -429,7 +437,7 @@ class CreativeWork
       '@type' => 'ListItem',
       'position' => 0,
       'item' => [
-        '@type' => "Book",
+        '@type' => "Article",
         '@id' => $scheme . '://' . $_ENV['DOMAIN'] . '_histoire_',
         'name' => '',
         'url' => '',
@@ -451,7 +459,7 @@ class CreativeWork
       '@type' => "ListItem",
       'position' => 0,
       'item' => [
-        '@type' => 'BookSeries',
+        '@type' => 'CollectionPage',
         '@id' => $scheme . '://' . $_ENV['DOMAIN'] . '_collection_',
         'name' => '',
         'url' => $scheme . '://' . $_ENV['DOMAIN'],
@@ -470,7 +478,7 @@ class CreativeWork
 
     $col = [
       '@context' => 'https://schema.org',
-      '@type' => "BookSeries",
+      '@type' => "CollectionPage",
       '@id' => $scheme . '://' . $_ENV['DOMAIN'] . '_collection_',
       'name' => '',
       'keywords' => [],
@@ -484,7 +492,7 @@ class CreativeWork
       ],
       'url' => '',
       'image' => [],
-      'startDate' => '',
+      'dateCreated ' => '',
       'inLanguage' => 'fr',
       'publisher' => [
         '@type' => 'Organization',
@@ -523,7 +531,7 @@ class CreativeWork
     $crea = opt::yaml_parse_file($_ENV['CREATIVEWORK']);
     $ar = [
       '@context' => 'https://schema.org',
-      '@type' => 'Book',
+      '@type' => 'Article',
       '@id' => $scheme . '://' . $_ENV['DOMAIN'] . '_histoire_',
       'name' => '',
       'keywords' => [],

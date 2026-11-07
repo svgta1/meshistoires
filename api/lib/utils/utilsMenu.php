@@ -150,6 +150,7 @@ class utilsMenu
     $li = str_replace('##imageSrc##', self::setImgSrc($histoire->imageUuid), $li);
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
     $li = str_replace("##docTitle##", $histoire->title, $li);
+    $li = str_replace("##docTitleImg##", seo::seofy($histoire->title . ' couverture'), $li);
     $desc = '<p>' . $histoire->desc . '</p>';
     $li = str_replace("##docDesc##", str_replace(PHP_EOL, "</p><p>", $desc), $li);
     $li = str_replace("##categories##", utilsMenu::setCategorieAff($data), $li);
@@ -188,6 +189,7 @@ class utilsMenu
     $li = str_replace("##histoireImageId##", $histoire->imageUuid, $li);
     $li = str_replace('##imageSrc##', utilsMenu::setImgSrc($histoire->imageUuid), $li);
     $li = str_replace("##docTitle##", $histoire->title, $li);
+    $li = str_replace("##docTitleImg##", seo::seofy($histoire->title . ' couverture'), $li);
     $desc = '<p>' . $histoire->desc . '</p>';
     $li = str_replace("##histUri##", $data['ariane'][1]['uri'], $li);
     $li = str_replace("##distantLink##", $histoire->distanteLink, $li);
@@ -235,6 +237,7 @@ class utilsMenu
     $tpl = str_replace("##collectionName##", $data['collection']['doc']->name, $tpl);
     $tpl = str_replace("##categories##", utilsMenu::setCategorieAff($data), $tpl);
     $tpl = str_replace("##keywords##", $data['keywords'], $tpl);
+    $tpl = str_replace("##imgtitle##", seo::seofy($doc->title . ' couverture'), $tpl);
 
     $random = self::$dbRes['res']->oeuvres->aggregate([
       ['$match' => [
@@ -251,6 +254,7 @@ class utilsMenu
       $_data = utilsMenu::getHistoireData($rand->uuid);
       $li = str_replace("##histUri##", $_data['ariane'][1]['uri'], $tplLi);
       $li = str_replace("##histTitle##", $_data['doc']->title, $li);
+      $li = str_replace("##histTitleImg##", seo::seofy($_data['doc']->title. ' couverture'), $li);
       $li = str_replace("##histoireImageId##", $_data['doc']->imageUuid, $li);
       $li = str_replace("##imageSrc##", self::setImgSrc($_data['doc']->imageUuid), $li);
       $li = str_replace("##distantLink##", $_data['doc']->distanteLink, $li);
